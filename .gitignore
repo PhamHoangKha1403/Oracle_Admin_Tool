@@ -1,0 +1,25 @@
+# Visual Studio / .NET
+.vs/
+bin/
+obj/
+packages/
+*.user
+*.suo
+*.cache
+*.userprefs
+*.pidb
+
+# Build results
+[Dd]ebug/
+[Rr]elease/
+x64/
+x86/
+
+# NuGet (packages restored from packages.config)
+*.nupkg
+*.snupkg
+
+# OS
+Thumbs.db
+desktop.ini
+.DS_Store
