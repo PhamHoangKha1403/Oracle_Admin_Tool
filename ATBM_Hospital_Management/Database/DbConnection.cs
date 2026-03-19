@@ -80,6 +80,27 @@ namespace ATBM_Hospital_Management.Database
         }
 
         /// <summary>
+        /// Mở kết nối Oracle với thông tin host/port/serviceName tùy chỉnh.
+        /// </summary>
+        public void OpenConnection(string username, string password, string host, string port, string serviceName)
+        {
+            try
+            {
+                if (_connection != null && _connection.State == ConnectionState.Open)
+                    _connection.Close();
+
+                string connStr = $"Data Source=(DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(HOST={host})(PORT={port}))(CONNECT_DATA=(SERVICE_NAME={serviceName})));User Id={username};Password={password};";
+                _connection = new OracleConnection(connStr);
+                _connection.Open();
+                _currentUser = username;
+            }
+            catch (OracleException ex)
+            {
+                throw new Exception("Lỗi kết nối Oracle: " + ex.Message, ex);
+            }
+        }
+
+        /// <summary>
         /// Lấy connection hiện tại (đã mở).
         /// </summary>
         public OracleConnection GetConnection()
