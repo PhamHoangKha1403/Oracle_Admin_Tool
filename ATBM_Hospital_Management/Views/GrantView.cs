@@ -171,7 +171,11 @@ namespace ATBM_Hospital_Management.Views
 
         private void btnGrant_Click(object sender, EventArgs e)
         {
-            if (cmbPrincipal.SelectedItem == null) { MessageBox.Show("Please select a principal."); return; }
+            if (cmbPrincipal.SelectedItem == null)
+            {
+                MessageBox.Show("Please select a principal.");
+                return;
+            }
             string grantee = cmbPrincipal.SelectedItem.ToString();
             bool withOption = chkGrantOption.Checked;
             try
@@ -179,22 +183,59 @@ namespace ATBM_Hospital_Management.Views
                 switch (_currentMode)
                 {
                     case "SYSTEM PRIVILEGE":
-                        if (_cmbSysPriv?.SelectedItem == null) { MessageBox.Show("Please select a system privilege."); return; }
+                        if (_cmbSysPriv?.SelectedItem == null)
+                        {
+                            MessageBox.Show("Please select a system privilege.");
+                            return;
+                        }
                         _dbaService.GrantPrivilege(grantee, _cmbSysPriv.SelectedItem.ToString(), null, withOption); break;
+
                     case "OBJECT PRIVILEGE":
-                        string owner = _cmbOwner?.SelectedItem?.ToString(); string obj = _cmbObjectName?.SelectedItem?.ToString(); string priv = _cmbPrivType?.SelectedItem?.ToString();
-                        if (string.IsNullOrEmpty(owner) || string.IsNullOrEmpty(obj) || string.IsNullOrEmpty(priv)) { MessageBox.Show("Please select owner, object, and privilege."); return; }
+                        string owner = _cmbOwner?.SelectedItem?.ToString();
+                        string obj = _cmbObjectName?.SelectedItem?.ToString();
+                        string priv = _cmbPrivType?.SelectedItem?.ToString()?.Trim().ToUpper();
+                        if (string.IsNullOrEmpty(owner) || string.IsNullOrEmpty(obj) || string.IsNullOrEmpty(priv))
+                        {
+                            MessageBox.Show("Please select owner, object, and privilege.");
+                            return;
+                        }
                         string onObject = owner + "." + obj;
                         List<string> cols = null;
-                        if (_lstColumns != null && _lstColumns.Enabled && _lstColumns.CheckedItems.Count > 0) { cols = new List<string>(); foreach (var item in _lstColumns.CheckedItems) cols.Add(item.ToString()); }
-                        _dbaService.GrantPrivilege(grantee, priv, onObject, withOption, cols); break;
+                        if (_lstColumns != null && _lstColumns.CheckedItems.Count > 0)
+                        {
+                            cols = new List<string>();
+                            foreach (var item in _lstColumns.CheckedItems)
+                                cols.Add(item.ToString());
+                        }
+
+                        // SELECT bắt buộc có column (theo đề)
+                        if (priv == "SELECT" && (cols == null || cols.Count == 0))
+                        {
+                            MessageBox.Show("Please select at least one column for SELECT.");
+                            return;
+                        }
+                        if (priv == "INSERT")
+                        {
+                            cols = null;
+                        }
+                        _dbaService.GrantPrivilege(grantee, priv, onObject, withOption, cols
+                        ); break;
+
                     case "ROLE":
-                        if (_cmbRoleToGrant?.SelectedItem == null) { MessageBox.Show("Please select a role."); return; }
+                        if (_cmbRoleToGrant?.SelectedItem == null)
+                        {
+                            MessageBox.Show("Please select a role.");
+                            return;
+                        }
                         _dbaService.GrantPrivilege(grantee, _cmbRoleToGrant.SelectedItem.ToString(), null, withOption); break;
                 }
+
                 MessageBox.Show("Privilege granted successfully.");
             }
-            catch (Exception ex) { MessageBox.Show("Error granting privilege: " + ex.Message); }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error granting privilege: " + ex.Message);
+            }
         }
 
         private static Label MakeLabel(string text)
