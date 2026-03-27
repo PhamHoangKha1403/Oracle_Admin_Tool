@@ -83,7 +83,7 @@ namespace ATBM_Hospital_Management.Database
             _db.ExecuteNonQuery(sql);
         }
 
-        public void RevokePrivilege(string privilege, string tableName, string grantee, string type, string columns)
+        public void RevokePrivilege(string privilege, string tableName, string grantee, string type)
         {
             // Lấy kết nối đang mở từ Singleton
             OracleConnection conn = _db.GetConnection();
@@ -102,7 +102,6 @@ namespace ATBM_Hospital_Management.Database
                 cmd.Parameters.Add("p_table_name", OracleDbType.Varchar2).Value = (object)tableName ?? DBNull.Value;
                 cmd.Parameters.Add("p_grantee", OracleDbType.Varchar2).Value = grantee;
                 cmd.Parameters.Add("p_type", OracleDbType.Varchar2).Value = type;
-                cmd.Parameters.Add("p_columns", OracleDbType.Varchar2).Value = (object)columns ?? DBNull.Value;
 
                 try
                 {

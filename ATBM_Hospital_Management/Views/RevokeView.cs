@@ -185,12 +185,11 @@ namespace ATBM_Hospital_Management.Views
                             MessageBox.Show("Vui lòng chọn quyền hệ thống cần thu hồi.");
                             return;
                         }
-
                         string sysPriv = _cmbSysPriv.SelectedItem.ToString();
 
                         // Gọi Service: (Privilege, ObjectName, Grantee, Type, Columns)
-                        // Quyền hệ thống thì ObjectName và Columns là null
-                        _dbaService.RevokePrivilege(sysPriv, null, grantee, procedureType, null);
+         
+                        _dbaService.RevokePrivilege(sysPriv, null, grantee, procedureType);
                         break;
 
                     case "OBJECT PRIVILEGE":
@@ -208,9 +207,8 @@ namespace ATBM_Hospital_Management.Views
                         // Gộp Owner và TableName thành "OWNER.TABLE_NAME"
                         string fullObjectName = $"{owner}.{obj}".ToUpper();
 
-                        // Lưu ý: Oracle không hỗ trợ REVOKE trên từng cột (Column-level)
-                        // Nên ta truyền null cho tham số columns
-                        _dbaService.RevokePrivilege(priv, fullObjectName, grantee, procedureType, null);
+                        
+                        _dbaService.RevokePrivilege(priv, fullObjectName, grantee, procedureType);
                         break;
                 }
 
