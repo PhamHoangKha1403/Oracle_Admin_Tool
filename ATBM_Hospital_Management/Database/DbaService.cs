@@ -1,7 +1,9 @@
-using System;
-using System.Data;
-using System.Collections.Generic;
 using Oracle.ManagedDataAccess.Client;
+using System;
+using System.Collections.Generic;
+using System.Data;
+using System.Data.Common;
+using System.Linq;
 
 namespace ATBM_Hospital_Management.Database
 {
@@ -81,21 +83,37 @@ namespace ATBM_Hospital_Management.Database
             _db.ExecuteNonQuery(sql);
         }
 
-        public void RevokePrivilege(string grantee, string privilege, string onObject = null, IEnumerable<string> columns = null)
+        public void RevokePrivilege(string privilege, string tableName, string grantee, string type, string columns)
         {
-            string sql = $"REVOKE {privilege}";
-            var colList = columns != null ? new List<string>(columns) : null;
-            bool hasColumns = colList != null && colList.Count > 0 && !string.IsNullOrEmpty(onObject);
-            if (hasColumns)
+            // Lấy kết nối đang mở từ Singleton
+            OracleConnection conn = _db.GetConnection();
+
+            if (conn == null || conn.State != ConnectionState.Open)
             {
-                sql += $" ({string.Join(",", colList)}) ON {onObject}";
+                throw new Exception("Kết nối cơ sở dữ liệu đã đóng hoặc chưa được khởi tạo.");
             }
-            else if (!string.IsNullOrEmpty(onObject))
+
+            using (OracleCommand cmd = new OracleCommand("sp_RevokePrivilege", conn))
             {
-                sql += $" ON {onObject}";
+                cmd.CommandType = CommandType.StoredProcedure;
+
+                // Thêm các tham số đúng với Procedure Oracle
+                cmd.Parameters.Add("p_privilege", OracleDbType.Varchar2).Value = privilege;
+                cmd.Parameters.Add("p_table_name", OracleDbType.Varchar2).Value = (object)tableName ?? DBNull.Value;
+                cmd.Parameters.Add("p_grantee", OracleDbType.Varchar2).Value = grantee;
+                cmd.Parameters.Add("p_type", OracleDbType.Varchar2).Value = type;
+                cmd.Parameters.Add("p_columns", OracleDbType.Varchar2).Value = (object)columns ?? DBNull.Value;
+
+                try
+                {
+                    cmd.ExecuteNonQuery();
+                }
+                catch (OracleException ex)
+                {
+                    // Bắt lỗi từ RAISE_APPLICATION_ERROR trong Oracle
+                    throw new Exception(ex.Message);
+                }
             }
-            sql += $" FROM {grantee}";
-            _db.ExecuteNonQuery(sql);
         }
 
         // --- Requirement 5: View Privileges ---
