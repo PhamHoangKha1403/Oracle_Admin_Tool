@@ -100,35 +100,63 @@ namespace ATBM_Hospital_Management.Database
 
         // --- Requirement 5: View Privileges ---
 
-        public DataTable GetUserSystemPrivs(string username)
+        public DataTable GetPrivileges(string principalName)
         {
-            string sql = "SELECT PRIVILEGE, ADMIN_OPTION FROM DBA_SYS_PRIVS WHERE GRANTEE = :username";
-            OracleParameter[] p = { new OracleParameter("username", username.ToUpper()) };
-            return _db.ExecuteQuery(sql, p);
+            DataTable dt = new DataTable();
+            
+            // Giả sử class _db của bạn quản lý ConnectionString
+            using (OracleConnection conn = new OracleConnection(_db.ConnectionString)) 
+            {
+                using (OracleCommand cmd = new OracleCommand("VIEW_ALL_PRIVILEGES_ALL", conn))
+                {
+                    cmd.CommandType = CommandType.StoredProcedure;
+
+                    // Xử lý logic: Nếu chuỗi rỗng hoặc là chữ "ALL" (tùy giao diện của bạn) thì truyền NULL
+                    object paramValue;
+                    if (string.IsNullOrWhiteSpace(principalName) || principalName.ToUpper() == "ALL")
+                    {
+                        paramValue = DBNull.Value;
+                    }
+                    else
+                    {
+                        paramValue = principalName.ToUpper();
+                    }
+
+                    // 1. Thêm tham số IN (p_grantee)
+                    cmd.Parameters.Add(new OracleParameter("p_grantee", OracleDbType.Varchar2)).Value = paramValue;
+
+                    // 2. Thêm tham số OUT (c_all)
+                    OracleParameter outParam = new OracleParameter("c_all", OracleDbType.RefCursor);
+                    outParam.Direction = ParameterDirection.Output;
+                    cmd.Parameters.Add(outParam);
+
+                    using (OracleDataAdapter da = new OracleDataAdapter(cmd))
+                    {
+                        da.Fill(dt);
+                    }
+                }
+            }
+            return dt;
         }
 
-        public DataTable GetUserTabPrivs(string username)
+        private void btnViewPrivileges_Click(object sender, EventArgs e)
         {
-            string sql = "SELECT OWNER, TABLE_NAME, PRIVILEGE, GRANTABLE FROM DBA_TAB_PRIVS WHERE GRANTEE = :username";
-            OracleParameter[] p = { new OracleParameter("username", username.ToUpper()) };
-            return _db.ExecuteQuery(sql, p);
-        }
-
-        public DataTable GetUserRolePrivs(string username)
-        {
-            string sql = "SELECT GRANTED_ROLE, ADMIN_OPTION, DEFAULT_ROLE FROM DBA_ROLE_PRIVS WHERE GRANTEE = :username";
-            OracleParameter[] p = { new OracleParameter("username", username.ToUpper()) };
-            return _db.ExecuteQuery(sql, p);
-        }
-
-        /// <summary>
-        /// Lấy danh sách bảng/view mà user có thể cấp quyền (SELECT/UPDATE)
-        /// </summary>
-        public DataTable GetObjectsForGrant()
-        {
-            string sql = "SELECT OBJECT_NAME, OBJECT_TYPE FROM ALL_OBJECTS WHERE OBJECT_TYPE IN ('TABLE', 'VIEW') AND OWNER = :currentUser";
-            OracleParameter[] p = { new OracleParameter("currentUser", _db.GetCurrentUser().ToUpper()) };
-            return _db.ExecuteQuery(sql, p);
+            // Lấy tên Principal từ Combobox
+            string selectedPrincipal = cboPrincipal.Text; 
+            
+            // Lấy dữ liệu và đổ vào DataGridView
+            DataTable dtPrivileges = GetPrivileges(selectedPrincipal);
+            dataGridView1.DataSource = dtPrivileges;
+            
+            // Kiểm tra xem có dữ liệu không để báo lỗi (như thông báo "No privileges found" ở dưới cùng màn hình của bạn)
+            if (dtPrivileges.Rows.Count == 0)
+            {
+                lblStatus.Text = $"No privileges found for: {selectedPrincipal}";
+            }
+            else
+            {
+                lblStatus.Text = $"Showing privileges for: {(string.IsNullOrEmpty(selectedPrincipal) ? "ALL" : selectedPrincipal)}";
+            }
         }
 
         // --- Requirement 9: Extended DBA methods ---
