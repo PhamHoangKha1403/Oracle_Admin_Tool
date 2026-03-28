@@ -22,6 +22,7 @@ namespace ATBM_Hospital_Management.Views
             this.pnlButtons = new System.Windows.Forms.FlowLayoutPanel();
             this.btnCreate = new System.Windows.Forms.Button();
             this.btnRefresh = new System.Windows.Forms.Button();
+            this.btnChangePassword = new System.Windows.Forms.Button();
             this.btnDrop = new System.Windows.Forms.Button();
             this.dgvRoles = new System.Windows.Forms.DataGridView();
             this.pnlHeader.SuspendLayout();
@@ -102,6 +103,7 @@ namespace ATBM_Hospital_Management.Views
             this.pnlButtons.TabIndex = 1;
             this.pnlButtons.Controls.Add(this.btnCreate);
             this.pnlButtons.Controls.Add(this.btnRefresh);
+            this.pnlButtons.Controls.Add(this.btnChangePassword);
             this.pnlButtons.Controls.Add(this.btnDrop);
 
             System.Drawing.Font btnFont = new System.Drawing.Font("Segoe UI", 9F);
@@ -133,6 +135,20 @@ namespace ATBM_Hospital_Management.Views
             this.btnRefresh.UseVisualStyleBackColor = false;
             this.btnRefresh.Click += new System.EventHandler(this.btnRefresh_Click);
 
+            this.btnChangePassword.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnChangePassword.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(180, 180, 180);
+            this.btnChangePassword.FlatAppearance.BorderSize = 1;
+            this.btnChangePassword.BackColor = System.Drawing.Color.White;
+            this.btnChangePassword.ForeColor = System.Drawing.Color.FromArgb(40, 40, 40);
+            this.btnChangePassword.Font = btnFont;
+            this.btnChangePassword.Margin = new System.Windows.Forms.Padding(0, 0, 6, 0);
+            this.btnChangePassword.Name = "btnChangePassword";
+            this.btnChangePassword.Size = new System.Drawing.Size(150, 28);
+            this.btnChangePassword.TabIndex = 2;
+            this.btnChangePassword.Text = "CHANGE PASSWORD";
+            this.btnChangePassword.UseVisualStyleBackColor = false;
+            this.btnChangePassword.Click += new System.EventHandler(this.btnChangePassword_Click);
+
             this.btnDrop.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnDrop.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(180, 180, 180);
             this.btnDrop.FlatAppearance.BorderSize = 1;
@@ -142,7 +158,7 @@ namespace ATBM_Hospital_Management.Views
             this.btnDrop.Margin = new System.Windows.Forms.Padding(0, 0, 0, 0);
             this.btnDrop.Name = "btnDrop";
             this.btnDrop.Size = new System.Drawing.Size(100, 28);
-            this.btnDrop.TabIndex = 2;
+            this.btnDrop.TabIndex = 3;
             this.btnDrop.Text = "DROP ROLE";
             this.btnDrop.UseVisualStyleBackColor = false;
             this.btnDrop.Click += new System.EventHandler(this.btnDrop_Click);
@@ -215,6 +231,7 @@ namespace ATBM_Hospital_Management.Views
         private System.Windows.Forms.FlowLayoutPanel pnlButtons;
         private System.Windows.Forms.Button btnCreate;
         private System.Windows.Forms.Button btnRefresh;
+        private System.Windows.Forms.Button btnChangePassword;
         private System.Windows.Forms.Button btnDrop;
         private System.Windows.Forms.DataGridView dgvRoles;
     }

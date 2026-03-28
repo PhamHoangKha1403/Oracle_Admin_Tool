@@ -78,10 +78,21 @@ namespace ATBM_Hospital_Management.Views
 
         private void btnCreate_Click(object sender, EventArgs e)
         {
+            DataTable dtRoles = null;
+            try
+            {
+                dtRoles = _dbaService.GetRolesDetailed();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Could not load roles for dropdown: " + ex.Message, "Warning",
+                    MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            }
+
             using (var dlg = new Form())
             {
                 dlg.Text = "Create New User";
-                dlg.Size = new System.Drawing.Size(360, 280);
+                dlg.Size = new System.Drawing.Size(360, 320);
                 dlg.StartPosition = FormStartPosition.CenterParent;
                 dlg.FormBorderStyle = FormBorderStyle.FixedDialog;
                 dlg.MaximizeBox = false;
@@ -91,7 +102,7 @@ namespace ATBM_Hospital_Management.Views
                 {
                     Dock = DockStyle.Fill,
                     ColumnCount = 2,
-                    RowCount = 5,
+                    RowCount = 6, 
                     Padding = new Padding(10)
                 };
                 layout.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 140));
@@ -99,20 +110,37 @@ namespace ATBM_Hospital_Management.Views
 
                 var txtUser = new TextBox { Dock = DockStyle.Fill };
                 var txtPass = new TextBox { Dock = DockStyle.Fill, UseSystemPasswordChar = true };
+                var cbRole = new ComboBox { Dock = DockStyle.Fill, DropDownStyle = ComboBoxStyle.DropDownList };
                 var txtDefTs = new TextBox { Dock = DockStyle.Fill, Text = "USERS" };
                 var txtTmpTs = new TextBox { Dock = DockStyle.Fill, Text = "TEMP" };
 
+                cbRole.Items.Add("");
+                if (dtRoles != null)
+                {
+                    foreach (DataRow row in dtRoles.Rows)
+                    {
+                        cbRole.Items.Add(row["ROLE"].ToString());
+                    }
+                }
+                cbRole.SelectedIndex = 0; 
+
                 layout.Controls.Add(new Label { Text = "Username:", Anchor = AnchorStyles.Left | AnchorStyles.Right }, 0, 0);
                 layout.Controls.Add(txtUser, 1, 0);
+
                 layout.Controls.Add(new Label { Text = "Password:", Anchor = AnchorStyles.Left | AnchorStyles.Right }, 0, 1);
                 layout.Controls.Add(txtPass, 1, 1);
-                layout.Controls.Add(new Label { Text = "Default Tablespace:", Anchor = AnchorStyles.Left | AnchorStyles.Right }, 0, 2);
-                layout.Controls.Add(txtDefTs, 1, 2);
-                layout.Controls.Add(new Label { Text = "Temp Tablespace:", Anchor = AnchorStyles.Left | AnchorStyles.Right }, 0, 3);
-                layout.Controls.Add(txtTmpTs, 1, 3);
+
+                layout.Controls.Add(new Label { Text = "Assign Role:", Anchor = AnchorStyles.Left | AnchorStyles.Right }, 0, 2);
+                layout.Controls.Add(cbRole, 1, 2);
+
+                layout.Controls.Add(new Label { Text = "Default Tablespace:", Anchor = AnchorStyles.Left | AnchorStyles.Right }, 0, 3);
+                layout.Controls.Add(txtDefTs, 1, 3);
+
+                layout.Controls.Add(new Label { Text = "Temp Tablespace:", Anchor = AnchorStyles.Left | AnchorStyles.Right }, 0, 4);
+                layout.Controls.Add(txtTmpTs, 1, 4);
 
                 var btnOk = new Button { Text = "Create", DialogResult = DialogResult.OK, Dock = DockStyle.Fill };
-                layout.Controls.Add(btnOk, 1, 4);
+                layout.Controls.Add(btnOk, 1, 5);
 
                 dlg.Controls.Add(layout);
                 dlg.AcceptButton = btnOk;
@@ -121,6 +149,7 @@ namespace ATBM_Hospital_Management.Views
                 {
                     string username = txtUser.Text.Trim();
                     string password = txtPass.Text.Trim();
+                    string selectedRole = cbRole.SelectedItem?.ToString();
                     string defTs = txtDefTs.Text.Trim();
                     string tmpTs = txtTmpTs.Text.Trim();
 
@@ -133,7 +162,7 @@ namespace ATBM_Hospital_Management.Views
 
                     try
                     {
-                        _dbaService.CreateUser(username, password);
+                        _dbaService.CreateUser(username, password, selectedRole);
                         _dbaService.SetUserTablespaces(username, defTs, tmpTs);
                         LoadUsers();
                     }
