@@ -189,7 +189,6 @@ namespace ATBM_Hospital_Management.Views
                 {
                     DataTable dtPrivs = _dbaService.GetPrivilegesByObject(grantee, owner, obj);
 
-                    // THÊM DÒNG NÀY ĐỂ DEBUG - Nếu chạy thấy số > 0 mà ComboBox vẫn trống thì báo tôi
                     // Console.WriteLine($"Tìm thấy {dtPrivs.Rows.Count} quyền cho {obj}");
 
                     if (dtPrivs != null && dtPrivs.Rows.Count > 0)
