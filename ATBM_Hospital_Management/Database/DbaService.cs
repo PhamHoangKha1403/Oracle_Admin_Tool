@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.Data.Common;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace ATBM_Hospital_Management.Database
 {
@@ -83,9 +84,8 @@ namespace ATBM_Hospital_Management.Database
             _db.ExecuteNonQuery(sql);
         }
 
-        public void RevokePrivilege(string privilege, string tableName, string grantee, string type)
+        public async Task RevokePrivilegeAsync(string privilege, string tableName, string grantee, string type)
         {
-            // Lấy kết nối đang mở từ Singleton
             OracleConnection conn = _db.GetConnection();
 
             if (conn == null || conn.State != ConnectionState.Open)
@@ -97,7 +97,6 @@ namespace ATBM_Hospital_Management.Database
             {
                 cmd.CommandType = CommandType.StoredProcedure;
 
-                // Thêm các tham số đúng với Procedure Oracle
                 cmd.Parameters.Add("p_privilege", OracleDbType.Varchar2).Value = privilege;
                 cmd.Parameters.Add("p_table_name", OracleDbType.Varchar2).Value = (object)tableName ?? DBNull.Value;
                 cmd.Parameters.Add("p_grantee", OracleDbType.Varchar2).Value = grantee;
@@ -105,11 +104,11 @@ namespace ATBM_Hospital_Management.Database
 
                 try
                 {
-                    cmd.ExecuteNonQuery();
+
+                    await cmd.ExecuteNonQueryAsync();
                 }
                 catch (OracleException ex)
                 {
-                    // Bắt lỗi từ RAISE_APPLICATION_ERROR trong Oracle
                     throw new Exception(ex.Message);
                 }
             }

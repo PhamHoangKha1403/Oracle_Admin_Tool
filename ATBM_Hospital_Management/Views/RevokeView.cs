@@ -118,7 +118,7 @@ namespace ATBM_Hospital_Management.Views
 
             subTlp.Controls.Add(MakeLabel("Privilege:"), 0, 2);
             _cmbPrivType = new DropDownComboBox { Anchor = AnchorStyles.Left | AnchorStyles.Right, DropDownStyle = ComboBoxStyle.DropDownList, Font = new System.Drawing.Font("Segoe UI", 9.5F), MaxDropDownItems = 10 };
-            _cmbPrivType.Items.AddRange(new object[] { "SELECT", "INSERT", "UPDATE", "DELETE"});
+            _cmbPrivType.Items.AddRange(new object[] { "SELECT", "INSERT", "UPDATE", "DELETE", "EXECUTE"});
             _cmbPrivType.SelectedIndex = 0;
             subTlp.Controls.Add(_cmbPrivType, 1, 2);
 
@@ -159,9 +159,9 @@ namespace ATBM_Hospital_Management.Views
             tlpMain.SetColumnSpan(subTlp, 2);
         }
 
-        private void btnRevoke_Click(object sender, EventArgs e)
+        private async void btnRevoke_Click(object sender, EventArgs e)
         {
-            // 1. Kiểm tra xem đã chọn User/Role chưa
+            // 1. Kiểm tra đầu vào
             if (cmbPrincipal.SelectedItem == null)
             {
                 MessageBox.Show("Vui lòng chọn User hoặc Role cần thu hồi quyền.", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
@@ -169,57 +169,54 @@ namespace ATBM_Hospital_Management.Views
             }
 
             string grantee = cmbPrincipal.SelectedItem.ToString();
+            btnRevoke.Enabled = false; // Vô hiệu hóa nút để tránh bấm nhiều lần khi đang xử lý
 
             try
             {
-                // 2. Chuẩn hóa Type để gửi vào Procedure (Chỉ lấy "SYSTEM" hoặc "OBJECT")
-                // Vì _currentMode có thể là "SYSTEM PRIVILEGE" hoặc "OBJECT PRIVILEGE"
+                // 2. Xác định loại quyền (SYSTEM hoặc OBJECT)
                 string procedureType = _currentMode.Contains("SYSTEM") ? "SYSTEM" : "OBJECT";
 
-                switch (_currentMode)
+                if (_currentMode == "SYSTEM PRIVILEGE")
                 {
-                    case "SYSTEM PRIVILEGE":
-                        // Kiểm tra ComboBox quyền hệ thống (được tạo động trong ShowSystemPrivPanel)
-                        if (_cmbSysPriv?.SelectedItem == null)
-                        {
-                            MessageBox.Show("Vui lòng chọn quyền hệ thống cần thu hồi.");
-                            return;
-                        }
-                        string sysPriv = _cmbSysPriv.SelectedItem.ToString();
+                    if (_cmbSysPriv?.SelectedItem == null)
+                    {
+                        MessageBox.Show("Vui lòng chọn quyền hệ thống cần thu hồi.");
+                        return;
+                    }
+                    string sysPriv = _cmbSysPriv.SelectedItem.ToString();
 
-                        // Gọi Service: (Privilege, ObjectName, Grantee, Type, Columns)
-         
-                        _dbaService.RevokePrivilege(sysPriv, null, grantee, procedureType);
-                        break;
+                    // Gọi hàm Async từ Service
+                    await _dbaService.RevokePrivilegeAsync(sysPriv, null, grantee, procedureType);
+                }
+                else // OBJECT PRIVILEGE
+                {
+                    string owner = _cmbOwner?.SelectedItem?.ToString();
+                    string obj = _cmbObjectName?.SelectedItem?.ToString();
+                    string priv = _cmbPrivType?.SelectedItem?.ToString();
 
-                    case "OBJECT PRIVILEGE":
-                        // Lấy thông tin từ các ComboBox động
-                        string owner = _cmbOwner?.SelectedItem?.ToString();
-                        string obj = _cmbObjectName?.SelectedItem?.ToString();
-                        string priv = _cmbPrivType?.SelectedItem?.ToString();
+                    if (string.IsNullOrEmpty(owner) || string.IsNullOrEmpty(obj) || string.IsNullOrEmpty(priv))
+                    {
+                        MessageBox.Show("Vui lòng chọn đầy đủ Owner, Object và Quyền.");
+                        return;
+                    }
 
-                        if (string.IsNullOrEmpty(owner) || string.IsNullOrEmpty(obj) || string.IsNullOrEmpty(priv))
-                        {
-                            MessageBox.Show("Vui lòng chọn đầy đủ Owner, Object và Quyền.");
-                            return;
-                        }
+                    string fullObjectName = $"{owner}.{obj}".ToUpper();
+                    
+                    Console.WriteLine(priv);
 
-                        // Gộp Owner và TableName thành "OWNER.TABLE_NAME"
-                        string fullObjectName = $"{owner}.{obj}".ToUpper();
-
-                        
-                        _dbaService.RevokePrivilege(priv, fullObjectName, grantee, procedureType);
-                        break;
+                    // Gọi hàm Async từ Service
+                    await _dbaService.RevokePrivilegeAsync(priv, fullObjectName, grantee, procedureType);
                 }
 
                 MessageBox.Show($"Đã thu hồi quyền thành công từ {grantee}!", "Thành công", MessageBoxButtons.OK, MessageBoxIcon.Information);
-
-                // (Tùy chọn) Reset lại danh sách hoặc UI nếu cần
             }
             catch (Exception ex)
             {
-                // Hiển thị lỗi chi tiết từ Oracle (ví dụ lỗi ORA-XXXXX)
                 MessageBox.Show("Lỗi khi thu hồi quyền: " + ex.Message, "Lỗi Database", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+            finally
+            {
+                btnRevoke.Enabled = true; // Mở lại nút sau khi xử lý xong
             }
         }
 
