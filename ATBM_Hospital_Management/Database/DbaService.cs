@@ -18,44 +18,85 @@ namespace ATBM_Hospital_Management.Database
 
         public DataTable GetUsers()
         {
-            string sql = "SELECT USERNAME, ACCOUNT_STATUS, CREATED FROM ALL_USERS ORDER BY USERNAME";
-            return _db.ExecuteQuery(sql);
+            string spName = "sp_ViewUsers";
+            OracleParameter[] p = {
+                new OracleParameter("p_cursor", OracleDbType.RefCursor, ParameterDirection.Output)
+            };
+            return _db.ExecuteQuery(spName, p, CommandType.StoredProcedure);
         }
 
         public DataTable GetRoles()
         {
-            string sql = "SELECT ROLE, ROLE_ID FROM DBA_ROLES ORDER BY ROLE";
-            return _db.ExecuteQuery(sql);
+            string spName = "sp_ViewRoles";
+            OracleParameter[] p = {
+                new OracleParameter("p_cursor", OracleDbType.RefCursor, ParameterDirection.Output)
+            };
+            return _db.ExecuteQuery(spName, p, CommandType.StoredProcedure);
         }
 
-        public void CreateUser(string username, string password)
+        public void CreateUser(string username, string password, string roleName = null)
         {
-            string sql = $"CREATE USER {username} IDENTIFIED BY {password}";
-            _db.ExecuteNonQuery(sql);
+            string spName = "sp_CreateUser";
+
+            object dbRole = string.IsNullOrWhiteSpace(roleName) ? (object)DBNull.Value : roleName;
+
+            OracleParameter[] p = {
+                new OracleParameter("p_username", username),
+                new OracleParameter("p_password", password),
+                new OracleParameter("p_role", dbRole)
+            };
+
+                _db.ExecuteNonQuery(spName, p, CommandType.StoredProcedure);
         }
 
         public void DropUser(string username)
         {
-            string sql = $"DROP USER {username} CASCADE";
-            _db.ExecuteNonQuery(sql);
+            string spName = "sp_DropUser";
+            OracleParameter[] p = {
+                new OracleParameter("p_username", username)
+            };
+            _db.ExecuteNonQuery(spName, p, CommandType.StoredProcedure);
         }
 
         public void ChangeUserPassword(string username, string newPassword)
         {
-            string sql = $"ALTER USER {username} IDENTIFIED BY {newPassword}";
-            _db.ExecuteNonQuery(sql);
+            string spName = "sp_ChangeUserPassword";
+            OracleParameter[] p = {
+                new OracleParameter("p_username", username),
+                new OracleParameter("p_new_password", newPassword)
+            };
+            _db.ExecuteNonQuery(spName, p, CommandType.StoredProcedure);
         }
 
         public void CreateRole(string roleName)
         {
-            string sql = $"CREATE ROLE {roleName}";
-            _db.ExecuteNonQuery(sql);
+            string spName = "sp_CreateRole";
+            OracleParameter[] p = {
+                new OracleParameter("p_role_name", roleName)
+            };
+            _db.ExecuteNonQuery(spName, p, CommandType.StoredProcedure);
         }
 
         public void DropRole(string roleName)
         {
-            string sql = $"DROP ROLE {roleName}";
-            _db.ExecuteNonQuery(sql);
+            string spName = "sp_DropRole";
+            OracleParameter[] p = {
+                new OracleParameter("p_role_name", roleName)
+            };
+            _db.ExecuteNonQuery(spName, p, CommandType.StoredProcedure);
+        }
+
+        public void ChangeRolePassword(string roleName, string newPassword)
+        {
+            string spName = "sp_ChangeRolePassword";
+            object dbPassword = string.IsNullOrWhiteSpace(newPassword) ? (object)DBNull.Value : newPassword;
+
+            OracleParameter[] p = {
+                new OracleParameter("p_role_name", roleName),
+                new OracleParameter("p_new_password", dbPassword)
+            };
+
+            _db.ExecuteNonQuery(spName, p, CommandType.StoredProcedure);
         }
 
         // --- Requirement 3 & 4: Privileges ---

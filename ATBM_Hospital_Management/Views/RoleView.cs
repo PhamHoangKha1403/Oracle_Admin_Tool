@@ -128,6 +128,35 @@ namespace ATBM_Hospital_Management.Views
             }
         }
 
+        private void btnChangePassword_Click(object sender, EventArgs e)
+        {
+            if (dgvRoles.CurrentRow == null)
+            {
+                MessageBox.Show("Please select a role first.", "Notice",
+                    MessageBoxButtons.OK, MessageBoxIcon.Information);
+                return;
+            }
+
+            string roleName = dgvRoles.CurrentRow.Cells["ROLE"].Value?.ToString();
+            if (string.IsNullOrEmpty(roleName)) return;
+
+            string promptMsg = $"Enter new password for role '{roleName}'\n(Leave empty to remove password / NOT IDENTIFIED):";
+            string newPassword = ShowInputDialog("Change Password", promptMsg);
+
+            if (newPassword == null) return;
+
+            try
+            {
+                _dbaService.ChangeRolePassword(roleName, newPassword);
+                LoadRoles();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error changing role password: " + ex.Message, "Error",
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
         private string ShowInputDialog(string title, string prompt)
         {
             using (var dlg = new Form())

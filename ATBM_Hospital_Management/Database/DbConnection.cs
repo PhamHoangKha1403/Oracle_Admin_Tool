@@ -119,11 +119,14 @@ namespace ATBM_Hospital_Management.Database
         /// <summary>
         /// Chạy câu SELECT, trả về DataTable.
         /// </summary>
-        public DataTable ExecuteQuery(string sql, OracleParameter[] parameters = null)
+        public DataTable ExecuteQuery(string sql, OracleParameter[] parameters = null, CommandType commandType = CommandType.Text)
         {
             DataTable dt = new DataTable();
             using (OracleCommand cmd = new OracleCommand(sql, _connection))
             {
+                // Thêm dòng này để C# biết đang gọi SQL thường hay Stored Procedure
+                cmd.CommandType = commandType;
+
                 if (parameters != null)
                     cmd.Parameters.AddRange(parameters);
 
@@ -138,12 +141,16 @@ namespace ATBM_Hospital_Management.Database
         /// <summary>
         /// Chạy INSERT / UPDATE / DELETE / DDL, trả về số dòng ảnh hưởng.
         /// </summary>
-        public int ExecuteNonQuery(string sql, OracleParameter[] parameters = null)
+        public int ExecuteNonQuery(string sql, OracleParameter[] parameters = null, CommandType commandType = CommandType.Text)
         {
             using (OracleCommand cmd = new OracleCommand(sql, _connection))
             {
+                // Thêm dòng này để Oracle biết đang chạy Raw SQL hay Stored Procedure
+                cmd.CommandType = commandType;
+
                 if (parameters != null)
                     cmd.Parameters.AddRange(parameters);
+
                 return cmd.ExecuteNonQuery();
             }
         }
