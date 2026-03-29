@@ -104,25 +104,34 @@ namespace ATBM_Hospital_Management.Database
 
         // --- Requirement 3 & 4: Privileges ---
 
-        public void GrantPrivilege(string grantee, string privilege, string onObject = null, bool withGrantOption = false, IEnumerable<string> columns = null)
+        public void GrantPrivilege(string grantee, string privilege, string onObject = null, bool withOption = false, List<string> columns = null)
         {
-            string sql = $"GRANT {privilege}";
-            var colList = columns != null ? new List<string>(columns) : null;
-            bool hasColumns = colList != null && colList.Count > 0 && !string.IsNullOrEmpty(onObject);
-            if (hasColumns)
+            // Chuyển List thành chuỗi: "COL1,COL2"
+            string colString = (columns != null && columns.Count > 0) ? string.Join(",", columns) : null;
+
+            // SP nhận p_with_option là NUMBER, C# truyền 1 hoặc 0
+            int p_with_option = withOption ? 1 : 0;
+
+            using (OracleCommand cmd = new OracleCommand("SP_GRANT_PRIVILEGE_UI", (OracleConnection)_db.GetConnection()))
             {
-                sql += $" ({string.Join(",", colList)}) ON {onObject}";
+                cmd.CommandType = CommandType.StoredProcedure;
+
+                cmd.Parameters.Add("p_principal", OracleDbType.Varchar2).Value = grantee;
+                cmd.Parameters.Add("p_privilege", OracleDbType.Varchar2).Value = privilege;
+                cmd.Parameters.Add("p_object_name", OracleDbType.Varchar2).Value = (object)onObject ?? DBNull.Value;
+                cmd.Parameters.Add("p_columns", OracleDbType.Varchar2).Value = (object)colString ?? DBNull.Value;
+                cmd.Parameters.Add("p_with_option", OracleDbType.Int32).Value = p_with_option;
+
+                try
+                {
+                    if (cmd.Connection.State != ConnectionState.Open) cmd.Connection.Open();
+                    cmd.ExecuteNonQuery();
+                }
+                catch (Exception ex)
+                {
+                    throw new Exception("Lỗi thực thi Grant: " + ex.Message);
+                }
             }
-            else if (!string.IsNullOrEmpty(onObject))
-            {
-                sql += $" ON {onObject}";
-            }
-            sql += $" TO {grantee}";
-            if (withGrantOption)
-            {
-                sql += (onObject != null) ? " WITH GRANT OPTION" : " WITH ADMIN OPTION";
-            }
-            _db.ExecuteNonQuery(sql);
         }
 
         public async Task RevokePrivilegeAsync(string privilege, string tableName, string grantee, string type)
@@ -190,15 +199,25 @@ namespace ATBM_Hospital_Management.Database
 
         // --- Requirement 9: Extended DBA methods ---
 
+        // Lấy danh sách USER
         public DataTable GetUsersDetailed()
         {
-            string sql = "SELECT USERNAME, ACCOUNT_STATUS, CREATED, DEFAULT_TABLESPACE, TEMPORARY_TABLESPACE, PROFILE FROM DBA_USERS ORDER BY USERNAME";
+            string sql = @"SELECT USERNAME, ACCOUNT_STATUS, CREATED 
+               FROM DBA_USERS 
+               WHERE ORACLE_MAINTAINED = 'N'
+               ORDER BY USERNAME";
+
             return _db.ExecuteQuery(sql);
         }
 
+        // Lấy danh sách ROLE
         public DataTable GetRolesDetailed()
         {
-            string sql = "SELECT ROLE, PASSWORD_REQUIRED, AUTHENTICATION_TYPE FROM DBA_ROLES ORDER BY ROLE";
+            string sql = @"SELECT ROLE
+                   FROM DBA_ROLES
+                   WHERE ORACLE_MAINTAINED = 'N'
+                   ORDER BY ROLE";
+
             return _db.ExecuteQuery(sql);
         }
 
