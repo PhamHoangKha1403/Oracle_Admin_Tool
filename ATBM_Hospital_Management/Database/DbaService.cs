@@ -1,7 +1,10 @@
-using System;
-using System.Data;
-using System.Collections.Generic;
 using Oracle.ManagedDataAccess.Client;
+using System;
+using System.Collections.Generic;
+using System.Data;
+using System.Data.Common;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace ATBM_Hospital_Management.Database
 {
@@ -122,21 +125,34 @@ namespace ATBM_Hospital_Management.Database
             _db.ExecuteNonQuery(sql);
         }
 
-        public void RevokePrivilege(string grantee, string privilege, string onObject = null, IEnumerable<string> columns = null)
+        public async Task RevokePrivilegeAsync(string privilege, string tableName, string grantee, string type)
         {
-            string sql = $"REVOKE {privilege}";
-            var colList = columns != null ? new List<string>(columns) : null;
-            bool hasColumns = colList != null && colList.Count > 0 && !string.IsNullOrEmpty(onObject);
-            if (hasColumns)
+            OracleConnection conn = _db.GetConnection();
+
+            if (conn == null || conn.State != ConnectionState.Open)
             {
-                sql += $" ({string.Join(",", colList)}) ON {onObject}";
+                throw new Exception("Kết nối cơ sở dữ liệu đã đóng hoặc chưa được khởi tạo.");
             }
-            else if (!string.IsNullOrEmpty(onObject))
+
+            using (OracleCommand cmd = new OracleCommand("sp_RevokePrivilege", conn))
             {
-                sql += $" ON {onObject}";
+                cmd.CommandType = CommandType.StoredProcedure;
+
+                cmd.Parameters.Add("p_privilege", OracleDbType.Varchar2).Value = privilege;
+                cmd.Parameters.Add("p_table_name", OracleDbType.Varchar2).Value = (object)tableName ?? DBNull.Value;
+                cmd.Parameters.Add("p_grantee", OracleDbType.Varchar2).Value = grantee;
+                cmd.Parameters.Add("p_type", OracleDbType.Varchar2).Value = type;
+
+                try
+                {
+
+                    await cmd.ExecuteNonQueryAsync();
+                }
+                catch (OracleException ex)
+                {
+                    throw new Exception(ex.Message);
+                }
             }
-            sql += $" FROM {grantee}";
-            _db.ExecuteNonQuery(sql);
         }
 
         // --- Requirement 5: View Privileges ---
@@ -242,5 +258,74 @@ namespace ATBM_Hospital_Management.Database
             string sql = "SELECT SYS_CONTEXT('USERENV','SESSION_USER') AS SESSION_USER, SYS_CONTEXT('USERENV','DB_NAME') AS DB_NAME, TO_CHAR(SYSDATE,'DD/MM/YYYY HH24:MI:SS') AS SERVER_TIME, BANNER AS VERSION_BANNER FROM V$VERSION WHERE ROWNUM=1";
             return _db.ExecuteQuery(sql);
         }
+        public DataTable GetObjectsByGrantee(string grantee)
+        {
+            grantee = (grantee ?? "").Trim().ToUpper();
+            string sql = @"
+        SELECT DISTINCT OWNER, TABLE_NAME 
+        FROM DBA_TAB_PRIVS 
+        WHERE GRANTEE = :grantee1
+           OR GRANTEE IN (SELECT GRANTED_ROLE FROM DBA_ROLE_PRIVS WHERE GRANTEE = :grantee2)
+        
+        UNION
+        
+        -- Thêm: lấy object có column-level privilege (UPDATE(col))
+        SELECT DISTINCT OWNER, TABLE_NAME 
+        FROM DBA_COL_PRIVS 
+        WHERE GRANTEE = :grantee3
+           OR GRANTEE IN (SELECT GRANTED_ROLE FROM DBA_ROLE_PRIVS WHERE GRANTEE = :grantee4)
+        
+        ORDER BY OWNER, TABLE_NAME";
+
+            OracleParameter[] p = {
+        new OracleParameter("grantee1", grantee),
+        new OracleParameter("grantee2", grantee),
+        new OracleParameter("grantee3", grantee),
+        new OracleParameter("grantee4", grantee)
+    };
+            return _db.ExecuteQuery(sql, p);
+        }
+
+        public DataTable GetPrivilegesByObject(string grantee, string owner, string tableName)
+        {
+            grantee = (grantee ?? "").Trim().ToUpper();
+            owner = (owner ?? "").Trim().ToUpper();
+            tableName = (tableName ?? "").Trim().ToUpper();
+
+            string sql = @"
+        SELECT DISTINCT PRIVILEGE
+        FROM DBA_TAB_PRIVS 
+        WHERE (GRANTEE = :grantee1
+           OR GRANTEE IN (SELECT GRANTED_ROLE FROM DBA_ROLE_PRIVS WHERE GRANTEE = :grantee2))
+          AND OWNER = :owner1
+          AND TABLE_NAME = :tableName1
+        
+        UNION
+        
+        -- Thêm: lấy column-level privilege, gộp lại thành 1 dòng 'UPDATE (col1, col2)'
+        SELECT DISTINCT PRIVILEGE || ' (' || 
+               LISTAGG(COLUMN_NAME, ', ') WITHIN GROUP (ORDER BY COLUMN_NAME) || ')'
+        FROM DBA_COL_PRIVS
+        WHERE (GRANTEE = :grantee3
+           OR GRANTEE IN (SELECT GRANTED_ROLE FROM DBA_ROLE_PRIVS WHERE GRANTEE = :grantee4))
+          AND OWNER = :owner2
+          AND TABLE_NAME = :tableName2
+        GROUP BY PRIVILEGE
+        
+        ORDER BY 1";
+
+            OracleParameter[] p = {
+        new OracleParameter("grantee1",   grantee),
+        new OracleParameter("grantee2",   grantee),
+        new OracleParameter("owner1",     owner),
+        new OracleParameter("tableName1", tableName),
+        new OracleParameter("grantee3",   grantee),
+        new OracleParameter("grantee4",   grantee),
+        new OracleParameter("owner2",     owner),
+        new OracleParameter("tableName2", tableName)
+    };
+            return _db.ExecuteQuery(sql, p);
+        }
     }
 }
+        

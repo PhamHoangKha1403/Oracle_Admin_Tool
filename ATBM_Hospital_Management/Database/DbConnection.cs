@@ -29,7 +29,7 @@ namespace ATBM_Hospital_Management.Database
     {
         // ====== CẤU HÌNH - SỬA CHO ĐÚNG SERVER CỦA NHÓM ======
         private const string DB_HOST = "localhost";
-        private const string DB_PORT = "1521";
+        private const string DB_PORT = "15211";
         private const string DB_SID  = "XEPDB1";    // PDB name của Oracle XE
         // =======================================================
 
