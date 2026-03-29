@@ -70,18 +70,18 @@ namespace ATBM_Hospital_Management.Views
 
             try
             {
-                dgvSystemPrivs.DataSource = _dbaService.GetUserSystemPrivs(principal);
-                dgvRoleGrants.DataSource = _dbaService.GetUserRolePrivs(principal);
-                dgvObjectPrivs.DataSource = _dbaService.GetUserTabPrivs(principal);
-                dgvColumnPrivs.DataSource = _dbaService.GetColPrivs(principal);
+                DataTable dtPrivileges = _dbaService.GetPrivileges(principal);
 
-                bool allEmpty =
-                    dgvSystemPrivs.Rows.Count == 0 &&
-                    dgvRoleGrants.Rows.Count == 0 &&
-                    dgvObjectPrivs.Rows.Count == 0 &&
-                    dgvColumnPrivs.Rows.Count == 0;
+                // The stored procedure returns a unified privilege result set.
+                dgvSystemPrivs.DataSource = dtPrivileges;
+                dgvRoleGrants.DataSource = null;
+                dgvObjectPrivs.DataSource = null;
+                dgvColumnPrivs.DataSource = null;
+                tabPrivileges.SelectedTab = tpSystemPrivs;
 
-                lblStatus.Text = allEmpty ? "No privileges found for: " + principal : "";
+                lblStatus.Text = dtPrivileges.Rows.Count == 0
+                    ? "No privileges found for: " + principal
+                    : "Showing privileges for: " + principal;
             }
             catch (Exception ex)
             {
