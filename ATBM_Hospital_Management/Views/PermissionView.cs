@@ -27,7 +27,7 @@ namespace ATBM_Hospital_Management.Views
                 foreach (DataRow row in dtUsers.Rows) cmbGrantee.Items.Add(row["USERNAME"].ToString());
                 foreach (DataRow row in dtRoles.Rows) cmbGrantee.Items.Add(row["ROLE"].ToString());
 
-                DataTable dtObjects = _dbaService.GetObjectsForGrant();
+                DataTable dtObjects = _dbaService.GetObjects();
                 cmbObject.Items.Clear();
                 cmbObject.Items.Add("(System Privilege)");
                 foreach (DataRow row in dtObjects.Rows) cmbObject.Items.Add(row["OBJECT_NAME"].ToString());

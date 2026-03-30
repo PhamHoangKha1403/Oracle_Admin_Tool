@@ -170,59 +170,36 @@ namespace ATBM_Hospital_Management.Database
         {
             DataTable dt = new DataTable();
             
-            // Giả sử class _db của bạn quản lý ConnectionString
-            using (OracleConnection conn = new OracleConnection(_db.ConnectionString)) 
+            OracleConnection conn = _db.GetConnection();
+            using (OracleCommand cmd = new OracleCommand("VIEW_ALL_PRIVILEGES_ALL", conn))
             {
-                using (OracleCommand cmd = new OracleCommand("VIEW_ALL_PRIVILEGES_ALL", conn))
+                cmd.CommandType = CommandType.StoredProcedure;
+
+                // Xử lý logic: Nếu chuỗi rỗng hoặc là chữ "ALL" (tùy giao diện của bạn) thì truyền NULL
+                object paramValue;
+                if (string.IsNullOrWhiteSpace(principalName) || principalName.ToUpper() == "ALL")
                 {
-                    cmd.CommandType = CommandType.StoredProcedure;
+                    paramValue = DBNull.Value;
+                }
+                else
+                {
+                    paramValue = principalName.ToUpper();
+                }
 
-                    // Xử lý logic: Nếu chuỗi rỗng hoặc là chữ "ALL" (tùy giao diện của bạn) thì truyền NULL
-                    object paramValue;
-                    if (string.IsNullOrWhiteSpace(principalName) || principalName.ToUpper() == "ALL")
-                    {
-                        paramValue = DBNull.Value;
-                    }
-                    else
-                    {
-                        paramValue = principalName.ToUpper();
-                    }
+                // 1. Thêm tham số IN (p_grantee)
+                cmd.Parameters.Add(new OracleParameter("p_grantee", OracleDbType.Varchar2)).Value = paramValue;
 
-                    // 1. Thêm tham số IN (p_grantee)
-                    cmd.Parameters.Add(new OracleParameter("p_grantee", OracleDbType.Varchar2)).Value = paramValue;
+                // 2. Thêm tham số OUT (c_all)
+                OracleParameter outParam = new OracleParameter("c_all", OracleDbType.RefCursor);
+                outParam.Direction = ParameterDirection.Output;
+                cmd.Parameters.Add(outParam);
 
-                    // 2. Thêm tham số OUT (c_all)
-                    OracleParameter outParam = new OracleParameter("c_all", OracleDbType.RefCursor);
-                    outParam.Direction = ParameterDirection.Output;
-                    cmd.Parameters.Add(outParam);
-
-                    using (OracleDataAdapter da = new OracleDataAdapter(cmd))
-                    {
-                        da.Fill(dt);
-                    }
+                using (OracleDataAdapter da = new OracleDataAdapter(cmd))
+                {
+                    da.Fill(dt);
                 }
             }
             return dt;
-        }
-
-        private void btnViewPrivileges_Click(object sender, EventArgs e)
-        {
-            // Lấy tên Principal từ Combobox
-            string selectedPrincipal = cboPrincipal.Text; 
-            
-            // Lấy dữ liệu và đổ vào DataGridView
-            DataTable dtPrivileges = GetPrivileges(selectedPrincipal);
-            dataGridView1.DataSource = dtPrivileges;
-            
-            // Kiểm tra xem có dữ liệu không để báo lỗi (như thông báo "No privileges found" ở dưới cùng màn hình của bạn)
-            if (dtPrivileges.Rows.Count == 0)
-            {
-                lblStatus.Text = $"No privileges found for: {selectedPrincipal}";
-            }
-            else
-            {
-                lblStatus.Text = $"Showing privileges for: {(string.IsNullOrEmpty(selectedPrincipal) ? "ALL" : selectedPrincipal)}";
-            }
         }
 
         // --- Requirement 9: Extended DBA methods ---
