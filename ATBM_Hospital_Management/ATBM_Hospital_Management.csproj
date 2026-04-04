@@ -101,6 +101,7 @@
     </Compile>
     <Compile Include="Database\DbConnection.cs" />
     <Compile Include="Database\DbaService.cs" />
+    <Compile Include="Database\AccountService.cs" />
     <Compile Include="Views\LoginForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -163,6 +164,12 @@
     </Compile>
     <Compile Include="Views\ObjectView.Designer.cs">
       <DependentUpon>ObjectView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Views\RegisterView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Views\RegisterView.Designer.cs">
+      <DependentUpon>RegisterView.cs</DependentUpon>
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

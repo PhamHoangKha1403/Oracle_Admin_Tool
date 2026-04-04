@@ -21,6 +21,7 @@ namespace ATBM_Hospital_Management.Views
             this.tpGrant = new System.Windows.Forms.TabPage();
             this.tpRevoke = new System.Windows.Forms.TabPage();
             this.tpPrivQuery = new System.Windows.Forms.TabPage();
+            this.tpRegister = new System.Windows.Forms.TabPage();
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
             this.toolStripStatusLabel1 = new System.Windows.Forms.ToolStripStatusLabel();
             this.tabControl1.SuspendLayout();
@@ -35,6 +36,7 @@ namespace ATBM_Hospital_Management.Views
             this.tabControl1.Controls.Add(this.tpGrant);
             this.tabControl1.Controls.Add(this.tpRevoke);
             this.tabControl1.Controls.Add(this.tpPrivQuery);
+            this.tabControl1.Controls.Add(this.tpRegister);
             this.tabControl1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tabControl1.Font = new System.Drawing.Font("Segoe UI", 9.5F);
             this.tabControl1.Multiline = true;
@@ -93,6 +95,13 @@ namespace ATBM_Hospital_Management.Views
             this.tpPrivQuery.Text = "Privileges";
             this.tpPrivQuery.UseVisualStyleBackColor = true;
 
+            // tpRegister
+            this.tpRegister.Name = "tpRegister";
+            this.tpRegister.Padding = new System.Windows.Forms.Padding(3);
+            this.tpRegister.TabIndex = 7;
+            this.tpRegister.Text = "Create Accounts";
+            this.tpRegister.UseVisualStyleBackColor = true;
+
             // statusStrip1
             this.statusStrip1.BackColor = System.Drawing.Color.FromArgb(240, 240, 240);
             this.statusStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
@@ -134,6 +143,7 @@ namespace ATBM_Hospital_Management.Views
         private System.Windows.Forms.TabPage tpGrant;
         private System.Windows.Forms.TabPage tpRevoke;
         private System.Windows.Forms.TabPage tpPrivQuery;
+        private System.Windows.Forms.TabPage tpRegister;
         private System.Windows.Forms.StatusStrip statusStrip1;
         private System.Windows.Forms.ToolStripStatusLabel toolStripStatusLabel1;
     }

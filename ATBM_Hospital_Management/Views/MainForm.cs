@@ -28,6 +28,7 @@ namespace ATBM_Hospital_Management.Views
             else if (tab == tpGrant)      view = new GrantView();
             else if (tab == tpRevoke)     view = new RevokeView();
             else if (tab == tpPrivQuery)  view = new PrivilegeQueryView();
+            else if (tab == tpRegister)   view = new RegisterView();
 
             if (view != null)
             {
@@ -46,6 +47,17 @@ namespace ATBM_Hospital_Management.Views
             catch
             {
                 toolStripStatusLabel1.Text = "Connected";
+            }
+
+            // Hiển thị tab "Tạo Tài Khoản" chỉ khi user có quyền DBA
+            try
+            {
+                var accountService = new AccountService();
+                tpRegister.Visible = accountService.IsDbaUser();
+            }
+            catch
+            {
+                tpRegister.Visible = false;
             }
 
             // Load first tab (Dashboard) immediately
