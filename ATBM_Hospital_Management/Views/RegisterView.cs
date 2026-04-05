@@ -63,10 +63,10 @@ namespace ATBM_Hospital_Management.Views
                 var noAccountSet = new System.Collections.Generic.HashSet<string>(
                     StringComparer.OrdinalIgnoreCase);
                 foreach (DataRow r in noAccount.Rows)
-                    noAccountSet.Add(r["MA_NV"].ToString());
+                    noAccountSet.Add(r["ID"].ToString());
 
                 foreach (DataRow r in _allEmployees.Rows)
-                    r["STATUS"] = noAccountSet.Contains(r["MA_NV"].ToString()) ? "No account" : "Active";
+                    r["STATUS"] = noAccountSet.Contains(r["ID"].ToString()) ? "No account" : "Active";
 
                 BindGrid(_allEmployees);
                 lblStatus.Text = $"{_allEmployees.Rows.Count} employees  |  {noAccount.Rows.Count} without account";
@@ -83,10 +83,10 @@ namespace ATBM_Hospital_Management.Views
             dgvEmployees.DataSource = null;
             dgvEmployees.DataSource = dt;
 
-            if (dgvEmployees.Columns.Contains("MA_NV"))       dgvEmployees.Columns["MA_NV"].HeaderText       = "ID";
-            if (dgvEmployees.Columns.Contains("HO_TEN"))      dgvEmployees.Columns["HO_TEN"].HeaderText      = "Full Name";
-            if (dgvEmployees.Columns.Contains("VAI_TRO"))     dgvEmployees.Columns["VAI_TRO"].HeaderText     = "Role";
-            if (dgvEmployees.Columns.Contains("CHUYEN_KHOA")) dgvEmployees.Columns["CHUYEN_KHOA"].HeaderText = "Department";
+            if (dgvEmployees.Columns.Contains("ID"))       dgvEmployees.Columns["ID"].HeaderText       = "ID";
+            if (dgvEmployees.Columns.Contains("FULL_NAME"))      dgvEmployees.Columns["FULL_NAME"].HeaderText      = "Full Name";
+            if (dgvEmployees.Columns.Contains("ROLE"))     dgvEmployees.Columns["ROLE"].HeaderText     = "Role";
+            if (dgvEmployees.Columns.Contains("DEPT")) dgvEmployees.Columns["DEPT"].HeaderText = "Department";
             if (dgvEmployees.Columns.Contains("STATUS"))      dgvEmployees.Columns["STATUS"].HeaderText      = "Account";
 
             SetCreateEnabled(false);
@@ -107,8 +107,8 @@ namespace ATBM_Hospital_Management.Views
             DataTable filtered = _allEmployees.Clone();
             foreach (DataRow row in _allEmployees.Rows)
             {
-                if (row["MA_NV"].ToString().ToLower().Contains(q) ||
-                    row["HO_TEN"].ToString().ToLower().Contains(q))
+                if (row["ID"].ToString().ToLower().Contains(q) ||
+                    row["FULL_NAME"].ToString().ToLower().Contains(q))
                     filtered.ImportRow(row);
             }
             BindGrid(filtered);
@@ -156,7 +156,7 @@ namespace ATBM_Hospital_Management.Views
         private void BtnCreate_Click(object sender, EventArgs e)
         {
             if (dgvEmployees.SelectedRows.Count == 0) return;
-            string maNv = dgvEmployees.SelectedRows[0].Cells["MA_NV"].Value?.ToString();
+            string maNv = dgvEmployees.SelectedRows[0].Cells["ID"].Value?.ToString();
             if (string.IsNullOrEmpty(maNv)) return;
 
             try

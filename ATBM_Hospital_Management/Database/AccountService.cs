@@ -28,7 +28,7 @@ namespace ATBM_Hospital_Management.Database
         {
             try
             {
-                string sql = "SELECT OWNER FROM ALL_TABLES WHERE TABLE_NAME = 'NHAN_VIEN' AND ROWNUM = 1";
+                string sql = "SELECT OWNER FROM ALL_TABLES WHERE TABLE_NAME = 'NHANVIEN' AND ROWNUM = 1";
                 object result = _db.ExecuteScalar(sql);
                 if (result != null && result != DBNull.Value)
                     return result.ToString();
@@ -40,23 +40,23 @@ namespace ATBM_Hospital_Management.Database
 
         private string GetVietnameseMessage(OracleException ex)
         {
-            if (ex.Number == 20001) return "Employee ID cannot be empty.";
-            if (ex.Number == 20002) return "Employee ID does not exist in NHAN_VIEN.";
+            if (ex.Number == 20001) return "ID cannot be empty.";
+            if (ex.Number == 20002) return "ID does not exist in NHANVIEN or BENHNHAN.";
             return "Oracle error: " + ex.Message;
         }
 
         // ── Public API ────────────────────────────────────────────────────
 
         /// <summary>
-        /// Creates an Oracle account for a single employee by MA_NV.
-        /// Default password: MA_NV + "23127@"
+        /// Creates an Oracle account for a single employee or patient by ID.
+        /// Default password: ID + "23127@"
         /// </summary>
         public void CreateAccountForEmployee(string maNv)
         {
             try
             {
                 OracleParameter[] p = {
-                    new OracleParameter("p_ma_nv", OracleDbType.Varchar2) { Value = maNv }
+                    new OracleParameter("p_id", OracleDbType.Varchar2) { Value = maNv }
                 };
                 _db.ExecuteNonQuery("sp_dba_create_user", p, CommandType.StoredProcedure);
             }
@@ -67,7 +67,7 @@ namespace ATBM_Hospital_Management.Database
         }
 
         /// <summary>
-        /// Creates Oracle accounts for all employees in NHAN_VIEN.
+        /// Creates Oracle accounts for all users in NHANVIEN and BENHNHAN.
         /// Returns the number of new accounts created.
         /// </summary>
         public int CreateAllAccounts()
@@ -88,31 +88,41 @@ namespace ATBM_Hospital_Management.Database
         }
 
         /// <summary>
-        /// Returns employees in NHAN_VIEN that do not yet have an Oracle account.
+        /// Returns users in NHANVIEN and BENHNHAN that do not yet have an Oracle account.
         /// Uses ALL_TABLES to find the correct schema owner automatically.
         /// </summary>
         public DataTable GetEmployeesWithoutAccount()
         {
             string owner = GetTableOwner();
-            string sql = $@"SELECT nv.MA_NV, nv.HO_TEN, nv.VAI_TRO, nv.CHUYEN_KHOA
-                            FROM ""{owner}"".NHAN_VIEN nv
+            string sql = $@"SELECT MANV as ID, HOTEN as ""FULL_NAME"", VAITRO as ""ROLE"", CHUYENKHOA as ""DEPT""
+                            FROM ""{owner}"".NHANVIEN
                             WHERE NOT EXISTS (
                                 SELECT 1 FROM DBA_USERS du
-                                WHERE du.USERNAME = UPPER(nv.MA_NV)
+                                WHERE du.USERNAME = UPPER(MANV)
                             )
-                            ORDER BY nv.VAI_TRO, nv.MA_NV";
+                            UNION ALL
+                            SELECT MABN as ID, TENBN as ""FULL_NAME"", N'Bệnh nhân' as ""ROLE"", CAST(NULL AS NVARCHAR2(50)) as ""DEPT""
+                            FROM ""{owner}"".BENHNHAN
+                            WHERE NOT EXISTS (
+                                SELECT 1 FROM DBA_USERS du
+                                WHERE du.USERNAME = UPPER(MABN)
+                            )
+                            ORDER BY ""ROLE"", ID";
             return _db.ExecuteQuery(sql);
         }
 
         /// <summary>
-        /// Returns all employees in NHAN_VIEN.
+        /// Returns all users in NHANVIEN and BENHNHAN.
         /// </summary>
         public DataTable GetAllEmployees()
         {
             string owner = GetTableOwner();
-            string sql = $@"SELECT MA_NV, HO_TEN, VAI_TRO, CHUYEN_KHOA
-                            FROM ""{owner}"".NHAN_VIEN
-                            ORDER BY VAI_TRO, MA_NV";
+            string sql = $@"SELECT MANV as ID, HOTEN as ""FULL_NAME"", VAITRO as ""ROLE"", CHUYENKHOA as ""DEPT""
+                            FROM ""{owner}"".NHANVIEN
+                            UNION ALL
+                            SELECT MABN as ID, TENBN as ""FULL_NAME"", N'Bệnh nhân' as ""ROLE"", CAST(NULL AS NVARCHAR2(50)) as ""DEPT""
+                            FROM ""{owner}"".BENHNHAN
+                            ORDER BY ""ROLE"", ID";
             return _db.ExecuteQuery(sql);
         }
 
