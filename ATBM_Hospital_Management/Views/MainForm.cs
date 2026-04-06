@@ -66,7 +66,7 @@ namespace ATBM_Hospital_Management.Views
                 TabPage tpMedical = new TabPage("Dashboard (" + role + ")");
                 Label lblNotice = new Label
                 {
-                    Text = $"Xin chào!\nGiao diện chức năng dành riêng cho {role} đang được phát triển.\nVui lòng theo dõi các bản cập nhật sắp tới.",
+                    Text = $"Hello!\nThe functional interface specifically for {role} is currently under development.\nPlease follow upcoming updates.",
                     Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Regular),
                     ForeColor = System.Drawing.Color.DimGray,
                     AutoSize = true,

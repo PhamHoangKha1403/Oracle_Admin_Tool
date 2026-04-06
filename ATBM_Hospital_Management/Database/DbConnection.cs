@@ -75,7 +75,7 @@ namespace ATBM_Hospital_Management.Database
             }
             catch (OracleException ex)
             {
-                throw new Exception("Lỗi kết nối Oracle: " + ex.Message, ex);
+                throw new Exception("Oracle connection error: " + ex.Message, ex);
             }
         }
 
@@ -96,7 +96,7 @@ namespace ATBM_Hospital_Management.Database
             }
             catch (OracleException ex)
             {
-                throw new Exception("Lỗi kết nối Oracle: " + ex.Message, ex);
+                throw new Exception("Oracle connection error: " + ex.Message, ex);
             }
         }
 

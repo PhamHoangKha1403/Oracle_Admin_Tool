@@ -129,7 +129,7 @@ namespace ATBM_Hospital_Management.Database
                 }
                 catch (Exception ex)
                 {
-                    throw new Exception("Lỗi thực thi Grant: " + ex.Message);
+                    throw new Exception("Error executing Grant: " + ex.Message);
                 }
             }
         }
@@ -140,7 +140,7 @@ namespace ATBM_Hospital_Management.Database
 
             if (conn == null || conn.State != ConnectionState.Open)
             {
-                throw new Exception("Kết nối cơ sở dữ liệu đã đóng hoặc chưa được khởi tạo.");
+                throw new Exception("Database connection is closed or not initialized.");
             }
 
             using (OracleCommand cmd = new OracleCommand("sp_RevokePrivilege", conn))

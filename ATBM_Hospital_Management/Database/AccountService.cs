@@ -38,11 +38,11 @@ namespace ATBM_Hospital_Management.Database
             return DbConnection.Instance.GetCurrentUser().ToUpper();
         }
 
-        private string GetVietnameseMessage(OracleException ex)
+        private string GetErrorMessage(OracleException ex)
         {
             if (ex.Number == 20001) return "ID cannot be empty.";
             if (ex.Number == 20002) return "ID does not exist in NHANVIEN or BENHNHAN.";
-            return "Oracle error: " + ex.Message;
+            return "Oracle connection error: " + ex.Message;
         }
 
         // ── Public API ────────────────────────────────────────────────────
@@ -62,7 +62,7 @@ namespace ATBM_Hospital_Management.Database
             }
             catch (OracleException ex)
             {
-                throw new Exception(GetVietnameseMessage(ex), ex);
+                throw new Exception(GetErrorMessage(ex), ex);
             }
         }
 

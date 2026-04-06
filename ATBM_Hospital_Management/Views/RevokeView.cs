@@ -224,7 +224,7 @@ namespace ATBM_Hospital_Management.Views
             // 1. Kiểm tra đầu vào
             if (cmbPrincipal.SelectedItem == null)
             {
-                MessageBox.Show("Vui lòng chọn User hoặc Role cần thu hồi quyền.", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                MessageBox.Show("Please select a User or Role to revoke privilege from.", "Notice", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
             }
 
@@ -240,7 +240,7 @@ namespace ATBM_Hospital_Management.Views
                 {
                     if (_cmbSysPriv?.SelectedItem == null)
                     {
-                        MessageBox.Show("Vui lòng chọn quyền hệ thống cần thu hồi.");
+                        MessageBox.Show("Please select a system privilege to revoke.");
                         return;
                     }
                     string sysPriv = _cmbSysPriv.SelectedItem.ToString();
@@ -256,7 +256,7 @@ namespace ATBM_Hospital_Management.Views
 
                     if (string.IsNullOrEmpty(owner) || string.IsNullOrEmpty(obj) || string.IsNullOrEmpty(priv))
                     {
-                        MessageBox.Show("Vui lòng chọn đầy đủ Owner, Object và Quyền.");
+                        MessageBox.Show("Please select Owner, Object, and Privilege.");
                         return;
                     }
 
@@ -271,11 +271,11 @@ namespace ATBM_Hospital_Management.Views
                     await _dbaService.RevokePrivilegeAsync(priv, fullObjectName, grantee, procedureType);
                 }
 
-                MessageBox.Show($"Đã thu hồi quyền thành công từ {grantee}!", "Thành công", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show($"Successfully revoked privilege from {grantee}!", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Lỗi khi thu hồi quyền: " + ex.Message, "Lỗi Database", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show("Error revoking privilege: " + ex.Message, "Database Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
             finally
             {
