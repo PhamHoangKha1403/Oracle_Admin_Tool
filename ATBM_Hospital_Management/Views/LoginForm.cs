@@ -17,9 +17,64 @@ namespace ATBM_Hospital_Management.Views
         private static readonly Color PlaceholderColor = Color.FromArgb(160, 160, 160);
         private static readonly Color InputColor = Color.FromArgb(30, 30, 30);
 
+        private LinkLabel lnkToggleAdmin;
+        private bool isAdminMode = false;
+
         public LoginForm()
         {
             InitializeComponent();
+            SetupToggleLink();
+            SetAdminMode(false);
+        }
+
+        private void SetupToggleLink()
+        {
+            lnkToggleAdmin = new LinkLabel
+            {
+                Text = "Login as System Administrator",
+                AutoSize = true,
+                BackColor = Color.White,
+                LinkColor = Color.FromArgb(100, 100, 100),
+                ActiveLinkColor = Color.FromArgb(30, 30, 30),
+                Font = new Font("Segoe UI", 9F, FontStyle.Italic)
+            };
+            lnkToggleAdmin.LinkClicked += (s, e) => SetAdminMode(!isAdminMode);
+            this.pnlCard.Controls.Add(lnkToggleAdmin);
+            lnkToggleAdmin.BringToFront();
+            lnkToggleAdmin.Location = new Point(32, pnlCard.Height - 35);
+        }
+
+        private void SetAdminMode(bool adminMode)
+        {
+            isAdminMode = adminMode;
+            
+            lblHost.Visible = adminMode;
+            txtHost.Visible = adminMode;
+            lblPort.Visible = adminMode;
+            txtPort.Visible = adminMode;
+            lblServiceName.Visible = adminMode;
+            txtServiceName.Visible = adminMode;
+
+            // Collapse rows in tableLayoutPanel1 (rows 2, 3, 4)
+            tableLayoutPanel1.RowStyles[2].Height = adminMode ? 50F : 0F;
+            tableLayoutPanel1.RowStyles[3].Height = adminMode ? 50F : 0F;
+            tableLayoutPanel1.RowStyles[4].Height = adminMode ? 50F : 0F;
+
+            if (adminMode)
+            {
+                lnkToggleAdmin.Text = "Back to Standard Login";
+                lblTitle.Text = "Oracle DBA Login";
+            }
+            else
+            {
+                lnkToggleAdmin.Text = "Login as System Administrator";
+                lblTitle.Text = "Hospital Access";
+                
+                // Hardcode standard connection strings for End Users
+                txtHost.Text = "localhost";
+                txtPort.Text = "1521";
+                txtServiceName.Text = "XEPDB1";
+            }
         }
 
         private void pnlCenter_Resize(object sender, EventArgs e)
@@ -138,12 +193,9 @@ namespace ATBM_Hospital_Management.Views
                 return;
             }
 
-            string host = (txtHost.Text == PlaceholderHost || string.IsNullOrWhiteSpace(txtHost.Text))
-                ? "localhost" : txtHost.Text.Trim();
-            string port = (txtPort.Text == PlaceholderPort || string.IsNullOrWhiteSpace(txtPort.Text))
-                ? "1521" : txtPort.Text.Trim();
-            string serviceName = (txtServiceName.Text == PlaceholderServiceName || string.IsNullOrWhiteSpace(txtServiceName.Text))
-                ? "XEPDB1" : txtServiceName.Text.Trim();
+            string host = isAdminMode ? (txtHost.Text == PlaceholderHost || string.IsNullOrWhiteSpace(txtHost.Text) ? "localhost" : txtHost.Text.Trim()) : "localhost";
+            string port = isAdminMode ? (txtPort.Text == PlaceholderPort || string.IsNullOrWhiteSpace(txtPort.Text) ? "1521" : txtPort.Text.Trim()) : "1521";
+            string serviceName = isAdminMode ? (txtServiceName.Text == PlaceholderServiceName || string.IsNullOrWhiteSpace(txtServiceName.Text) ? "XEPDB1" : txtServiceName.Text.Trim()) : "XEPDB1";
 
             try
             {

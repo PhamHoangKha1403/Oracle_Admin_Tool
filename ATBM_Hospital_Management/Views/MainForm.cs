@@ -49,19 +49,33 @@ namespace ATBM_Hospital_Management.Views
                 toolStripStatusLabel1.Text = "Connected";
             }
 
-            // Hiển thị tab "Tạo Tài Khoản" chỉ khi user có quyền DBA
-            try
+            // ======= DYNAMIC ROUTER =======
+            string role = DbConnection.Instance.GetCurrentUserRole();
+            
+            if (role == "DBA")
             {
-                var accountService = new AccountService();
-                tpRegister.Visible = accountService.IsDbaUser();
+                // Giữ nguyên giao diện DBA hiện hành
+                LoadTab(tpDashboard);
             }
-            catch
+            else
             {
-                tpRegister.Visible = false;
+                // Xóa toàn bộ tab của Phân hệ 1
+                tabControl1.TabPages.Clear();
+                
+                // Mở không gian làm việc của Phân hệ 2
+                TabPage tpMedical = new TabPage("Dashboard (" + role + ")");
+                Label lblNotice = new Label
+                {
+                    Text = $"Xin chào!\nGiao diện chức năng dành riêng cho {role} đang được phát triển.\nVui lòng theo dõi các bản cập nhật sắp tới.",
+                    Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Regular),
+                    ForeColor = System.Drawing.Color.DimGray,
+                    AutoSize = true,
+                    Location = new System.Drawing.Point(50, 50)
+                };
+                
+                tpMedical.Controls.Add(lblNotice);
+                tabControl1.TabPages.Add(tpMedical);
             }
-
-            // Load first tab (Dashboard) immediately
-            LoadTab(tpDashboard);
         }
     }
 }

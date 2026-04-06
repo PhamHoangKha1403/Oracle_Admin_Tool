@@ -117,6 +117,30 @@ namespace ATBM_Hospital_Management.Database
         }
 
         /// <summary>
+        /// Phân tích role hiện tại từ SESSION_ROLES.
+        /// Trả về "DBA", "RL_BACSI", "RL_BENHNHAN", v.v.
+        /// </summary>
+        public string GetCurrentUserRole()
+        {
+            try
+            {
+                // Check if DBA
+                object dbaCheck = ExecuteScalar("SELECT COUNT(*) FROM SESSION_ROLES WHERE ROLE = 'DBA'");
+                if (dbaCheck != null && Convert.ToInt32(dbaCheck) > 0) return "DBA";
+
+                // Otherwise, get the custom hospital role (like RL_BACSI, RL_BENHNHAN, ...)
+                object role = ExecuteScalar("SELECT ROLE FROM SESSION_ROLES WHERE ROLE LIKE 'RL_%' AND ROWNUM = 1");
+                if (role != null && role != DBNull.Value) return role.ToString();
+                
+                return "UNKNOWN";
+            }
+            catch
+            {
+                return "ERROR";
+            }
+        }
+
+        /// <summary>
         /// Chạy câu SELECT, trả về DataTable.
         /// </summary>
         public DataTable ExecuteQuery(string sql, OracleParameter[] parameters = null, CommandType commandType = CommandType.Text)
