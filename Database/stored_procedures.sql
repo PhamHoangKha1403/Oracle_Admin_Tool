@@ -105,8 +105,8 @@ BEGIN
 
         EXCEPTION
             WHEN OTHERS THEN
-                -- Ghi nhận lỗi, tiếp tục với bản ghi tiếp theo
-                NULL;
+                -- Nếu có lỗi, throw exception ra ngoài để C# bắt được
+                RAISE;
         END;
     END LOOP;
 END sp_dba_createall_user;

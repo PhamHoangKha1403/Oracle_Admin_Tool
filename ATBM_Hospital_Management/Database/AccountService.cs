@@ -74,12 +74,17 @@ namespace ATBM_Hospital_Management.Database
         {
             try
             {
-                OracleParameter pOut = new OracleParameter("p_so_luong_tao", OracleDbType.Decimal)
+                OracleParameter pOut = new OracleParameter("p_so_luong_tao", OracleDbType.Int32)
                 {
                     Direction = ParameterDirection.Output
                 };
                 _db.ExecuteNonQuery("sp_dba_createall_user", new[] { pOut }, CommandType.StoredProcedure);
-                return pOut.Value != DBNull.Value ? Convert.ToInt32(pOut.Value) : 0;
+                
+                if (pOut.Value != null && pOut.Value != DBNull.Value)
+                {
+                    return int.Parse(pOut.Value.ToString());
+                }
+                return 0;
             }
             catch (OracleException ex)
             {
