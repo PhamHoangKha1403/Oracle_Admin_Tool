@@ -206,15 +206,7 @@ namespace ATBM_Hospital_Management.Views
             {
                 DbConnection.Instance.OpenConnection(username, password, host, port, serviceName);
 
-                if (!isAdminMode)
-                {
-                    bool isDba = new Database.AccountService().IsDbaUser();
-                    if (isDba)
-                    {
-                        DbConnection.Instance.CloseConnection();
-                        throw new Exception("This account is an Oracle system user/DBA. Please use System Administrator login.");
-                    }
-                }
+                // No additional block here. Rely on MainForm router.
 
                 new MainForm().Show();
                 this.Hide();
