@@ -21,25 +21,25 @@ BEGIN
         RAISE_APPLICATION_ERROR(-20001, 'ID khong duoc de trong');
     END IF;
 
-    -- Kiểm tra tồn tại trong NHANVIEN
+    -- Kiểm tra tồn tại trong NHAN_VIEN
     SELECT COUNT(*) INTO v_count
-    FROM NHANVIEN
-    WHERE MANV = p_id;
+    FROM NHAN_VIEN
+    WHERE MA_NV = p_id;
 
     IF v_count > 0 THEN
-        SELECT VAITRO INTO v_vai_tro
-        FROM NHANVIEN
-        WHERE MANV = p_id;
+        SELECT VAI_TRO INTO v_vai_tro
+        FROM NHAN_VIEN
+        WHERE MA_NV = p_id;
     ELSE
-        -- Kiểm tra tồn tại trong BENHNHAN
+        -- Kiểm tra tồn tại trong BENH_NHAN
         SELECT COUNT(*) INTO v_count
-        FROM BENHNHAN
-        WHERE MABN = p_id;
+        FROM BENH_NHAN
+        WHERE MA_BN = p_id;
 
         IF v_count > 0 THEN
             v_vai_tro := 'Bệnh nhân';
         ELSE
-            RAISE_APPLICATION_ERROR(-20002, 'ID khong ton tai trong NHANVIEN hay BENHNHAN');
+            RAISE_APPLICATION_ERROR(-20002, 'ID khong ton tai trong NHAN_VIEN hay BENH_NHAN');
         END IF;
     END IF;
 
@@ -84,9 +84,9 @@ END sp_dba_create_user;
 CREATE OR REPLACE PROCEDURE sp_dba_createall_user(p_so_luong_tao OUT NUMBER)
 AS
     CURSOR cur_users IS
-        SELECT MANV AS ID FROM NHANVIEN
+        SELECT MA_NV AS ID FROM NHAN_VIEN
         UNION ALL
-        SELECT MABN AS ID FROM BENHNHAN;
+        SELECT MA_BN AS ID FROM BENH_NHAN;
     v_count     NUMBER;
 BEGIN
     p_so_luong_tao := 0;
@@ -124,9 +124,9 @@ BEGIN
     v_user := SYS_CONTEXT('USERENV', 'SESSION_USER');
     
     OPEN p_cursor FOR
-        SELECT QUEQUAN, SODT
-        FROM NHANVIEN
-        WHERE MANV = v_user;
+        SELECT QUE_QUAN, SDT
+        FROM NHAN_VIEN
+        WHERE MA_NV = v_user;
 END sp_NV_Select_NHANVIEN;
 /
 
@@ -143,10 +143,10 @@ AS
 BEGIN
     v_user := SYS_CONTEXT('USERENV', 'SESSION_USER');
     
-    UPDATE NHANVIEN
-    SET QUEQUAN = p_QUEQUAN,
-        SODT = p_SODT
-    WHERE MANV = v_user;
+    UPDATE NHAN_VIEN
+    SET QUE_QUAN = p_QUEQUAN,
+        SDT = p_SODT
+    WHERE MA_NV = v_user;
     
     COMMIT;
 END sp_NV_Update_NHANVIEN;
@@ -163,9 +163,9 @@ BEGIN
     v_user := SYS_CONTEXT('USERENV', 'SESSION_USER');
     
     OPEN p_cursor FOR
-        SELECT SONHA, TENDUONG, QUANHUYEN, TINHTP, TIENSUBENH, TIENSUBENHGD, DIUNGTUOC
-        FROM BENHNHAN
-        WHERE MABN = v_user;
+        SELECT SO_NHA, TEN_DUONG, QUAN_HUYEN, TINH_TP, TIEN_SU_BENH, TIEN_SU_BENH_GD, DI_UNG_THUOC
+        FROM BENH_NHAN
+        WHERE MA_BN = v_user;
 END sp_BN_Select_BENHNHAN;
 /
 
@@ -180,22 +180,22 @@ CREATE OR REPLACE PROCEDURE sp_BN_Update_BENHNHAN(
     p_TINHTP IN NVARCHAR2,
     p_TIENSUBENH IN NVARCHAR2,
     p_TIENSUBENHGD IN NVARCHAR2,
-    p_DIUNGTUOC IN NVARCHAR2
+    p_DIUNGTHUOC IN NVARCHAR2
 )
 AS
     v_user VARCHAR2(100);
 BEGIN
     v_user := SYS_CONTEXT('USERENV', 'SESSION_USER');
     
-    UPDATE BENHNHAN
-    SET SONHA = p_SONHA,
-        TENDUONG = p_TENDUONG,
-        QUANHUYEN = p_QUANHUYEN,
-        TINHTP = p_TINHTP,
-        TIENSUBENH = p_TIENSUBENH,
-        TIENSUBENHGD = p_TIENSUBENHGD,
-        DIUNGTUOC = p_DIUNGTUOC
-    WHERE MABN = v_user;
+    UPDATE BENH_NHAN
+    SET SO_NHA = p_SONHA,
+        TEN_DUONG = p_TENDUONG,
+        QUAN_HUYEN = p_QUANHUYEN,
+        TINH_TP = p_TINHTP,
+        TIEN_SU_BENH = p_TIENSUBENH,
+        TIEN_SU_BENH_GD = p_TIENSUBENHGD,
+        DI_UNG_THUOC = p_DIUNGTHUOC
+    WHERE MA_BN = v_user;
     
     COMMIT;
 END sp_BN_Update_BENHNHAN;

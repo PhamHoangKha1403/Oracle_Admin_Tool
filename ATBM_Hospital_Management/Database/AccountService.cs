@@ -28,7 +28,7 @@ namespace ATBM_Hospital_Management.Database
         {
             try
             {
-                string sql = "SELECT OWNER FROM ALL_TABLES WHERE TABLE_NAME = 'NHANVIEN' AND ROWNUM = 1";
+                string sql = "SELECT OWNER FROM ALL_TABLES WHERE TABLE_NAME = 'NHAN_VIEN' AND ROWNUM = 1";
                 object result = _db.ExecuteScalar(sql);
                 if (result != null && result != DBNull.Value)
                     return result.ToString();
@@ -41,7 +41,7 @@ namespace ATBM_Hospital_Management.Database
         private string GetErrorMessage(OracleException ex)
         {
             if (ex.Number == 20001) return "ID cannot be empty.";
-            if (ex.Number == 20002) return "ID does not exist in NHANVIEN or BENHNHAN.";
+            if (ex.Number == 20002) return "ID does not exist in NHAN_VIEN or BENH_NHAN.";
             return "Oracle connection error: " + ex.Message;
         }
 
@@ -99,18 +99,18 @@ namespace ATBM_Hospital_Management.Database
         public DataTable GetEmployeesWithoutAccount()
         {
             string owner = GetTableOwner();
-            string sql = $@"SELECT MANV as ID, HOTEN as ""FULL_NAME"", VAITRO as ""ROLE"", CHUYENKHOA as ""DEPT""
-                            FROM ""{owner}"".NHANVIEN
+            string sql = $@"SELECT MA_NV as ID, HO_TEN as ""FULL_NAME"", VAI_TRO as ""ROLE"", CHUYEN_KHOA as ""DEPT""
+                            FROM ""{owner}"".NHAN_VIEN
                             WHERE NOT EXISTS (
                                 SELECT 1 FROM DBA_USERS du
-                                WHERE du.USERNAME = UPPER(MANV)
+                                WHERE du.USERNAME = UPPER(MA_NV)
                             )
                             UNION ALL
-                            SELECT MABN as ID, TENBN as ""FULL_NAME"", N'Bệnh nhân' as ""ROLE"", CAST(NULL AS NVARCHAR2(50)) as ""DEPT""
-                            FROM ""{owner}"".BENHNHAN
+                            SELECT MA_BN as ID, TEN_DUONG as ""FULL_NAME"", N'Bệnh nhân' as ""ROLE"", CAST(NULL AS NVARCHAR2(50)) as ""DEPT""
+                            FROM ""{owner}"".BENH_NHAN
                             WHERE NOT EXISTS (
                                 SELECT 1 FROM DBA_USERS du
-                                WHERE du.USERNAME = UPPER(MABN)
+                                WHERE du.USERNAME = UPPER(MA_BN)
                             )
                             ORDER BY ""ROLE"", ID";
             return _db.ExecuteQuery(sql);
@@ -122,11 +122,11 @@ namespace ATBM_Hospital_Management.Database
         public DataTable GetAllEmployees()
         {
             string owner = GetTableOwner();
-            string sql = $@"SELECT MANV as ID, HOTEN as ""FULL_NAME"", VAITRO as ""ROLE"", CHUYENKHOA as ""DEPT""
-                            FROM ""{owner}"".NHANVIEN
+            string sql = $@"SELECT MA_NV as ID, HO_TEN as ""FULL_NAME"", VAI_TRO as ""ROLE"", CHUYEN_KHOA as ""DEPT""
+                            FROM ""{owner}"".NHAN_VIEN
                             UNION ALL
-                            SELECT MABN as ID, TENBN as ""FULL_NAME"", N'Bệnh nhân' as ""ROLE"", CAST(NULL AS NVARCHAR2(50)) as ""DEPT""
-                            FROM ""{owner}"".BENHNHAN
+                            SELECT MA_BN as ID, TEN_DUONG as ""FULL_NAME"", N'Bệnh nhân' as ""ROLE"", CAST(NULL AS NVARCHAR2(50)) as ""DEPT""
+                            FROM ""{owner}"".BENH_NHAN
                             ORDER BY ""ROLE"", ID";
             return _db.ExecuteQuery(sql);
         }
