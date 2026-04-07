@@ -8,8 +8,8 @@ namespace ATBM_Hospital_Management.Views
     public partial class LoginForm : Form
     {
         // Placeholder text constants
-        private const string PlaceholderUsername = "Oracle username";
-        private const string PlaceholderPassword = "Oracle password";
+        private string PlaceholderUsername => isAdminMode ? "Oracle DBA Username" : "Employee / Patient ID";
+        private string PlaceholderPassword => isAdminMode ? "Oracle DBA Password" : "Password";
         private const string PlaceholderHost = "e.g. localhost";
         private const string PlaceholderPort = "e.g. 1521";
         private const string PlaceholderServiceName = "e.g. XEPDB1";
@@ -75,6 +75,10 @@ namespace ATBM_Hospital_Management.Views
                 txtPort.Text = "1521";
                 txtServiceName.Text = "XEPDB1";
             }
+            
+            // Refresh texts if they were placeholders
+            if (txtUsername.ForeColor == PlaceholderColor) txtUsername.Text = PlaceholderUsername;
+            if (txtPassword.ForeColor == PlaceholderColor) txtPassword.Text = PlaceholderPassword;
         }
 
         private void pnlCenter_Resize(object sender, EventArgs e)
@@ -183,6 +187,7 @@ namespace ATBM_Hospital_Management.Views
         {
             lblStatus.Text = "";
 
+            // Use the getters for placeholders
             string username = txtUsername.Text == PlaceholderUsername ? "" : txtUsername.Text.Trim();
             string password = txtPassword.Text == PlaceholderPassword ? "" : txtPassword.Text;
 
@@ -200,6 +205,17 @@ namespace ATBM_Hospital_Management.Views
             try
             {
                 DbConnection.Instance.OpenConnection(username, password, host, port, serviceName);
+
+                if (!isAdminMode)
+                {
+                    bool isDba = new Database.AccountService().IsDbaUser();
+                    if (isDba)
+                    {
+                        DbConnection.Instance.CloseConnection();
+                        throw new Exception("This account is an Oracle system user/DBA. Please use System Administrator login.");
+                    }
+                }
+
                 new MainForm().Show();
                 this.Hide();
             }

@@ -55,11 +55,11 @@ BEGIN
         EXECUTE IMMEDIATE 'GRANT CREATE SESSION TO ' || p_id;
 
         -- Grant role theo VAI_TRO
-        IF v_vai_tro = 'Bac si' THEN
+        IF v_vai_tro = 'Bác sĩ' THEN
             EXECUTE IMMEDIATE 'GRANT RL_BACSI TO ' || p_id;
-        ELSIF v_vai_tro = 'Ky thuat vien' THEN
+        ELSIF v_vai_tro = 'Kỹ thuật viên' THEN
             EXECUTE IMMEDIATE 'GRANT RL_KYTHUATVIEN TO ' || p_id;
-        ELSIF v_vai_tro = 'Dieu phoi vien' THEN
+        ELSIF v_vai_tro = 'Điều phối viên' THEN
             EXECUTE IMMEDIATE 'GRANT RL_DIEUPHOIVIEN TO ' || p_id;
         ELSIF v_vai_tro = 'Bệnh nhân' THEN
             EXECUTE IMMEDIATE 'GRANT RL_BENHNHAN TO ' || p_id;
