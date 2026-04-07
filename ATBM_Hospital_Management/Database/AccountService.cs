@@ -55,10 +55,11 @@ namespace ATBM_Hospital_Management.Database
         {
             try
             {
+                string owner = GetTableOwner();
                 OracleParameter[] p = {
                     new OracleParameter("p_id", OracleDbType.Varchar2) { Value = maNv }
                 };
-                _db.ExecuteNonQuery("sp_dba_create_user", p, CommandType.StoredProcedure);
+                _db.ExecuteNonQuery($"{owner}.sp_dba_create_user", p, CommandType.StoredProcedure);
             }
             catch (OracleException ex)
             {
@@ -74,11 +75,12 @@ namespace ATBM_Hospital_Management.Database
         {
             try
             {
+                string owner = GetTableOwner();
                 OracleParameter pOut = new OracleParameter("p_so_luong_tao", OracleDbType.Int32)
                 {
                     Direction = ParameterDirection.Output
                 };
-                _db.ExecuteNonQuery("sp_dba_createall_user", new[] { pOut }, CommandType.StoredProcedure);
+                _db.ExecuteNonQuery($"{owner}.sp_dba_createall_user", new[] { pOut }, CommandType.StoredProcedure);
                 
                 if (pOut.Value != null && pOut.Value != DBNull.Value)
                 {
