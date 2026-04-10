@@ -71,9 +71,9 @@ namespace ATBM_Hospital_Management.Views
                 lblTitle.Text = "Hospital Access";
                 
                 // Hardcode standard connection strings for End Users
-                txtHost.Text = "localhost";
-                txtPort.Text = "1521";
-                txtServiceName.Text = "XEPDB1";
+                txtHost.Text = DbConnection.DB_HOST;
+                txtPort.Text = DbConnection.DB_PORT;
+                txtServiceName.Text = DbConnection.DB_SID;
             }
             
             // Refresh texts if they were placeholders
@@ -198,9 +198,9 @@ namespace ATBM_Hospital_Management.Views
                 return;
             }
 
-            string host = isAdminMode ? (txtHost.Text == PlaceholderHost || string.IsNullOrWhiteSpace(txtHost.Text) ? "localhost" : txtHost.Text.Trim()) : "localhost";
-            string port = isAdminMode ? (txtPort.Text == PlaceholderPort || string.IsNullOrWhiteSpace(txtPort.Text) ? "1521" : txtPort.Text.Trim()) : "1521";
-            string serviceName = isAdminMode ? (txtServiceName.Text == PlaceholderServiceName || string.IsNullOrWhiteSpace(txtServiceName.Text) ? "XEPDB1" : txtServiceName.Text.Trim()) : "XEPDB1";
+            string host = isAdminMode ? (txtHost.Text == PlaceholderHost || string.IsNullOrWhiteSpace(txtHost.Text) ? DbConnection.DB_HOST : txtHost.Text.Trim()) : DbConnection.DB_HOST;
+            string port = isAdminMode ? (txtPort.Text == PlaceholderPort || string.IsNullOrWhiteSpace(txtPort.Text) ? DbConnection.DB_PORT : txtPort.Text.Trim()) : DbConnection.DB_PORT;
+            string serviceName = isAdminMode ? (txtServiceName.Text == PlaceholderServiceName || string.IsNullOrWhiteSpace(txtServiceName.Text) ? DbConnection.DB_SID : txtServiceName.Text.Trim()) : DbConnection.DB_SID;
 
             try
             {

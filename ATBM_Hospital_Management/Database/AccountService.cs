@@ -106,7 +106,7 @@ namespace ATBM_Hospital_Management.Database
                                 WHERE du.USERNAME = UPPER(MA_NV)
                             )
                             UNION ALL
-                            SELECT MA_BN as ID, TEN_DUONG as ""FULL_NAME"", N'Bệnh nhân' as ""ROLE"", CAST(NULL AS NVARCHAR2(50)) as ""DEPT""
+                            SELECT MA_BN as ID, TEN_DUONG as ""FULL_NAME"", 'Bệnh nhân' as ""ROLE"", CAST(NULL AS VARCHAR2(50)) as ""DEPT""
                             FROM ""{owner}"".BENH_NHAN
                             WHERE NOT EXISTS (
                                 SELECT 1 FROM DBA_USERS du
@@ -125,7 +125,7 @@ namespace ATBM_Hospital_Management.Database
             string sql = $@"SELECT MA_NV as ID, HO_TEN as ""FULL_NAME"", VAI_TRO as ""ROLE"", CHUYEN_KHOA as ""DEPT""
                             FROM ""{owner}"".NHAN_VIEN
                             UNION ALL
-                            SELECT MA_BN as ID, TEN_DUONG as ""FULL_NAME"", N'Bệnh nhân' as ""ROLE"", CAST(NULL AS NVARCHAR2(50)) as ""DEPT""
+                            SELECT MA_BN as ID, TEN_DUONG as ""FULL_NAME"", 'Bệnh nhân' as ""ROLE"", CAST(NULL AS VARCHAR2(50)) as ""DEPT""
                             FROM ""{owner}"".BENH_NHAN
                             ORDER BY ""ROLE"", ID";
             return _db.ExecuteQuery(sql);

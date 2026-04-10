@@ -24,6 +24,7 @@ namespace ATBM_Hospital_Management.Views
             this.tpRegister = new System.Windows.Forms.TabPage();
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
             this.toolStripStatusLabel1 = new System.Windows.Forms.ToolStripStatusLabel();
+            this.btnStatusLogout = new System.Windows.Forms.ToolStripStatusLabel();
             this.tabControl1.SuspendLayout();
             this.statusStrip1.SuspendLayout();
             this.SuspendLayout();
@@ -105,7 +106,8 @@ namespace ATBM_Hospital_Management.Views
             // statusStrip1
             this.statusStrip1.BackColor = System.Drawing.Color.FromArgb(240, 240, 240);
             this.statusStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-                this.toolStripStatusLabel1 });
+                this.toolStripStatusLabel1,
+                this.btnStatusLogout });
             this.statusStrip1.Location = new System.Drawing.Point(0, 720);
             this.statusStrip1.Name = "statusStrip1";
             this.statusStrip1.Size = new System.Drawing.Size(1100, 22);
@@ -116,6 +118,19 @@ namespace ATBM_Hospital_Management.Views
             this.toolStripStatusLabel1.ForeColor = System.Drawing.Color.FromArgb(60, 60, 60);
             this.toolStripStatusLabel1.Name = "toolStripStatusLabel1";
             this.toolStripStatusLabel1.Text = "Not connected";
+            this.toolStripStatusLabel1.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+
+            // btnStatusLogout
+            this.btnStatusLogout.Alignment = System.Windows.Forms.ToolStripItemAlignment.Right;
+            this.btnStatusLogout.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold);
+            this.btnStatusLogout.ForeColor = System.Drawing.Color.FromArgb(200, 30, 30);
+            this.btnStatusLogout.Name = "btnStatusLogout";
+            this.btnStatusLogout.Text = "LOGOUT";
+            this.btnStatusLogout.IsLink = true;
+            this.btnStatusLogout.LinkBehavior = System.Windows.Forms.LinkBehavior.HoverUnderline;
+            this.btnStatusLogout.ActiveLinkColor = System.Drawing.Color.FromArgb(220, 50, 50);
+            this.btnStatusLogout.LinkColor = System.Drawing.Color.FromArgb(200, 30, 30);
+            this.btnStatusLogout.Click += new System.EventHandler(this.btnLogout_Click);
 
             // MainForm
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
@@ -146,5 +161,6 @@ namespace ATBM_Hospital_Management.Views
         private System.Windows.Forms.TabPage tpRegister;
         private System.Windows.Forms.StatusStrip statusStrip1;
         private System.Windows.Forms.ToolStripStatusLabel toolStripStatusLabel1;
+        private System.Windows.Forms.ToolStripStatusLabel btnStatusLogout;
     }
 }

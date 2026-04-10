@@ -77,5 +77,19 @@ namespace ATBM_Hospital_Management.Views
                 tabControl1.TabPages.Add(tpMedical);
             }
         }
+
+        private void btnLogout_Click(object sender, EventArgs e)
+        {
+            var confirm = MessageBox.Show("Are you sure you want to log out?", "Logout",
+                        MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+            if (confirm != DialogResult.Yes) return;
+
+            DbConnection.Instance.CloseConnection();
+            
+            // We hide this form and show the login form, or close this form entirely using Application.OpenForms
+            var loginForm = new LoginForm();
+            loginForm.Show();
+            this.Close();
+        }
     }
 }
