@@ -56,9 +56,10 @@ namespace ATBM_Hospital_Management.Views
             txtServiceName.Visible = adminMode;
 
             // Collapse rows in tableLayoutPanel1 (rows 2, 3, 4)
-            tableLayoutPanel1.RowStyles[2].Height = adminMode ? 50F : 0F;
-            tableLayoutPanel1.RowStyles[3].Height = adminMode ? 50F : 0F;
-            tableLayoutPanel1.RowStyles[4].Height = adminMode ? 50F : 0F;
+            float rowHeight = tableLayoutPanel1.RowStyles[0].Height;
+            tableLayoutPanel1.RowStyles[2].Height = adminMode ? rowHeight : 0F;
+            tableLayoutPanel1.RowStyles[3].Height = adminMode ? rowHeight : 0F;
+            tableLayoutPanel1.RowStyles[4].Height = adminMode ? rowHeight : 0F;
 
             if (adminMode)
             {
