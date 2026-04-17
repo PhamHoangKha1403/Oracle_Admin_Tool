@@ -64,16 +64,28 @@ namespace ATBM_Hospital_Management.Views
                 
                 // Mở không gian làm việc của Phân hệ 2
                 TabPage tpMedical = new TabPage("Dashboard (" + role + ")");
-                Label lblNotice = new Label
-                {
-                    Text = $"Hello!\nThe functional interface specifically for {role} is currently under development.\nPlease follow upcoming updates.",
-                    Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Regular),
-                    ForeColor = System.Drawing.Color.DimGray,
-                    AutoSize = true,
-                    Location = new System.Drawing.Point(50, 50)
-                };
                 
-                tpMedical.Controls.Add(lblNotice);
+                if (role == "RL_BENHNHAN")
+                {
+                    tpMedical.Controls.Add(new Components.PatientView { Dock = DockStyle.Fill });
+                }
+                else if (role == "RL_DIEUPHOIVIEN")
+                {
+                    tpMedical.Controls.Add(new Components.CoordinatorView { Dock = DockStyle.Fill });
+                }
+                else
+                {
+                    Label lblNotice = new Label
+                    {
+                        Text = $"Hello!\nThe functional interface specifically for {role} is currently under development.\nPlease follow upcoming updates.",
+                        Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Regular),
+                        ForeColor = System.Drawing.Color.DimGray,
+                        AutoSize = true,
+                        Location = new System.Drawing.Point(50, 50)
+                    };
+                    tpMedical.Controls.Add(lblNotice);
+                }
+                
                 tabControl1.TabPages.Add(tpMedical);
             }
         }

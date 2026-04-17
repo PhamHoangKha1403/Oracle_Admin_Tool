@@ -147,6 +147,12 @@
     <Compile Include="Views\Components\DropDownComboBox.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="Views\Components\PatientView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Views\Components\CoordinatorView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
     <Compile Include="Views\GrantView.cs">
       <SubType>UserControl</SubType>
     </Compile>

@@ -200,3 +200,147 @@ BEGIN
     COMMIT;
 END sp_BN_Update_BENHNHAN;
 /
+
+-- ============================================================
+-- sp_DPV_Select_BENHNHAN
+-- ============================================================
+CREATE OR REPLACE PROCEDURE sp_DPV_Select_BENHNHAN(p_cursor OUT SYS_REFCURSOR)
+AS
+BEGIN
+    OPEN p_cursor FOR
+        SELECT MA_BN, SO_NHA, TEN_DUONG, QUAN_HUYEN, TINH_TP, TIEN_SU_BENH, TIEN_SU_BENH_GD, DI_UNG_THUOC
+        FROM BENH_NHAN;
+END sp_DPV_Select_BENHNHAN;
+/
+
+-- ============================================================
+-- sp_DPV_Insert_BENHNHAN
+-- ============================================================
+CREATE OR REPLACE PROCEDURE sp_DPV_Insert_BENHNHAN(
+    p_MABN IN VARCHAR2,
+    p_SONHA IN NVARCHAR2,
+    p_TENDUONG IN NVARCHAR2,
+    p_QUANHUYEN IN NVARCHAR2,
+    p_TINHTP IN NVARCHAR2,
+    p_TIENSUBENH IN NVARCHAR2,
+    p_TIENSUBENHGD IN NVARCHAR2,
+    p_DIUNGTHUOC IN NVARCHAR2
+)
+AS
+BEGIN
+    INSERT INTO BENH_NHAN (MA_BN, SO_NHA, TEN_DUONG, QUAN_HUYEN, TINH_TP, TIEN_SU_BENH, TIEN_SU_BENH_GD, DI_UNG_THUOC)
+    VALUES (p_MABN, p_SONHA, p_TENDUONG, p_QUANHUYEN, p_TINHTP, p_TIENSUBENH, p_TIENSUBENHGD, p_DIUNGTHUOC);
+    COMMIT;
+END sp_DPV_Insert_BENHNHAN;
+/
+
+-- ============================================================
+-- sp_DPV_Update_BENHNHAN
+-- ============================================================
+CREATE OR REPLACE PROCEDURE sp_DPV_Update_BENHNHAN(
+    p_MABN IN VARCHAR2,
+    p_SONHA IN NVARCHAR2,
+    p_TENDUONG IN NVARCHAR2,
+    p_QUANHUYEN IN NVARCHAR2,
+    p_TINHTP IN NVARCHAR2,
+    p_TIENSUBENH IN NVARCHAR2,
+    p_TIENSUBENHGD IN NVARCHAR2,
+    p_DIUNGTHUOC IN NVARCHAR2
+)
+AS
+BEGIN
+    UPDATE BENH_NHAN
+    SET SO_NHA = p_SONHA,
+        TEN_DUONG = p_TENDUONG,
+        QUAN_HUYEN = p_QUANHUYEN,
+        TINH_TP = p_TINHTP,
+        TIEN_SU_BENH = p_TIENSUBENH,
+        TIEN_SU_BENH_GD = p_TIENSUBENHGD,
+        DI_UNG_THUOC = p_DIUNGTHUOC
+    WHERE MA_BN = p_MABN;
+    COMMIT;
+END sp_DPV_Update_BENHNHAN;
+/
+
+-- ============================================================
+-- sp_DPV_Select_HSBA
+-- ============================================================
+CREATE OR REPLACE PROCEDURE sp_DPV_Select_HSBA(p_cursor OUT SYS_REFCURSOR)
+AS
+BEGIN
+    OPEN p_cursor FOR
+        SELECT MA_HSBA, MA_BN, NGAY, CHAN_DOAN, DIEU_TRI, MA_BS, MA_KHOA, KET_LUAN
+        FROM HSBA;
+END sp_DPV_Select_HSBA;
+/
+
+-- ============================================================
+-- sp_DPV_Select_HSBADV
+-- ============================================================
+CREATE OR REPLACE PROCEDURE sp_DPV_Select_HSBADV(p_cursor OUT SYS_REFCURSOR)
+AS
+BEGIN
+    OPEN p_cursor FOR
+        SELECT MA_HSBA, LOAI_DV, NGAY_DV, MA_KTV, KET_QUA
+        FROM HSBA_DV;
+END sp_DPV_Select_HSBADV;
+/
+
+-- ============================================================
+-- sp_DPV_Insert_HSBA
+-- ============================================================
+CREATE OR REPLACE PROCEDURE sp_DPV_Insert_HSBA(
+    p_MAHSBA IN VARCHAR2,
+    p_MABN IN VARCHAR2,
+    p_NGAY IN DATE,
+    p_CHANDOAN IN NVARCHAR2,
+    p_DIEUTRI IN NVARCHAR2,
+    p_MABS IN VARCHAR2,
+    p_MAKHOA IN VARCHAR2,
+    p_KETLUAN IN NVARCHAR2
+)
+AS
+BEGIN
+    INSERT INTO HSBA (MA_HSBA, MA_BN, NGAY, CHAN_DOAN, DIEU_TRI, MA_BS, MA_KHOA, KET_LUAN)
+    VALUES (p_MAHSBA, p_MABN, p_NGAY, p_CHANDOAN, p_DIEUTRI, p_MABS, p_MAKHOA, p_KETLUAN);
+    COMMIT;
+END sp_DPV_Insert_HSBA;
+/
+
+-- ============================================================
+-- sp_DPV_Update_HSBA
+-- ============================================================
+CREATE OR REPLACE PROCEDURE sp_DPV_Update_HSBA(
+    p_MAHSBA IN VARCHAR2,
+    p_MAKHOA IN VARCHAR2,
+    p_MABS IN VARCHAR2
+)
+AS
+BEGIN
+    UPDATE HSBA
+    SET MA_KHOA = p_MAKHOA,
+        MA_BS = p_MABS
+    WHERE MA_HSBA = p_MAHSBA;
+    COMMIT;
+END sp_DPV_Update_HSBA;
+/
+
+-- ============================================================
+-- sp_DPV_Update_HSBADV
+-- ============================================================
+CREATE OR REPLACE PROCEDURE sp_DPV_Update_HSBADV(
+    p_MAHSBA IN VARCHAR2,
+    p_LOAIDV IN VARCHAR2,
+    p_NGAYDV IN DATE,
+    p_MAKTV IN VARCHAR2
+)
+AS
+BEGIN
+    UPDATE HSBA_DV
+    SET MA_KTV = p_MAKTV
+    WHERE MA_HSBA = p_MAHSBA
+      AND LOAI_DV = p_LOAIDV
+      AND NGAY_DV = p_NGAYDV;
+    COMMIT;
+END sp_DPV_Update_HSBADV;
+/
