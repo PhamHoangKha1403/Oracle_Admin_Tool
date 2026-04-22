@@ -58,14 +58,27 @@ namespace ATBM_Hospital_Management.Views.Components
             tabPatient.Padding = new Padding(15);
             tabPatient.BackColor = Color.White;
 
-            btnAddPatient = new Button { Text = "ADD PATIENT", Size = new Size(160, 35), Location = new Point(15, 15), BackColor = Color.SeaGreen, ForeColor = Color.White, FlatStyle = FlatStyle.Flat };
-            btnEditPatient = new Button { Text = "EDIT", Size = new Size(120, 35), Location = new Point(185, 15), BackColor = Color.DodgerBlue, ForeColor = Color.White, FlatStyle = FlatStyle.Flat };
+            FlowLayoutPanel pnlButtons = new FlowLayoutPanel
+            {
+                Location = new Point(15, 15),
+                AutoSize = true,
+                AutoSizeMode = AutoSizeMode.GrowAndShrink,
+                FlowDirection = FlowDirection.LeftToRight,
+                WrapContents = false
+            };
+
+            btnAddPatient = new Button { Text = "ADD PATIENT", Size = new Size(200, 40), BackColor = Color.SeaGreen, ForeColor = Color.White, FlatStyle = FlatStyle.Flat, Margin = new Padding(0, 0, 15, 0) };
+            btnEditPatient = new Button { Text = "EDIT PATIENT", Size = new Size(200, 40), BackColor = Color.DodgerBlue, ForeColor = Color.White, FlatStyle = FlatStyle.Flat, Margin = new Padding(0) };
+
+            btnAddPatient.FlatAppearance.BorderSize = 0;
+            btnEditPatient.FlatAppearance.BorderSize = 0;
 
             btnAddPatient.Click += BtnAddPatient_Click;
             btnEditPatient.Click += BtnEditPatient_Click;
 
-            tabPatient.Controls.Add(btnAddPatient);
-            tabPatient.Controls.Add(btnEditPatient);
+            pnlButtons.Controls.Add(btnAddPatient);
+            pnlButtons.Controls.Add(btnEditPatient);
+            tabPatient.Controls.Add(pnlButtons);
 
             dgvPatient = new DataGridView
             {
@@ -86,17 +99,31 @@ namespace ATBM_Hospital_Management.Views.Components
             tabHSBA.Padding = new Padding(15);
             tabHSBA.BackColor = Color.White;
 
-            btnAddHSBA = new Button { Text = "ADD RECORD", Size = new Size(120, 35), Location = new Point(15, 15), BackColor = Color.SeaGreen, ForeColor = Color.White, FlatStyle = FlatStyle.Flat };
-            btnEditHSBA = new Button { Text = "EDIT RECORD", Size = new Size(140, 35), Location = new Point(145, 15), BackColor = Color.DodgerBlue, ForeColor = Color.White, FlatStyle = FlatStyle.Flat };
-            btnEditHSBADV = new Button { Text = "EDIT SERVICE", Size = new Size(160, 35), Location = new Point(295, 15), BackColor = Color.Orange, ForeColor = Color.White, FlatStyle = FlatStyle.Flat };
+            FlowLayoutPanel pnlHSBAButtons = new FlowLayoutPanel
+            {
+                Location = new Point(15, 15),
+                AutoSize = true,
+                AutoSizeMode = AutoSizeMode.GrowAndShrink,
+                FlowDirection = FlowDirection.LeftToRight,
+                WrapContents = false
+            };
+
+            btnAddHSBA = new Button { Text = "ADD RECORD", Size = new Size(200, 40), BackColor = Color.SeaGreen, ForeColor = Color.White, FlatStyle = FlatStyle.Flat, Margin = new Padding(0, 0, 15, 0) };
+            btnEditHSBA = new Button { Text = "EDIT RECORD", Size = new Size(200, 40), BackColor = Color.DodgerBlue, ForeColor = Color.White, FlatStyle = FlatStyle.Flat, Margin = new Padding(0, 0, 15, 0) };
+            btnEditHSBADV = new Button { Text = "EDIT SERVICE", Size = new Size(200, 40), BackColor = Color.Orange, ForeColor = Color.White, FlatStyle = FlatStyle.Flat, Margin = new Padding(0) };
+
+            btnAddHSBA.FlatAppearance.BorderSize = 0;
+            btnEditHSBA.FlatAppearance.BorderSize = 0;
+            btnEditHSBADV.FlatAppearance.BorderSize = 0;
 
             btnAddHSBA.Click += BtnAddHSBA_Click;
             btnEditHSBA.Click += BtnEditHSBA_Click;
             btnEditHSBADV.Click += BtnEditHSBADV_Click;
 
-            tabHSBA.Controls.Add(btnAddHSBA);
-            tabHSBA.Controls.Add(btnEditHSBA);
-            tabHSBA.Controls.Add(btnEditHSBADV);
+            pnlHSBAButtons.Controls.Add(btnAddHSBA);
+            pnlHSBAButtons.Controls.Add(btnEditHSBA);
+            pnlHSBAButtons.Controls.Add(btnEditHSBADV);
+            tabHSBA.Controls.Add(pnlHSBAButtons);
 
             Label lbl1 = new Label { Text = "Medical Records List", Location = new Point(15, 60), AutoSize = true, Font = new Font("Segoe UI", 10F, FontStyle.Bold) };
             tabHSBA.Controls.Add(lbl1);
