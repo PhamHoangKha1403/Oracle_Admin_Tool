@@ -135,7 +135,11 @@ namespace ATBM_Hospital_Management.Views.Components
         {
             try
             {
-                dgvPatient.DataSource = DbConnection.Instance.ExecuteQuery("sp_DPV_Select_BENHNHAN", null, CommandType.StoredProcedure);
+                var pOut = new Oracle.ManagedDataAccess.Client.OracleParameter("p_cursor", Oracle.ManagedDataAccess.Client.OracleDbType.RefCursor)
+                {
+                    Direction = CommandType.StoredProcedure == CommandType.StoredProcedure ? ParameterDirection.Output : ParameterDirection.Output
+                };
+                dgvPatient.DataSource = DbConnection.Instance.ExecuteQuery("sp_DPV_Select_BENHNHAN", new[] { pOut }, CommandType.StoredProcedure);
             }
             catch (Exception ex) { MessageBox.Show(ex.Message); }
         }
@@ -144,8 +148,11 @@ namespace ATBM_Hospital_Management.Views.Components
         {
             try
             {
-                dgvHSBA.DataSource = DbConnection.Instance.ExecuteQuery("sp_DPV_Select_HSBA", null, CommandType.StoredProcedure);
-                dgvHSBADV.DataSource = DbConnection.Instance.ExecuteQuery("sp_DPV_Select_HSBADV", null, CommandType.StoredProcedure);
+                var pOutHSBA = new Oracle.ManagedDataAccess.Client.OracleParameter("p_cursor", Oracle.ManagedDataAccess.Client.OracleDbType.RefCursor) { Direction = ParameterDirection.Output };
+                dgvHSBA.DataSource = DbConnection.Instance.ExecuteQuery("sp_DPV_Select_HSBA", new[] { pOutHSBA }, CommandType.StoredProcedure);
+                
+                var pOutHSBADV = new Oracle.ManagedDataAccess.Client.OracleParameter("p_cursor", Oracle.ManagedDataAccess.Client.OracleDbType.RefCursor) { Direction = ParameterDirection.Output };
+                dgvHSBADV.DataSource = DbConnection.Instance.ExecuteQuery("sp_DPV_Select_HSBADV", new[] { pOutHSBADV }, CommandType.StoredProcedure);
             }
             catch (Exception ex) { MessageBox.Show(ex.Message); }
         }

@@ -65,7 +65,8 @@ namespace ATBM_Hospital_Management.Views.Components
         {
             try
             {
-                DataTable dt = DbConnection.Instance.ExecuteQuery("sp_BN_Select_BENHNHAN", null, CommandType.StoredProcedure);
+                var pOut = new Oracle.ManagedDataAccess.Client.OracleParameter("p_cursor", Oracle.ManagedDataAccess.Client.OracleDbType.RefCursor) { Direction = ParameterDirection.Output };
+                DataTable dt = DbConnection.Instance.ExecuteQuery("sp_BN_Select_BENHNHAN", new[] { pOut }, CommandType.StoredProcedure);
                 dgvPatient.DataSource = dt;
             }
             catch (Exception ex)
