@@ -192,7 +192,7 @@ END;
 COMMIT;
 
 -- ============================================================
--- TẠO CÁC ROLE (Thay thế cho schema ph1)
+-- TẠO CÁC ROLE 
 -- ============================================================
 BEGIN
    EXECUTE IMMEDIATE 'CREATE ROLE RL_BACSI';
@@ -213,4 +213,4 @@ BEGIN
    EXECUTE IMMEDIATE 'CREATE ROLE RL_BENHNHAN';
 EXCEPTION WHEN OTHERS THEN IF SQLCODE <> -1921 THEN RAISE; END IF;
 END;
-/
+/

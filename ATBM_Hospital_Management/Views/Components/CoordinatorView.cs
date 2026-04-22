@@ -137,9 +137,9 @@ namespace ATBM_Hospital_Management.Views.Components
             {
                 var pOut = new Oracle.ManagedDataAccess.Client.OracleParameter("p_cursor", Oracle.ManagedDataAccess.Client.OracleDbType.RefCursor)
                 {
-                    Direction = CommandType.StoredProcedure == CommandType.StoredProcedure ? ParameterDirection.Output : ParameterDirection.Output
+                    Direction = ParameterDirection.Output
                 };
-                dgvPatient.DataSource = DbConnection.Instance.ExecuteQuery("sp_DPV_Select_BENHNHAN", new[] { pOut }, CommandType.StoredProcedure);
+                dgvPatient.DataSource = DbConnection.Instance.ExecuteQuery("BEGIN sp_DPV_Select_BENHNHAN(:p_cursor); END;", new[] { pOut }, CommandType.Text);
             }
             catch (Exception ex) { MessageBox.Show(ex.Message); }
         }
@@ -149,10 +149,10 @@ namespace ATBM_Hospital_Management.Views.Components
             try
             {
                 var pOutHSBA = new Oracle.ManagedDataAccess.Client.OracleParameter("p_cursor", Oracle.ManagedDataAccess.Client.OracleDbType.RefCursor) { Direction = ParameterDirection.Output };
-                dgvHSBA.DataSource = DbConnection.Instance.ExecuteQuery("sp_DPV_Select_HSBA", new[] { pOutHSBA }, CommandType.StoredProcedure);
+                dgvHSBA.DataSource = DbConnection.Instance.ExecuteQuery("BEGIN sp_DPV_Select_HSBA(:p_cursor); END;", new[] { pOutHSBA }, CommandType.Text);
                 
                 var pOutHSBADV = new Oracle.ManagedDataAccess.Client.OracleParameter("p_cursor", Oracle.ManagedDataAccess.Client.OracleDbType.RefCursor) { Direction = ParameterDirection.Output };
-                dgvHSBADV.DataSource = DbConnection.Instance.ExecuteQuery("sp_DPV_Select_HSBADV", new[] { pOutHSBADV }, CommandType.StoredProcedure);
+                dgvHSBADV.DataSource = DbConnection.Instance.ExecuteQuery("BEGIN sp_DPV_Select_HSBADV(:p_cursor); END;", new[] { pOutHSBADV }, CommandType.Text);
             }
             catch (Exception ex) { MessageBox.Show(ex.Message); }
         }
@@ -198,7 +198,7 @@ namespace ATBM_Hospital_Management.Views.Components
                             new Oracle.ManagedDataAccess.Client.OracleParameter("p_DIUNGTHUOC", txtDiUng.Text)
                         };
 
-                        DbConnection.Instance.ExecuteNonQuery("sp_DPV_Insert_BENHNHAN", parameters, CommandType.StoredProcedure);
+                        DbConnection.Instance.ExecuteNonQuery("BEGIN sp_DPV_Insert_BENHNHAN(:p_MABN, :p_SONHA, :p_TENDUONG, :p_QUANHUYEN, :p_TINHTP, :p_TIENSUBENH, :p_TIENSUBENHGD, :p_DIUNGTHUOC); END;", parameters, CommandType.Text);
                         MessageBox.Show("Added successfully!");
                         f.DialogResult = DialogResult.OK;
                         f.Close();
@@ -244,7 +244,7 @@ namespace ATBM_Hospital_Management.Views.Components
                             new Oracle.ManagedDataAccess.Client.OracleParameter("p_DIUNGTHUOC", txtDiUng.Text)
                         };
 
-                        DbConnection.Instance.ExecuteNonQuery("sp_DPV_Update_BENHNHAN", parameters, CommandType.StoredProcedure);
+                        DbConnection.Instance.ExecuteNonQuery("BEGIN sp_DPV_Update_BENHNHAN(:p_MABN, :p_SONHA, :p_TENDUONG, :p_QUANHUYEN, :p_TINHTP, :p_TIENSUBENH, :p_TIENSUBENHGD, :p_DIUNGTHUOC); END;", parameters, CommandType.Text);
                         MessageBox.Show("Updated successfully!");
                         f.DialogResult = DialogResult.OK;
                         f.Close();
@@ -290,7 +290,7 @@ namespace ATBM_Hospital_Management.Views.Components
                             new Oracle.ManagedDataAccess.Client.OracleParameter("p_MAKHOA", txtMaKhoa.Text),
                             new Oracle.ManagedDataAccess.Client.OracleParameter("p_KETLUAN", txtKetLuan.Text)
                         };
-                        DbConnection.Instance.ExecuteNonQuery("sp_DPV_Insert_HSBA", parameters, CommandType.StoredProcedure);
+                        DbConnection.Instance.ExecuteNonQuery("BEGIN sp_DPV_Insert_HSBA(:p_MAHSBA, :p_MABN, :p_NGAY, :p_CHANDOAN, :p_DIEUTRI, :p_MABS, :p_MAKHOA, :p_KETLUAN); END;", parameters, CommandType.Text);
                         MessageBox.Show("Record added successfully!");
                         f.DialogResult = DialogResult.OK;
                         f.Close();
@@ -325,7 +325,7 @@ namespace ATBM_Hospital_Management.Views.Components
                             new Oracle.ManagedDataAccess.Client.OracleParameter("p_MAKHOA", txtMaKhoa.Text),
                             new Oracle.ManagedDataAccess.Client.OracleParameter("p_MABS", txtMaBS.Text)
                         };
-                        DbConnection.Instance.ExecuteNonQuery("sp_DPV_Update_HSBA", parameters, CommandType.StoredProcedure);
+                        DbConnection.Instance.ExecuteNonQuery("BEGIN sp_DPV_Update_HSBA(:p_MAHSBA, :p_MAKHOA, :p_MABS); END;", parameters, CommandType.Text);
                         MessageBox.Show("Updated successfully!");
                         f.DialogResult = DialogResult.OK;
                         f.Close();
@@ -369,7 +369,7 @@ namespace ATBM_Hospital_Management.Views.Components
                             new Oracle.ManagedDataAccess.Client.OracleParameter("p_NGAYDV", dtpNgay.Value.Date),
                             new Oracle.ManagedDataAccess.Client.OracleParameter("p_MAKTV", txtMaKTV.Text)
                         };
-                        DbConnection.Instance.ExecuteNonQuery("sp_DPV_Update_HSBADV", parameters, CommandType.StoredProcedure);
+                        DbConnection.Instance.ExecuteNonQuery("BEGIN sp_DPV_Update_HSBADV(:p_MAHSBA, :p_LOAIDV, :p_NGAYDV, :p_MAKTV); END;", parameters, CommandType.Text);
                         MessageBox.Show("Updated successfully!");
                         f.DialogResult = DialogResult.OK;
                         f.Close();

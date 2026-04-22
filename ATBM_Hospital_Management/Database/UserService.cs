@@ -31,7 +31,7 @@ namespace ATBM_Hospital_Management.Database
                 {
                     Direction = ParameterDirection.Output
                 };
-                return _db.ExecuteQuery("sp_NV_Select_NHANVIEN", new[] { pOut }, CommandType.StoredProcedure);
+                return _db.ExecuteQuery("BEGIN sp_NV_Select_NHANVIEN(:p_cursor); END;", new[] { pOut }, CommandType.Text);
             }
             catch (OracleException ex)
             {
@@ -50,7 +50,7 @@ namespace ATBM_Hospital_Management.Database
                     new OracleParameter("p_QUEQUAN", OracleDbType.NVarchar2) { Value = string.IsNullOrEmpty(queQuan) ? DBNull.Value : (object)queQuan },
                     new OracleParameter("p_SODT", OracleDbType.Varchar2) { Value = string.IsNullOrEmpty(sdt) ? DBNull.Value : (object)sdt }
                 };
-                _db.ExecuteNonQuery("sp_NV_Update_NHANVIEN", p, CommandType.StoredProcedure);
+                _db.ExecuteNonQuery("BEGIN sp_NV_Update_NHANVIEN(:p_QUEQUAN, :p_SODT); END;", p, CommandType.Text);
             }
             catch (OracleException ex)
             {
@@ -70,7 +70,7 @@ namespace ATBM_Hospital_Management.Database
                 {
                     Direction = ParameterDirection.Output
                 };
-                return _db.ExecuteQuery("sp_BN_Select_BENHNHAN", new[] { pOut }, CommandType.StoredProcedure);
+                return _db.ExecuteQuery("BEGIN sp_BN_Select_BENHNHAN(:p_cursor); END;", new[] { pOut }, CommandType.Text);
             }
             catch (OracleException ex)
             {
@@ -94,7 +94,7 @@ namespace ATBM_Hospital_Management.Database
                     new OracleParameter("p_TIENSUBENHGD", OracleDbType.NVarchar2) { Value = string.IsNullOrEmpty(tienSuBenhGd) ? DBNull.Value : (object)tienSuBenhGd },
                     new OracleParameter("p_DIUNGTHUOC", OracleDbType.NVarchar2) { Value = string.IsNullOrEmpty(diUngThuoc) ? DBNull.Value : (object)diUngThuoc }
                 };
-                _db.ExecuteNonQuery("sp_BN_Update_BENHNHAN", p, CommandType.StoredProcedure);
+                _db.ExecuteNonQuery("BEGIN sp_BN_Update_BENHNHAN(:p_SONHA, :p_TENDUONG, :p_QUANHUYEN, :p_TINHTP, :p_TIENSUBENH, :p_TIENSUBENHGD, :p_DIUNGTHUOC); END;", p, CommandType.Text);
             }
             catch (OracleException ex)
             {

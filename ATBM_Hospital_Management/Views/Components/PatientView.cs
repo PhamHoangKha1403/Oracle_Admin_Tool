@@ -66,7 +66,7 @@ namespace ATBM_Hospital_Management.Views.Components
             try
             {
                 var pOut = new Oracle.ManagedDataAccess.Client.OracleParameter("p_cursor", Oracle.ManagedDataAccess.Client.OracleDbType.RefCursor) { Direction = ParameterDirection.Output };
-                DataTable dt = DbConnection.Instance.ExecuteQuery("sp_BN_Select_BENHNHAN", new[] { pOut }, CommandType.StoredProcedure);
+                DataTable dt = DbConnection.Instance.ExecuteQuery("BEGIN sp_BN_Select_BENHNHAN(:p_cursor); END;", new[] { pOut }, CommandType.Text);
                 dgvPatient.DataSource = dt;
             }
             catch (Exception ex)
@@ -114,7 +114,7 @@ namespace ATBM_Hospital_Management.Views.Components
                             new Oracle.ManagedDataAccess.Client.OracleParameter("p_DIUNGTHUOC", txtDiUng.Text)
                         };
 
-                        DbConnection.Instance.ExecuteNonQuery("sp_BN_Update_BENHNHAN", parameters, CommandType.StoredProcedure);
+                        DbConnection.Instance.ExecuteNonQuery("BEGIN sp_BN_Update_BENHNHAN(:p_SONHA, :p_TENDUONG, :p_QUANHUYEN, :p_TINHTP, :p_TIENSUBENH, :p_TIENSUBENHGD, :p_DIUNGTHUOC); END;", parameters, CommandType.Text);
                         MessageBox.Show("Updated successfully!", "Info", MessageBoxButtons.OK, MessageBoxIcon.Information);
                         editForm.DialogResult = DialogResult.OK;
                         editForm.Close();
