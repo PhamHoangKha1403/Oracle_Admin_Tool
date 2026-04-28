@@ -73,6 +73,10 @@ namespace ATBM_Hospital_Management.Views
                 {
                     tpMedical.Controls.Add(new Components.CoordinatorView { Dock = DockStyle.Fill });
                 }
+                else if (role == "RL_KYTHUATVIEN")
+                {
+                    tpMedical.Controls.Add(new Components.TechnicianView { Dock = DockStyle.Fill });
+                }
                 else
                 {
                     Label lblNotice = new Label

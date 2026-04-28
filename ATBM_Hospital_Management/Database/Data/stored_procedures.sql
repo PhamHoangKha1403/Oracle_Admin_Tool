@@ -383,3 +383,67 @@ GRANT EXECUTE ON sp_DPV_Select_HSBADV TO RL_DIEUPHOIVIEN;
 GRANT EXECUTE ON sp_DPV_Insert_HSBA TO RL_DIEUPHOIVIEN;
 GRANT EXECUTE ON sp_DPV_Update_HSBA TO RL_DIEUPHOIVIEN;
 GRANT EXECUTE ON sp_DPV_Update_HSBADV TO RL_DIEUPHOIVIEN;
+
+-- ============================================================
+-- sp_KTV_Select_HSBADV
+-- ============================================================
+CREATE OR REPLACE PROCEDURE sp_KTV_Select_HSBADV(p_cursor OUT SYS_REFCURSOR)
+AS
+    v_user VARCHAR2(100);
+BEGIN
+    v_user := SYS_CONTEXT('USERENV', 'SESSION_USER');
+    OPEN p_cursor FOR
+        SELECT MA_HSBA, LOAI_DV, NGAY_DV, MA_KTV, KET_QUA
+        FROM HSBA_DV
+        WHERE MA_KTV = v_user;
+END sp_KTV_Select_HSBADV;
+/
+
+-- ============================================================
+-- sp_KTV_Update_KETQUA
+-- ============================================================
+CREATE OR REPLACE PROCEDURE sp_KTV_Update_KETQUA(
+    p_MAHSBA IN VARCHAR2,
+    p_LOAIDV IN VARCHAR2,
+    p_NGAYDV IN DATE,
+    p_KETQUA IN NVARCHAR2
+)
+AS
+    v_user VARCHAR2(100);
+BEGIN
+    v_user := SYS_CONTEXT('USERENV', 'SESSION_USER');
+    UPDATE HSBA_DV
+    SET KET_QUA = p_KETQUA
+    WHERE MA_HSBA = p_MAHSBA
+      AND LOAI_DV = p_LOAIDV
+      AND NGAY_DV = p_NGAYDV
+      AND MA_KTV = v_user;
+    COMMIT;
+END sp_KTV_Update_KETQUA;
+/
+
+-- ============================================================
+-- sp_KTV_Select_AuditLog
+-- ============================================================
+CREATE OR REPLACE PROCEDURE sp_KTV_Select_AuditLog(p_cursor OUT SYS_REFCURSOR)
+AS
+    v_user VARCHAR2(100);
+BEGIN
+    v_user := SYS_CONTEXT('USERENV', 'SESSION_USER');
+    OPEN p_cursor FOR
+        SELECT MAHSBA, LOAIDV, NGAYDV, OLD_KETQUA, NEW_KETQUA, NGAY_GHI
+        FROM AUDIT_HSBADV_LOG
+        WHERE MAKTV = v_user
+        ORDER BY NGAY_GHI DESC;
+END sp_KTV_Select_AuditLog;
+/
+
+-- Cho Kỹ thuật viên
+CREATE OR REPLACE PUBLIC SYNONYM sp_KTV_Select_HSBADV FOR sp_KTV_Select_HSBADV;
+CREATE OR REPLACE PUBLIC SYNONYM sp_KTV_Update_KETQUA FOR sp_KTV_Update_KETQUA;
+CREATE OR REPLACE PUBLIC SYNONYM sp_KTV_Select_AuditLog FOR sp_KTV_Select_AuditLog;
+
+GRANT EXECUTE ON sp_KTV_Select_HSBADV TO RL_KYTHUATVIEN;
+GRANT EXECUTE ON sp_KTV_Update_KETQUA TO RL_KYTHUATVIEN;
+GRANT EXECUTE ON sp_KTV_Select_AuditLog TO RL_KYTHUATVIEN;
+GRANT SELECT, INSERT ON AUDIT_HSBADV_LOG TO RL_KYTHUATVIEN;
