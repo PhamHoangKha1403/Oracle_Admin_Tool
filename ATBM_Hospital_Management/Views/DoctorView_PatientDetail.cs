@@ -133,6 +133,7 @@ namespace ATBM_Hospital_Management.Views.Components
                 };
 
                 _db.ExecuteNonQuery("ADMIN_PH2.sp_BS_Update_BENHNHAN", pars, CommandType.StoredProcedure);
+                _db.ExecuteNonQuery("COMMIT");
                 MessageBox.Show("Cập nhật thông tin bệnh nhân thành công!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
             catch (Exception ex) { MessageBox.Show("Lỗi cập nhật: " + ex.Message); }

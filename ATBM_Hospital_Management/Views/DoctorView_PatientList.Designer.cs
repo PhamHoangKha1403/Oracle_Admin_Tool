@@ -48,7 +48,7 @@
             this.pnlMainList.Dock = System.Windows.Forms.DockStyle.Fill;
             this.pnlMainList.Location = new System.Drawing.Point(20, 20);
             this.pnlMainList.Name = "pnlMainList";
-            this.pnlMainList.Size = new System.Drawing.Size(1240, 650);
+            this.pnlMainList.Size = new System.Drawing.Size(1240, 623);
             this.pnlMainList.TabIndex = 0;
             // 
             // dataGridView1
@@ -56,20 +56,21 @@
             this.dataGridView1.AllowUserToAddRows = false;
             this.dataGridView1.BackgroundColor = System.Drawing.Color.White;
             this.dataGridView1.ColumnHeadersHeight = 34;
+            this.dataGridView1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.dataGridView1.Location = new System.Drawing.Point(0, 0);
             this.dataGridView1.Name = "dataGridView1";
             this.dataGridView1.ReadOnly = true;
             this.dataGridView1.RowHeadersVisible = false;
             this.dataGridView1.RowHeadersWidth = 62;
             this.dataGridView1.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
+            this.dataGridView1.Size = new System.Drawing.Size(1240, 623);
             this.dataGridView1.TabIndex = 0;
             this.dataGridView1.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dataGridView1_CellContentClick);
-            this.dataGridView1.Dock = System.Windows.Forms.DockStyle.Fill;
-
             // 
             // lblRecordCount
             // 
             this.lblRecordCount.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.lblRecordCount.Location = new System.Drawing.Point(20, 640);
+            this.lblRecordCount.Location = new System.Drawing.Point(20, 613);
             this.lblRecordCount.Name = "lblRecordCount";
             this.lblRecordCount.Size = new System.Drawing.Size(1240, 30);
             this.lblRecordCount.TabIndex = 1;
@@ -92,7 +93,7 @@
             this.btnBenhNhan.FlatAppearance.BorderSize = 0;
             this.btnBenhNhan.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnBenhNhan.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnBenhNhan.Location = new System.Drawing.Point(583, 9);
+            this.btnBenhNhan.Location = new System.Drawing.Point(805, 10);
             this.btnBenhNhan.Name = "btnBenhNhan";
             this.btnBenhNhan.Size = new System.Drawing.Size(174, 42);
             this.btnBenhNhan.TabIndex = 0;
@@ -104,7 +105,7 @@
             this.btnHoSoBenhAn.FlatAppearance.BorderSize = 0;
             this.btnHoSoBenhAn.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnHoSoBenhAn.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnHoSoBenhAn.Location = new System.Drawing.Point(774, 9);
+            this.btnHoSoBenhAn.Location = new System.Drawing.Point(996, 10);
             this.btnHoSoBenhAn.Name = "btnHoSoBenhAn";
             this.btnHoSoBenhAn.Size = new System.Drawing.Size(275, 42);
             this.btnHoSoBenhAn.TabIndex = 1;
@@ -141,11 +142,12 @@
             this.panelContent.Controls.Add(this.lblRecordCount);
             this.panelContent.Controls.Add(this.pnlMainList);
             this.panelContent.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.panelContent.Location = new System.Drawing.Point(0, 110);
+            this.panelContent.Location = new System.Drawing.Point(0, 137);
             this.panelContent.Name = "panelContent";
-            this.panelContent.Padding = new System.Windows.Forms.Padding(20);
-            this.panelContent.Size = new System.Drawing.Size(1280, 690);
+            this.panelContent.Size = new System.Drawing.Size(1280, 663);
             this.panelContent.TabIndex = 0;
+            this.panelContent.Padding = new System.Windows.Forms.Padding(20, 5, 20, 20);
+
             // 
             // lblTitle
             // 
@@ -153,7 +155,7 @@
             this.lblTitle.Font = new System.Drawing.Font("Segoe UI", 16F, System.Drawing.FontStyle.Bold);
             this.lblTitle.Location = new System.Drawing.Point(0, 60);
             this.lblTitle.Name = "lblTitle";
-            this.lblTitle.Size = new System.Drawing.Size(1280, 50);
+            this.lblTitle.Size = new System.Drawing.Size(1280, 40);
             this.lblTitle.TabIndex = 2;
             this.lblTitle.Text = "DANH SÁCH BỆNH NHÂN";
             this.lblTitle.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;

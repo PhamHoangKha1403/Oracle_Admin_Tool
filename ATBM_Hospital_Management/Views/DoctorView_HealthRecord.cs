@@ -15,14 +15,20 @@ namespace ATBM_Hospital_Management.Views
         private string _maBN;
         private DoctorView_PatientList _parentView;
         private DataTable _dtDonThuoc;
+        private DoctorView_HealthRecordList _sourceListView;
 
         public DoctorView_HealthRecord(string maHSBA, string maBN, DoctorView_PatientList parent)
+    : this(maHSBA, maBN, parent, null) { }
+
+        public DoctorView_HealthRecord(string maHSBA, string maBN,
+    DoctorView_PatientList parent, DoctorView_HealthRecordList sourceList)
         {
             InitializeComponent();
             _db = DbConnection.Instance;
             _maHSBA = maHSBA;
-            _maBN = maBN;
+            _maBN = maBN; 
             _parentView = parent;
+            _sourceListView = sourceList;
 
             this.Load += DoctorView_HealthRecord_Load;
 
@@ -31,20 +37,41 @@ namespace ATBM_Hospital_Management.Views
             dataGridView2.CellContentClick += dataGridView2_CellContentClick; // Cho Đơn thuốc
 
             // Đăng ký các sự kiện khác
-            button5.Click += button5_Click; // Nút Thêm thuốc
             button6.Click += button6_Click; // Nút Lưu thuốc
             button2.Click += button2_Click; // Nút Thêm dịch vụ
-            button1.Click += button1_Click; // Nút Lưu HSBA
+
 
             // Xử lý nút Back (label10)
             label10.Cursor = Cursors.Hand;
-            label10.Click += (s, e) => {
-                // Quay lại trang Thông tin bệnh nhân
+            label10.Click += label10_Click;
+
+            panel2.SizeChanged += panel2_SizeChanged;
+        }
+        private void panel2_SizeChanged(object sender, EventArgs e)
+        {
+            AlignPanel2Controls();
+        }
+        private void label10_Click(object sender, EventArgs e)
+        {
+            if (_parentView == null)
+            {
+                MessageBox.Show("Lỗi: Không tìm thấy trang cha.", "Lỗi điều hướng",
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+
+            if (_sourceListView != null)
+            {
+                // Mở từ HealthRecordList → quay về danh sách HSBA
+                _parentView.ShowPage(_sourceListView);
+            }
+            else
+            {
+                // Mở từ PatientDetail → quay về thông tin bệnh nhân
                 var detailPage = new Components.DoctorView_PatientDetail(_maBN, _parentView);
                 _parentView.ShowPage(detailPage);
-            };
+            }
         }
-
         private void DoctorView_HealthRecord_Load(object sender, EventArgs e)
         {
             SetupDataGrids();
@@ -54,30 +81,7 @@ namespace ATBM_Hospital_Management.Views
         }
 
 
-        private void ConfigureTable(DataGridView dgv)
-        {
-            // 1. Loại bỏ các phần thừa để khít bảng
-            dgv.RowHeadersVisible = false;      // Bỏ cột trống bên trái
-            dgv.AllowUserToAddRows = false;     // Bỏ dòng trống dưới cùng
-            dgv.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill; // Lấp đầy khoảng xám bên phải
-
-            // 2. Tùy chỉnh màu sắc cho giống mẫu
-            dgv.BackgroundColor = Color.White;
-            dgv.BorderStyle = BorderStyle.FixedSingle; // Hoặc None nếu muốn phẳng hẳn
-            dgv.GridColor = Color.LightGray;    // Màu đường kẻ giữa các ô
-
-            // 3. Header (Dòng tiêu đề)
-            dgv.EnableHeadersVisualStyles = false;
-            dgv.ColumnHeadersDefaultCellStyle.BackColor = Color.White; // Hoặc màu xanh nhạt theo mẫu
-            dgv.ColumnHeadersDefaultCellStyle.ForeColor = Color.Black;
-            dgv.ColumnHeadersDefaultCellStyle.Font = new Font("Segoe UI", 10, FontStyle.Bold);
-            dgv.ColumnHeadersHeight = 40;
-            dgv.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.DisableResizing;
-
-            // 4. Căn giữa nội dung cho đẹp
-            dgv.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
-            dgv.ColumnHeadersDefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
-        }
+  
 
         // Hàm này dùng để tính toán lại chiều cao của Grid dựa trên số dòng
         private void AdjustGridHeight(DataGridView dgv, int maxHeight)
@@ -114,6 +118,9 @@ namespace ATBM_Hospital_Management.Views
         }
         private void SetupDataGrids()
         {
+            ApplyGridHeaderStyle(dataGridView1);
+            ApplyGridHeaderStyle(dataGridView2);
+
             // Cấu hình chung cho dataGridView2
             dataGridView2.AutoGenerateColumns = false; // TẮT TỰ ĐỘNG TẠO CỘT
             dataGridView2.Columns.Clear();
@@ -121,6 +128,8 @@ namespace ATBM_Hospital_Management.Views
             dataGridView2.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
             dataGridView2.AllowUserToAddRows = false;
             dataGridView2.BackgroundColor = Color.White;
+
+            
 
             // Cột 1: Tên thuốc
             DataGridViewTextBoxColumn colTen = new DataGridViewTextBoxColumn();
@@ -147,6 +156,35 @@ namespace ATBM_Hospital_Management.Views
             btnDel.FillWeight = 10;
             btnDel.FlatStyle = FlatStyle.Flat;
             dataGridView2.Columns.Add(btnDel);
+
+            label9 = new Label
+            {
+                Text = "Không có đơn thuốc",
+                Font = new Font("Segoe UI", 11, FontStyle.Italic),
+                ForeColor = Color.Gray,
+                TextAlign = ContentAlignment.MiddleCenter,
+                Dock = DockStyle.None,
+                Size = new Size(449, 50),
+                Location = new Point(27, 71), // Cùng vị trí với dataGridView2
+                Visible = false
+            };
+            panel2.Controls.Add(label9);
+            label9.BringToFront();
+        }
+        // Hàm phụ trợ để tái sử dụng Style Header
+        private void ApplyGridHeaderStyle(DataGridView dgv)
+        {
+            dgv.EnableHeadersVisualStyles = false; // BẮT BUỘC có dòng này để đổi được màu BackColor
+            dgv.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.DisableResizing;
+            dgv.ColumnHeadersHeight = 35; // Bạn có thể chỉnh độ cao tùy ý
+
+            dgv.ColumnHeadersDefaultCellStyle.BackColor = Color.FromArgb(0, 151, 167);
+            dgv.ColumnHeadersDefaultCellStyle.ForeColor = Color.White;
+            dgv.ColumnHeadersDefaultCellStyle.Font = new Font("Segoe UI", 10, FontStyle.Bold);
+            dgv.ColumnHeadersDefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
+
+            // Căn giữa text cho Header của từng cột (đảm bảo hiển thị đẹp nhất)
+            dgv.ColumnHeadersDefaultCellStyle.SelectionBackColor = Color.FromArgb(0, 151, 167);
         }
         private void LoadHSBADetail()
         {
@@ -198,23 +236,65 @@ namespace ATBM_Hospital_Management.Views
                 OracleParameter p_ma_hsba = new OracleParameter("p_ma_hsba", _maHSBA);
                 OracleParameter p_cursor = new OracleParameter("p_cursor", OracleDbType.RefCursor, ParameterDirection.Output);
 
+                dataGridView2.DataSource = null;
                 _dtDonThuoc = _db.ExecuteQuery("ADMIN_PH2.sp_BS_Select_DONTHUOC",
                                                 new[] { p_ma_hsba, p_cursor },
                                                 CommandType.StoredProcedure);
 
-                // Đảm bảo AutoGenerateColumns là false trước khi gán DataSource
-                dataGridView2.AutoGenerateColumns = false;
-                dataGridView2.DataSource = _dtDonThuoc;
+                bool hasData = (_dtDonThuoc != null && _dtDonThuoc.Rows.Count > 0);
 
-                // Gọi hàm tính chiều cao để bảng khít với dữ liệu
-                AdjustGridHeight(dataGridView2, 300);
+                // 1. Quản lý hiển thị các Control
+                label9.Visible = !hasData;
+                dataGridView2.Visible = hasData;
+                button6.Visible = hasData; // Hiện nút LƯU khi có data
+
+                if (hasData)
+                {
+                    dataGridView2.DataSource = _dtDonThuoc;
+                    if (dataGridView2.Columns.Contains("NGAY_DT"))
+                        dataGridView2.Columns["NGAY_DT"].DataPropertyName = "NGAY_DT";
+
+                    panel2.Height = 350; // Trả về chiều cao mặc định
+                    AdjustGridHeight(dataGridView2, 250);
+                }
+
+                // 2. Gọi hàm căn chỉnh vị trí (Dùng chung cho cả 2 trường hợp)
+                AlignPanel2Controls();
             }
-            catch (Exception ex)
+            catch (Exception ex) { MessageBox.Show("Lỗi nạp đơn thuốc: " + ex.Message); }
+        }
+        private void AlignPanel2Controls()
+        {
+            bool hasData = (_dtDonThuoc != null && _dtDonThuoc.Rows.Count > 0);
+            int spacing = 15;
+
+            // Luôn căn giữa tiêu đề label9
+            label9.Left = (panel2.Width - label9.Width) / 2;
+
+            if (!hasData)
             {
-                MessageBox.Show("Lỗi: " + ex.Message);
+                label9.Left = (panel2.Width - label9.Width) / 2;
+
+                button5.Left = (panel2.Width - button5.Width) / 2;
+                button5.Top = label9.Bottom + spacing;
+
+                panel2.Height = button5.Bottom + 30;
+            }
+            else
+            {
+                // Khi CÓ DATA: Grid -> 2 nút nằm hàng ngang ở giữa
+                dataGridView2.Left = (panel2.Width - dataGridView2.Width) / 2;
+
+                // Tính toán để 2 nút (Thêm & Lưu) nằm song song và cụm đó nằm giữa Panel
+                int totalButtonsWidth = button5.Width + button6.Width + 20; // 20 là khoảng cách giữa 2 nút
+                int startX = (panel2.Width - totalButtonsWidth) / 2;
+
+                button6.Location = new Point(startX, dataGridView2.Bottom + spacing);
+                button5.Location = new Point(button6.Right + 20, dataGridView2.Bottom + spacing);
+
+                panel2.Height = button5.Bottom + 30;
             }
         }
-
         private void button5_Click(object sender, EventArgs e) // Nút "Thêm thuốc"
         {
             // Tạo nhanh Dialog nhập liệu
@@ -240,7 +320,7 @@ namespace ATBM_Hospital_Management.Views
                 new OracleParameter("p_LIEUDUNG", txtLieu.Text.Trim())
             };
                     _db.ExecuteNonQuery("ADMIN_PH2.sp_BS_Insert_DONTHUOC", p, CommandType.StoredProcedure);
-
+                    _db.ExecuteNonQuery("COMMIT");
                     LoadDonThuoc(); // Nạp lại bảng ngay lập tức
                     AdjustGridHeight(dataGridView2, 300);
                 }
@@ -248,23 +328,30 @@ namespace ATBM_Hospital_Management.Views
             }
         }
 
-        private void button6_Click(object sender, EventArgs e) // Nút LƯU (Chỉ Update)
+        private void button6_Click(object sender, EventArgs e) // Nút LƯU thuốc
         {
             dataGridView2.EndEdit();
-            int updateCount = 0;
+            if (_dtDonThuoc == null) return;
+
             try
             {
+                int updateCount = 0;
                 foreach (DataRow row in _dtDonThuoc.Rows)
                 {
+                    // Chỉ xử lý những dòng có sự thay đổi
                     if (row.RowState == DataRowState.Modified)
                     {
                         OracleParameter[] p = {
                     new OracleParameter("p_MA_HSBA", _maHSBA),
-                    new OracleParameter("p_NGAY_DT_CU", OracleDbType.Date) { Value = row["NGAY_DT", DataRowVersion.Original] },
+                    // Lấy giá trị NGAY_DT gốc (Original) để làm điều kiện WHERE
+                    new OracleParameter("p_NGAY_DT_CU", OracleDbType.Date) {
+                        Value = row["NGAY_DT", DataRowVersion.Original]
+                    },
                     new OracleParameter("p_TENTHUOC_CU", row["TEN_THUOC", DataRowVersion.Original].ToString()),
                     new OracleParameter("p_TENTHUOC_MOI", row["TEN_THUOC"].ToString()),
                     new OracleParameter("p_LIEUDUNG", row["LIEU_DUNG"].ToString())
                 };
+
                         _db.ExecuteNonQuery("ADMIN_PH2.sp_BS_Update_DONTHUOC", p, CommandType.StoredProcedure);
                         updateCount++;
                     }
@@ -272,15 +359,15 @@ namespace ATBM_Hospital_Management.Views
 
                 if (updateCount > 0)
                 {
-                    MessageBox.Show($"Đã cập nhật thành công {updateCount} thay đổi!");
-                    LoadDonThuoc();
-                }
-                else
-                {
-                    MessageBox.Show("Không có thay đổi nào để lưu.");
+                    _db.ExecuteNonQuery("COMMIT");
+                    MessageBox.Show($"Đã cập nhật thành công {updateCount} dòng!");
+                    LoadDonThuoc(); // Nạp lại để cập nhật trạng thái DataTable (DataRowState trở về Unchanged)
                 }
             }
-            catch (Exception ex) { MessageBox.Show("Lỗi cập nhật: " + ex.Message); }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Lỗi khi cập nhật đơn thuốc: " + ex.Message);
+            }
         }
 
         // --- PHẦN 3: DỊCH VỤ (HSBA_DV) ---
@@ -348,6 +435,7 @@ namespace ATBM_Hospital_Management.Views
                 new OracleParameter("p_ket_qua", DBNull.Value)
             };
                     _db.ExecuteNonQuery("ADMIN_PH2.sp_BS_Insert_HSBADV", p, CommandType.StoredProcedure);
+                    _db.ExecuteNonQuery("COMMIT");
                     LoadHSBADV();
                     MessageBox.Show("Đã thêm dịch vụ!");
                 }
@@ -385,6 +473,7 @@ namespace ATBM_Hospital_Management.Views
                 };
 
                         _db.ExecuteNonQuery("ADMIN_PH2.sp_BS_Delete_HSBADV", p, CommandType.StoredProcedure);
+                        _db.ExecuteNonQuery("COMMIT"); 
                         MessageBox.Show("Đã xóa dịch vụ thành công!");
 
                         LoadHSBADV(); // Tải lại bảng và tính lại chiều cao
@@ -420,6 +509,7 @@ namespace ATBM_Hospital_Management.Views
                         new OracleParameter("p_LIEUDUNG", row["LIEU_DUNG"]?.ToString() ?? "NULL")
                     };
                             _db.ExecuteNonQuery("ADMIN_PH2.sp_BS_Delete_DONTHUOC", p, CommandType.StoredProcedure);
+                            _db.ExecuteNonQuery("COMMIT");
                             MessageBox.Show("Đã xóa thuốc!");
                             LoadDonThuoc();
                         }
@@ -431,6 +521,16 @@ namespace ATBM_Hospital_Management.Views
                     _dtDonThuoc.Rows.RemoveAt(e.RowIndex);
                 }
             }
+        }
+
+        public void SetBreadcrumb(string text)
+        {
+            label8.Text = text;
+        }
+
+        private void button3_Click(object sender, EventArgs e)
+        {
+
         }
     }
 }

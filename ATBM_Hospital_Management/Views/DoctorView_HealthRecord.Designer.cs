@@ -1,4 +1,6 @@
-﻿namespace ATBM_Hospital_Management.Views
+﻿using System.Windows.Forms;
+
+namespace ATBM_Hospital_Management.Views
 {
     partial class DoctorView_HealthRecord
     {
@@ -46,13 +48,13 @@
             this.button2 = new System.Windows.Forms.Button();
             this.panel2 = new System.Windows.Forms.Panel();
             this.button6 = new System.Windows.Forms.Button();
-            this.button5 = new System.Windows.Forms.Button();
             this.dataGridView2 = new System.Windows.Forms.DataGridView();
             this.label9 = new System.Windows.Forms.Label();
             this.panel3 = new System.Windows.Forms.Panel();
             this.dataGridView1 = new System.Windows.Forms.DataGridView();
             this.label10 = new System.Windows.Forms.Label();
             this.label8 = new System.Windows.Forms.Label();
+            this.button5 = new System.Windows.Forms.Button();
             this.panel1.SuspendLayout();
             this.panel2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView2)).BeginInit();
@@ -223,13 +225,12 @@
             this.button2.TabIndex = 15;
             this.button2.Text = "Thêm dịch vụ";
             this.button2.UseVisualStyleBackColor = false;
-            this.button2.Click += new System.EventHandler(this.button2_Click);
             // 
             // panel2
             // 
             this.panel2.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(212)))), ((int)(((byte)(240)))), ((int)(((byte)(244)))));
-            this.panel2.Controls.Add(this.button6);
             this.panel2.Controls.Add(this.button5);
+            this.panel2.Controls.Add(this.button6);
             this.panel2.Controls.Add(this.dataGridView2);
             this.panel2.Controls.Add(this.label9);
             this.panel2.Location = new System.Drawing.Point(999, 126);
@@ -242,29 +243,17 @@
             this.button6.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(62)))), ((int)(((byte)(126)))));
             this.button6.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.button6.ForeColor = System.Drawing.SystemColors.ButtonFace;
-            this.button6.Location = new System.Drawing.Point(139, 348);
+            this.button6.Location = new System.Drawing.Point(121, 332);
             this.button6.Name = "button6";
             this.button6.Size = new System.Drawing.Size(91, 34);
             this.button6.TabIndex = 19;
             this.button6.Text = "Lưu";
             this.button6.UseVisualStyleBackColor = false;
             // 
-            // button5
-            // 
-            this.button5.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(47)))), ((int)(((byte)(121)))), ((int)(((byte)(138)))));
-            this.button5.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.button5.ForeColor = System.Drawing.SystemColors.ButtonFace;
-            this.button5.Location = new System.Drawing.Point(259, 348);
-            this.button5.Name = "button5";
-            this.button5.Size = new System.Drawing.Size(152, 34);
-            this.button5.TabIndex = 21;
-            this.button5.Text = "Thêm thuốc";
-            this.button5.UseVisualStyleBackColor = false;
-            // 
             // dataGridView2
             // 
             this.dataGridView2.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dataGridView2.Location = new System.Drawing.Point(31, 104);
+            this.dataGridView2.Location = new System.Drawing.Point(28, 71);
             this.dataGridView2.Name = "dataGridView2";
             this.dataGridView2.RowHeadersWidth = 62;
             this.dataGridView2.RowTemplate.Height = 28;
@@ -328,6 +317,19 @@
             this.label8.TabIndex = 19;
             this.label8.Text = "BỆNH NHÂN/ THÔNG TIN BỆNH NHÂN / HỒ SƠ BỆNH ÁN";
             // 
+            // button5
+            // 
+            this.button5.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(47)))), ((int)(((byte)(121)))), ((int)(((byte)(138)))));
+            this.button5.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.button5.ForeColor = System.Drawing.SystemColors.ButtonFace;
+            this.button5.Location = new System.Drawing.Point(252, 332);
+            this.button5.Name = "button5";
+            this.button5.Size = new System.Drawing.Size(151, 34);
+            this.button5.TabIndex = 22;
+            this.button5.Text = "Thêm thuốc";
+            this.button5.UseVisualStyleBackColor = false;
+            this.button5.Click += new System.EventHandler(this.button5_Click);
+            // 
             // DoctorView_HealthRecord
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 20F);
@@ -369,10 +371,10 @@
         private System.Windows.Forms.DataGridView dataGridView2;
         private System.Windows.Forms.Label label9;
         private System.Windows.Forms.Button button6;
-        private System.Windows.Forms.Button button5;
         private System.Windows.Forms.Panel panel3;
         private System.Windows.Forms.Label label8;
         private System.Windows.Forms.Label label10;
         private System.Windows.Forms.DataGridView dataGridView1;
+        private Button button5;
     }
 }

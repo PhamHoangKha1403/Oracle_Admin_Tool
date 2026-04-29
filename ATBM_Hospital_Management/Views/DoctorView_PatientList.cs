@@ -27,38 +27,40 @@ namespace ATBM_Hospital_Management.Views.Components
 
         public void DoctorView_Load(object sender, EventArgs e)
         {
+            lblTitle.AutoSize = false;
+            lblTitle.Height = 100;
+
             ShowMainListView(); 
 
             SetupDataGrid();
             LoadPatients();
             SetActiveNav(btnBenhNhan);
         }
-        
+
         // Hàm này đảm bảo giao diện danh sách hiện ra
         private void ShowMainListView()
         {
-            // 1. Cập nhật tiêu đề trang
-            if (this.lblTitle != null)
-            {
-                this.lblTitle.Text = "DANH SÁCH BỆNH NHÂN";
-                this.lblTitle.Visible = true;     
-                this.lblTitle.BringToFront();
-            }
-
-            // 2. Xóa các trang Detail cũ đang chiếm chỗ trong panelContent
             panelContent.Controls.Clear();
 
-            // 3. Nạp lại bảng danh sách và các nút bấm gốc
             if (pnlMainList != null)
             {
-                pnlMainList.Visible = true;
+                // 2. Dọn dẹp pnlMainList để xây dựng lại cấu trúc (Tránh bị trùng lặp control)
+                pnlMainList.Controls.Clear();
                 pnlMainList.Dock = DockStyle.Fill;
+
+                dataGridView1.Dock = DockStyle.Fill;
+
+                pnlMainList.Controls.Add(dataGridView1); // Nằm dưới cùng
+                pnlMainList.Controls.Add(lblTitle);      // Nằm trên cùng
+
+                pnlMainList.Visible = true;
                 panelContent.Controls.Add(pnlMainList);
+                pnlMainList.BringToFront();
             }
         }
         private void SetupDataGrid()
         {
-            pnlMainList.Padding = new Padding(0, 15, 0, 0);
+            pnlMainList.Padding = new Padding(0, 40, 0, 0);
             dataGridView1.Columns.Clear();
             dataGridView1.AutoGenerateColumns = false;
             dataGridView1.Dock = DockStyle.Fill;
@@ -77,8 +79,6 @@ namespace ATBM_Hospital_Management.Views.Components
 
             // Fill mode
             dataGridView1.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
-            dataGridView1.ColumnHeadersVisible = false;
-            dataGridView1.ColumnHeadersVisible = true;
 
             // --- THIẾT LẬP CÁC CỘT ---
             AddColumn("MA_BN", "MÃ BN", "MA_BN", 150);
@@ -207,7 +207,8 @@ namespace ATBM_Hospital_Management.Views.Components
         private void btnHoSoBenhAn_Click(object sender, EventArgs e)
         {
             SetActiveNav(btnHoSoBenhAn);
-            // Logic chuyển view Hồ sơ bệnh án tại đây
+            var listPage = new DoctorView_HealthRecordList(this);
+            ShowPage(listPage);
         }
 
         private void dataGridView1_CellContentClick(object sender, DataGridViewCellEventArgs e)

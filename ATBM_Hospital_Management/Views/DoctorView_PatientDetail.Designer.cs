@@ -31,6 +31,7 @@ namespace ATBM_Hospital_Management.Views.Components
 
         private void InitializeComponent()
         {
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
             this.panelInfo = new System.Windows.Forms.Panel();
             this.label14 = new System.Windows.Forms.Label();
             this.label13 = new System.Windows.Forms.Label();
@@ -103,7 +104,7 @@ namespace ATBM_Hospital_Management.Views.Components
             // 
             this.label13.AutoSize = true;
             this.label13.Font = new System.Drawing.Font("Microsoft Sans Serif", 16F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label13.Location = new System.Drawing.Point(534, 51);
+            this.label13.Location = new System.Drawing.Point(788, 51);
             this.label13.Name = "label13";
             this.label13.Size = new System.Drawing.Size(414, 37);
             this.label13.TabIndex = 29;
@@ -112,17 +113,22 @@ namespace ATBM_Hospital_Management.Views.Components
             // dataGridView1
             // 
             this.dataGridView1.AllowUserToAddRows = false;
-            this.dataGridView1.AllowUserToDeleteRows = false;
             this.dataGridView1.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
-            this.dataGridView1.AutoSizeRowsMode = System.Windows.Forms.DataGridViewAutoSizeRowsMode.AllCells;
-            this.dataGridView1.ColumnHeadersHeight = 34;
-            this.dataGridView1.Location = new System.Drawing.Point(62, 613);
-            this.dataGridView1.MaximumSize = new System.Drawing.Size(1452, 400);
+            dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
+            dataGridViewCellStyle1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(151)))), ((int)(((byte)(167)))));
+            dataGridViewCellStyle1.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
+            dataGridViewCellStyle1.ForeColor = System.Drawing.Color.White;
+            this.dataGridView1.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle1;
+            this.dataGridView1.ColumnHeadersHeight = 45;
+            this.dataGridView1.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.DisableResizing;
+            this.dataGridView1.EnableHeadersVisualStyles = false;
+            this.dataGridView1.Location = new System.Drawing.Point(251, 591);
             this.dataGridView1.Name = "dataGridView1";
             this.dataGridView1.ReadOnly = true;
+            this.dataGridView1.RowHeadersVisible = false;
             this.dataGridView1.RowHeadersWidth = 62;
-            this.dataGridView1.Size = new System.Drawing.Size(1452, 400);
-            this.dataGridView1.TabIndex = 30;
+            this.dataGridView1.Size = new System.Drawing.Size(1458, 242);
+            this.dataGridView1.TabIndex = 33;
             this.dataGridView1.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dataGridView1_CellContentClick);
             // 
             // button2
@@ -162,7 +168,7 @@ namespace ATBM_Hospital_Management.Views.Components
             this.panel1.Controls.Add(this.label3);
             this.panel1.Controls.Add(this.label2);
             this.panel1.Controls.Add(this.label1);
-            this.panel1.Location = new System.Drawing.Point(62, 129);
+            this.panel1.Location = new System.Drawing.Point(251, 127);
             this.panel1.Name = "panel1";
             this.panel1.Size = new System.Drawing.Size(1458, 410);
             this.panel1.TabIndex = 26;
@@ -182,7 +188,7 @@ namespace ATBM_Hospital_Management.Views.Components
             // 
             // richTextBox3
             // 
-            this.richTextBox3.Location = new System.Drawing.Point(1108, 157);
+            this.richTextBox3.Location = new System.Drawing.Point(1111, 157);
             this.richTextBox3.Name = "richTextBox3";
             this.richTextBox3.Size = new System.Drawing.Size(325, 188);
             this.richTextBox3.TabIndex = 24;
@@ -190,7 +196,7 @@ namespace ATBM_Hospital_Management.Views.Components
             // 
             // richTextBox2
             // 
-            this.richTextBox2.Location = new System.Drawing.Point(625, 157);
+            this.richTextBox2.Location = new System.Drawing.Point(628, 157);
             this.richTextBox2.Name = "richTextBox2";
             this.richTextBox2.Size = new System.Drawing.Size(325, 188);
             this.richTextBox2.TabIndex = 23;
@@ -198,7 +204,7 @@ namespace ATBM_Hospital_Management.Views.Components
             // 
             // richTextBox1
             // 
-            this.richTextBox1.Location = new System.Drawing.Point(148, 157);
+            this.richTextBox1.Location = new System.Drawing.Point(151, 157);
             this.richTextBox1.Name = "richTextBox1";
             this.richTextBox1.Size = new System.Drawing.Size(325, 188);
             this.richTextBox1.TabIndex = 22;
@@ -208,7 +214,7 @@ namespace ATBM_Hospital_Management.Views.Components
             // 
             this.textBox8.BackColor = System.Drawing.SystemColors.InactiveBorder;
             this.textBox8.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.textBox8.Location = new System.Drawing.Point(724, 87);
+            this.textBox8.Location = new System.Drawing.Point(726, 87);
             this.textBox8.Name = "textBox8";
             this.textBox8.ReadOnly = true;
             this.textBox8.Size = new System.Drawing.Size(247, 30);
@@ -218,7 +224,7 @@ namespace ATBM_Hospital_Management.Views.Components
             // 
             this.textBox9.BackColor = System.Drawing.SystemColors.InactiveBorder;
             this.textBox9.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.textBox9.Location = new System.Drawing.Point(1186, 87);
+            this.textBox9.Location = new System.Drawing.Point(1188, 87);
             this.textBox9.Name = "textBox9";
             this.textBox9.ReadOnly = true;
             this.textBox9.Size = new System.Drawing.Size(247, 30);
@@ -228,7 +234,7 @@ namespace ATBM_Hospital_Management.Views.Components
             // 
             this.textBox7.BackColor = System.Drawing.SystemColors.InactiveBorder;
             this.textBox7.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.textBox7.Location = new System.Drawing.Point(331, 87);
+            this.textBox7.Location = new System.Drawing.Point(333, 87);
             this.textBox7.Name = "textBox7";
             this.textBox7.ReadOnly = true;
             this.textBox7.Size = new System.Drawing.Size(249, 30);
@@ -238,7 +244,7 @@ namespace ATBM_Hospital_Management.Views.Components
             // 
             this.textBox6.BackColor = System.Drawing.SystemColors.InactiveBorder;
             this.textBox6.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.textBox6.Location = new System.Drawing.Point(96, 87);
+            this.textBox6.Location = new System.Drawing.Point(98, 87);
             this.textBox6.Name = "textBox6";
             this.textBox6.ReadOnly = true;
             this.textBox6.Size = new System.Drawing.Size(117, 30);
@@ -248,7 +254,7 @@ namespace ATBM_Hospital_Management.Views.Components
             // 
             this.textBox5.BackColor = System.Drawing.SystemColors.InactiveBorder;
             this.textBox5.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.textBox5.Location = new System.Drawing.Point(1249, 21);
+            this.textBox5.Location = new System.Drawing.Point(1251, 21);
             this.textBox5.Name = "textBox5";
             this.textBox5.ReadOnly = true;
             this.textBox5.Size = new System.Drawing.Size(182, 30);
@@ -258,7 +264,7 @@ namespace ATBM_Hospital_Management.Views.Components
             // 
             this.textBox4.BackColor = System.Drawing.SystemColors.InactiveBorder;
             this.textBox4.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.textBox4.Location = new System.Drawing.Point(956, 22);
+            this.textBox4.Location = new System.Drawing.Point(958, 22);
             this.textBox4.Name = "textBox4";
             this.textBox4.ReadOnly = true;
             this.textBox4.Size = new System.Drawing.Size(184, 30);
@@ -268,7 +274,7 @@ namespace ATBM_Hospital_Management.Views.Components
             // 
             this.textBox3.BackColor = System.Drawing.SystemColors.InactiveBorder;
             this.textBox3.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.textBox3.Location = new System.Drawing.Point(724, 21);
+            this.textBox3.Location = new System.Drawing.Point(726, 21);
             this.textBox3.Name = "textBox3";
             this.textBox3.ReadOnly = true;
             this.textBox3.Size = new System.Drawing.Size(92, 30);
@@ -278,7 +284,7 @@ namespace ATBM_Hospital_Management.Views.Components
             // 
             this.textBox2.BackColor = System.Drawing.SystemColors.InactiveBorder;
             this.textBox2.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.textBox2.Location = new System.Drawing.Point(331, 23);
+            this.textBox2.Location = new System.Drawing.Point(333, 23);
             this.textBox2.Name = "textBox2";
             this.textBox2.ReadOnly = true;
             this.textBox2.Size = new System.Drawing.Size(311, 30);
@@ -288,7 +294,7 @@ namespace ATBM_Hospital_Management.Views.Components
             // 
             this.textBox1.BackColor = System.Drawing.SystemColors.InactiveBorder;
             this.textBox1.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.textBox1.Location = new System.Drawing.Point(96, 25);
+            this.textBox1.Location = new System.Drawing.Point(98, 25);
             this.textBox1.Name = "textBox1";
             this.textBox1.ReadOnly = true;
             this.textBox1.Size = new System.Drawing.Size(117, 30);

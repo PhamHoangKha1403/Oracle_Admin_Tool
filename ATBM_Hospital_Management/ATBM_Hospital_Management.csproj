@@ -108,6 +108,12 @@
     <Compile Include="Views\DoctorView_HealthRecord.Designer.cs">
       <DependentUpon>DoctorView_HealthRecord.cs</DependentUpon>
     </Compile>
+    <Compile Include="Views\DoctorView_HealthRecordList.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Views\DoctorView_HealthRecordList.Designer.cs">
+      <DependentUpon>DoctorView_HealthRecordList.cs</DependentUpon>
+    </Compile>
     <Compile Include="Views\DoctorView_PatientList.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -211,6 +217,9 @@
     </Compile>
     <EmbeddedResource Include="Views\DoctorView_HealthRecord.resx">
       <DependentUpon>DoctorView_HealthRecord.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Views\DoctorView_HealthRecordList.resx">
+      <DependentUpon>DoctorView_HealthRecordList.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Views\DoctorView_PatientList.resx">
       <DependentUpon>DoctorView_PatientList.cs</DependentUpon>
