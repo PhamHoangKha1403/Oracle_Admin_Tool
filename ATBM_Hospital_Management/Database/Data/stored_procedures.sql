@@ -326,6 +326,24 @@ END sp_DPV_Update_HSBA;
 /
 
 -- ============================================================
+-- sp_DPV_Insert_HSBADV
+-- ============================================================
+CREATE OR REPLACE PROCEDURE sp_DPV_Insert_HSBADV(
+    p_MAHSBA IN VARCHAR2,
+    p_LOAIDV IN VARCHAR2,
+    p_NGAYDV IN DATE,
+    p_MAKTV IN VARCHAR2,
+    p_KETQUA IN VARCHAR2
+)
+AS
+BEGIN
+    INSERT INTO HSBA_DV (MA_HSBA, LOAI_DV, NGAY_DV, MA_KTV, KET_QUA)
+    VALUES (p_MAHSBA, p_LOAIDV, p_NGAYDV, p_MAKTV, p_KETQUA);
+    COMMIT;
+END sp_DPV_Insert_HSBADV;
+/
+
+-- ============================================================
 -- sp_DPV_Update_HSBADV
 -- ============================================================
 CREATE OR REPLACE PROCEDURE sp_DPV_Update_HSBADV(
@@ -373,6 +391,7 @@ CREATE OR REPLACE PUBLIC SYNONYM sp_DPV_Select_HSBA FOR sp_DPV_Select_HSBA;
 CREATE OR REPLACE PUBLIC SYNONYM sp_DPV_Select_HSBADV FOR sp_DPV_Select_HSBADV;
 CREATE OR REPLACE PUBLIC SYNONYM sp_DPV_Insert_HSBA FOR sp_DPV_Insert_HSBA;
 CREATE OR REPLACE PUBLIC SYNONYM sp_DPV_Update_HSBA FOR sp_DPV_Update_HSBA;
+CREATE OR REPLACE PUBLIC SYNONYM sp_DPV_Insert_HSBADV FOR sp_DPV_Insert_HSBADV;
 CREATE OR REPLACE PUBLIC SYNONYM sp_DPV_Update_HSBADV FOR sp_DPV_Update_HSBADV;
 
 GRANT EXECUTE ON sp_DPV_Select_BENHNHAN TO RL_DIEUPHOIVIEN;
@@ -382,6 +401,7 @@ GRANT EXECUTE ON sp_DPV_Select_HSBA TO RL_DIEUPHOIVIEN;
 GRANT EXECUTE ON sp_DPV_Select_HSBADV TO RL_DIEUPHOIVIEN;
 GRANT EXECUTE ON sp_DPV_Insert_HSBA TO RL_DIEUPHOIVIEN;
 GRANT EXECUTE ON sp_DPV_Update_HSBA TO RL_DIEUPHOIVIEN;
+GRANT EXECUTE ON sp_DPV_Insert_HSBADV TO RL_DIEUPHOIVIEN;
 GRANT EXECUTE ON sp_DPV_Update_HSBADV TO RL_DIEUPHOIVIEN;
 
 -- ============================================================

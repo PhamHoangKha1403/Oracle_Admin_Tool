@@ -108,20 +108,25 @@ namespace ATBM_Hospital_Management.Views.Components
                 WrapContents = false
             };
 
-            btnAddHSBA = new Button { Text = "ADD RECORD", Size = new Size(200, 40), BackColor = Color.SeaGreen, ForeColor = Color.White, FlatStyle = FlatStyle.Flat, Margin = new Padding(0, 0, 15, 0) };
-            btnEditHSBA = new Button { Text = "EDIT RECORD", Size = new Size(200, 40), BackColor = Color.DodgerBlue, ForeColor = Color.White, FlatStyle = FlatStyle.Flat, Margin = new Padding(0, 0, 15, 0) };
-            btnEditHSBADV = new Button { Text = "EDIT SERVICE", Size = new Size(200, 40), BackColor = Color.Orange, ForeColor = Color.White, FlatStyle = FlatStyle.Flat, Margin = new Padding(0) };
+            btnAddHSBA = new Button { Text = "ADD RECORD", Size = new Size(150, 40), BackColor = Color.SeaGreen, ForeColor = Color.White, FlatStyle = FlatStyle.Flat, Margin = new Padding(0, 0, 10, 0) };
+            btnEditHSBA = new Button { Text = "EDIT RECORD", Size = new Size(150, 40), BackColor = Color.DodgerBlue, ForeColor = Color.White, FlatStyle = FlatStyle.Flat, Margin = new Padding(0, 0, 10, 0) };
+            
+            Button btnAddHSBADV = new Button { Text = "ADD SERVICE", Size = new Size(150, 40), BackColor = Color.SeaGreen, ForeColor = Color.White, FlatStyle = FlatStyle.Flat, Margin = new Padding(0, 0, 10, 0) };
+            btnEditHSBADV = new Button { Text = "EDIT SERVICE", Size = new Size(150, 40), BackColor = Color.Orange, ForeColor = Color.White, FlatStyle = FlatStyle.Flat, Margin = new Padding(0) };
 
             btnAddHSBA.FlatAppearance.BorderSize = 0;
             btnEditHSBA.FlatAppearance.BorderSize = 0;
+            btnAddHSBADV.FlatAppearance.BorderSize = 0;
             btnEditHSBADV.FlatAppearance.BorderSize = 0;
 
             btnAddHSBA.Click += BtnAddHSBA_Click;
             btnEditHSBA.Click += BtnEditHSBA_Click;
+            btnAddHSBADV.Click += BtnAddHSBADV_Click;
             btnEditHSBADV.Click += BtnEditHSBADV_Click;
 
             pnlHSBAButtons.Controls.Add(btnAddHSBA);
             pnlHSBAButtons.Controls.Add(btnEditHSBA);
+            pnlHSBAButtons.Controls.Add(btnAddHSBADV);
             pnlHSBAButtons.Controls.Add(btnEditHSBADV);
             tabHSBA.Controls.Add(pnlHSBAButtons);
 
@@ -199,7 +204,18 @@ namespace ATBM_Hospital_Management.Views.Components
             using (Form f = new Form() { Text = "Add Patient", Size = new Size(400, 520), StartPosition = FormStartPosition.CenterParent })
             {
                 int y = 20;
-                TextBox txtMaBN = AddField(f, "Patient ID:", "", ref y);
+                string newMaBN = "BN000001";
+                try {
+                    var dt = DbConnection.Instance.ExecuteQuery("SELECT MAX(MA_BN) AS MAX_ID FROM BENH_NHAN", null, CommandType.Text);
+                    if (dt.Rows.Count > 0 && dt.Rows[0]["MAX_ID"] != DBNull.Value) {
+                        string maxIdStr = dt.Rows[0]["MAX_ID"].ToString();
+                        if (maxIdStr.StartsWith("BN") && int.TryParse(maxIdStr.Substring(2), out int maxId)) {
+                            newMaBN = "BN" + (maxId + 1).ToString("D6");
+                        }
+                    }
+                } catch { }
+
+                TextBox txtMaBN = AddField(f, "Patient ID:", newMaBN, ref y, true);
                 TextBox txtSoNha = AddField(f, "House No:", "", ref y);
                 TextBox txtTenDuong = AddField(f, "Street:", "", ref y);
                 TextBox txtQuanHuyen = AddField(f, "District:", "", ref y);
@@ -288,8 +304,24 @@ namespace ATBM_Hospital_Management.Views.Components
             using (Form f = new Form() { Text = "Add Record", Size = new Size(400, 520), StartPosition = FormStartPosition.CenterParent })
             {
                 int y = 20;
-                TextBox txtMaHSBA = AddField(f, "Record ID:", "", ref y);
-                TextBox txtMaBN = AddField(f, "Patient ID:", "", ref y);
+                string newMaHSBA = "HS0000001";
+                try {
+                    var dt = DbConnection.Instance.ExecuteQuery("SELECT MAX(MA_HSBA) AS MAX_ID FROM HSBA", null, CommandType.Text);
+                    if (dt.Rows.Count > 0 && dt.Rows[0]["MAX_ID"] != DBNull.Value) {
+                        string maxIdStr = dt.Rows[0]["MAX_ID"].ToString();
+                        if (maxIdStr.StartsWith("HS") && int.TryParse(maxIdStr.Substring(2), out int maxId)) {
+                            newMaHSBA = "HS" + (maxId + 1).ToString("D7");
+                        }
+                    }
+                } catch { }
+
+                string defaultMaBN = "";
+                if (dgvPatient != null && dgvPatient.SelectedRows.Count > 0) {
+                    defaultMaBN = dgvPatient.SelectedRows[0].Cells["MA_BN"].Value?.ToString() ?? "";
+                }
+
+                TextBox txtMaHSBA = AddField(f, "Record ID:", newMaHSBA, ref y, true);
+                TextBox txtMaBN = AddField(f, "Patient ID:", defaultMaBN, ref y);
                 
                 Label lblNgay = new Label { Text = "Date:", Location = new Point(20, y + 3), AutoSize = true };
                 DateTimePicker dtpNgay = new DateTimePicker { Location = new Point(140, y), Size = new Size(210, 25), Format = DateTimePickerFormat.Short };
@@ -393,11 +425,57 @@ namespace ATBM_Hospital_Management.Views.Components
                         {
                             new Oracle.ManagedDataAccess.Client.OracleParameter("p_MAHSBA", txtMaHSBA.Text),
                             new Oracle.ManagedDataAccess.Client.OracleParameter("p_LOAIDV", txtLoaiDV.Text),
-                            new Oracle.ManagedDataAccess.Client.OracleParameter("p_NGAYDV", dtpNgay.Value.Date),
+                            new Oracle.ManagedDataAccess.Client.OracleParameter("p_NGAYDV", dtpNgay.Value),
                             new Oracle.ManagedDataAccess.Client.OracleParameter("p_MAKTV", txtMaKTV.Text)
                         };
                         DbConnection.Instance.ExecuteNonQuery("BEGIN sp_DPV_Update_HSBADV(:p_MAHSBA, :p_LOAIDV, :p_NGAYDV, :p_MAKTV); END;", parameters, CommandType.Text);
                         MessageBox.Show("Updated successfully!");
+                        f.DialogResult = DialogResult.OK;
+                        f.Close();
+                    }
+                    catch (Exception ex) { MessageBox.Show("Error: " + ex.Message); }
+                };
+                f.Controls.Add(btnSave);
+                if (f.ShowDialog() == DialogResult.OK) LoadHSBAData();
+            }
+        }
+
+        private void BtnAddHSBADV_Click(object sender, EventArgs e)
+        {
+            using (Form f = new Form() { Text = "Add Service", Size = new Size(400, 360), StartPosition = FormStartPosition.CenterParent })
+            {
+                int y = 20;
+                
+                string defaultMaHSBA = "";
+                if (dgvHSBA != null && dgvHSBA.SelectedRows.Count > 0) {
+                    defaultMaHSBA = dgvHSBA.SelectedRows[0].Cells["MA_HSBA"].Value?.ToString() ?? "";
+                }
+
+                TextBox txtMaHSBA = AddField(f, "Record ID:", defaultMaHSBA, ref y);
+                TextBox txtLoaiDV = AddField(f, "Service Type:", "", ref y);
+                
+                Label lblNgay = new Label { Text = "Service Date:", Location = new Point(20, y + 3), AutoSize = true };
+                DateTimePicker dtpNgay = new DateTimePicker { Location = new Point(140, y), Size = new Size(210, 25), Format = DateTimePickerFormat.Custom, CustomFormat="dd/MM/yyyy HH:mm:ss" };
+                f.Controls.Add(lblNgay); f.Controls.Add(dtpNgay); y += 40;
+
+                TextBox txtMaKTV = AddField(f, "Tech ID:", "", ref y);
+                TextBox txtKetQua = AddField(f, "Result:", "", ref y);
+
+                Button btnSave = new Button { Text = "Save", Location = new Point(140, y + 10), Size = new Size(100, 35) };
+                btnSave.Click += (s, args) =>
+                {
+                    try
+                    {
+                        var parameters = new Oracle.ManagedDataAccess.Client.OracleParameter[]
+                        {
+                            new Oracle.ManagedDataAccess.Client.OracleParameter("p_MAHSBA", txtMaHSBA.Text),
+                            new Oracle.ManagedDataAccess.Client.OracleParameter("p_LOAIDV", txtLoaiDV.Text),
+                            new Oracle.ManagedDataAccess.Client.OracleParameter("p_NGAYDV", dtpNgay.Value),
+                            new Oracle.ManagedDataAccess.Client.OracleParameter("p_MAKTV", txtMaKTV.Text),
+                            new Oracle.ManagedDataAccess.Client.OracleParameter("p_KETQUA", txtKetQua.Text)
+                        };
+                        DbConnection.Instance.ExecuteNonQuery("BEGIN sp_DPV_Insert_HSBADV(:p_MAHSBA, :p_LOAIDV, :p_NGAYDV, :p_MAKTV, :p_KETQUA); END;", parameters, CommandType.Text);
+                        MessageBox.Show("Service added successfully!");
                         f.DialogResult = DialogResult.OK;
                         f.Close();
                     }
