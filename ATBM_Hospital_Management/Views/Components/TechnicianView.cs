@@ -53,23 +53,72 @@ namespace ATBM_Hospital_Management.Views.Components
             tabServices.Padding = new Padding(15);
             tabServices.BackColor = Color.White;
 
+            FlowLayoutPanel pnlTopServices = new FlowLayoutPanel
+            {
+                Location = new Point(15, 15),
+                AutoSize = true,
+                AutoSizeMode = AutoSizeMode.GrowAndShrink,
+                FlowDirection = FlowDirection.LeftToRight,
+                WrapContents = false
+            };
+
             btnUpdateResult = new Button 
             { 
                 Text = "UPDATE RESULT", 
-                Size = new Size(200, 40), 
-                Location = new Point(15, 15),
+                Size = new Size(160, 40), 
                 BackColor = Color.DodgerBlue, 
                 ForeColor = Color.White, 
-                FlatStyle = FlatStyle.Flat 
+                FlatStyle = FlatStyle.Flat,
+                Margin = new Padding(0, 0, 15, 0)
             };
             btnUpdateResult.FlatAppearance.BorderSize = 0;
             btnUpdateResult.Click += BtnUpdateResult_Click;
 
-            tabServices.Controls.Add(btnUpdateResult);
+            Button btnSearchServices = new Button 
+            { 
+                Text = "SEARCH", 
+                Size = new Size(150, 40), 
+                BackColor = Color.SeaGreen, 
+                ForeColor = Color.White, 
+                FlatStyle = FlatStyle.Flat,
+                Margin = new Padding(0)
+            };
+            btnSearchServices.FlatAppearance.BorderSize = 0;
+
+            TextBox txtSearchServices = new TextBox 
+            { 
+                AutoSize = false,
+                Size = new Size(400, 40),
+                Font = new Font("Segoe UI", 12F),
+                Margin = new Padding(0, 0, 0, 0)
+            };
+            
+            btnSearchServices.Click += (s, e) =>
+            {
+                if (dgvServices.DataSource is DataTable dt)
+                {
+                    string keyword = txtSearchServices.Text.Trim().Replace("'", "''");
+                    if (string.IsNullOrEmpty(keyword)) dt.DefaultView.RowFilter = "";
+                    else
+                    {
+                        var filters = new System.Collections.Generic.List<string>();
+                        foreach (DataColumn col in dt.Columns)
+                        {
+                            if (col.DataType == typeof(string))
+                                filters.Add($"[{col.ColumnName}] LIKE '%{keyword}%'");
+                        }
+                        dt.DefaultView.RowFilter = string.Join(" OR ", filters);
+                    }
+                }
+            };
+
+            pnlTopServices.Controls.Add(btnUpdateResult);
+            pnlTopServices.Controls.Add(btnSearchServices);
+            pnlTopServices.Controls.Add(txtSearchServices);
 
             dgvServices = new DataGridView
             {
-                Location = new Point(15, 65),
+                Location = new Point(15, 70),
                 Size = new Size(800, 400),
                 Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right,
                 AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill,
@@ -78,6 +127,8 @@ namespace ATBM_Hospital_Management.Views.Components
                 ReadOnly = true,
                 SelectionMode = DataGridViewSelectionMode.FullRowSelect
             };
+
+            tabServices.Controls.Add(pnlTopServices);
             tabServices.Controls.Add(dgvServices);
         }
 
@@ -86,18 +137,68 @@ namespace ATBM_Hospital_Management.Views.Components
             tabAuditLog.Padding = new Padding(15);
             tabAuditLog.BackColor = Color.White;
 
+            FlowLayoutPanel pnlTopAudit = new FlowLayoutPanel
+            {
+                Location = new Point(15, 15),
+                AutoSize = true,
+                AutoSizeMode = AutoSizeMode.GrowAndShrink,
+                FlowDirection = FlowDirection.LeftToRight,
+                WrapContents = false
+            };
+
             Label lblTitle = new Label 
             { 
                 Text = "Edit History (Audit Log)", 
-                Location = new Point(15, 15), 
                 AutoSize = true, 
-                Font = new Font("Segoe UI", 12F, FontStyle.Bold) 
+                Font = new Font("Segoe UI", 12F, FontStyle.Bold),
+                Margin = new Padding(0, 10, 15, 0) // Padding top to align with 40px buttons
             };
-            tabAuditLog.Controls.Add(lblTitle);
+
+            Button btnSearchAudit = new Button 
+            { 
+                Text = "SEARCH", 
+                Size = new Size(150, 40), 
+                BackColor = Color.SeaGreen, 
+                ForeColor = Color.White, 
+                FlatStyle = FlatStyle.Flat,
+                Margin = new Padding(0)
+            };
+            btnSearchAudit.FlatAppearance.BorderSize = 0;
+
+            TextBox txtSearchAudit = new TextBox 
+            { 
+                AutoSize = false,
+                Size = new Size(400, 40),
+                Font = new Font("Segoe UI", 12F),
+                Margin = new Padding(0, 0, 0, 0)
+            };
+
+            btnSearchAudit.Click += (s, e) =>
+            {
+                if (dgvAuditLog.DataSource is DataTable dt)
+                {
+                    string keyword = txtSearchAudit.Text.Trim().Replace("'", "''");
+                    if (string.IsNullOrEmpty(keyword)) dt.DefaultView.RowFilter = "";
+                    else
+                    {
+                        var filters = new System.Collections.Generic.List<string>();
+                        foreach (DataColumn col in dt.Columns)
+                        {
+                            if (col.DataType == typeof(string))
+                                filters.Add($"[{col.ColumnName}] LIKE '%{keyword}%'");
+                        }
+                        dt.DefaultView.RowFilter = string.Join(" OR ", filters);
+                    }
+                }
+            };
+
+            pnlTopAudit.Controls.Add(lblTitle);
+            pnlTopAudit.Controls.Add(btnSearchAudit);
+            pnlTopAudit.Controls.Add(txtSearchAudit);
 
             dgvAuditLog = new DataGridView
             {
-                Location = new Point(15, 45),
+                Location = new Point(15, 70),
                 Size = new Size(800, 420),
                 Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right,
                 AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill,
@@ -106,6 +207,8 @@ namespace ATBM_Hospital_Management.Views.Components
                 ReadOnly = true,
                 SelectionMode = DataGridViewSelectionMode.FullRowSelect
             };
+
+            tabAuditLog.Controls.Add(pnlTopAudit);
             tabAuditLog.Controls.Add(dgvAuditLog);
         }
 
@@ -169,7 +272,6 @@ namespace ATBM_Hospital_Management.Views.Components
                 {
                     try
                     {
-                        // 1. Update KETQUA
                         var updateParams = new Oracle.ManagedDataAccess.Client.OracleParameter[]
                         {
                             new Oracle.ManagedDataAccess.Client.OracleParameter("p_MAHSBA", txtMaHSBA.Text),
@@ -180,7 +282,6 @@ namespace ATBM_Hospital_Management.Views.Components
 
                         DbConnection.Instance.ExecuteNonQuery("BEGIN sp_KTV_Update_KETQUA(:p_MAHSBA, :p_LOAIDV, :p_NGAYDV, :p_KETQUA); END;", updateParams, CommandType.Text);
 
-                        // 2. Log Audit in C# (Ghi vết bằng C#)
                         string currentUser = DbConnection.Instance.GetCurrentUser();
                         var auditParams = new Oracle.ManagedDataAccess.Client.OracleParameter[]
                         {

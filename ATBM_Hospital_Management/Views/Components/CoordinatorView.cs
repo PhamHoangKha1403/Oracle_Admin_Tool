@@ -199,21 +199,55 @@ namespace ATBM_Hospital_Management.Views.Components
             return txt;
         }
 
+        private string GenerateNextId(DataTable dt, string columnName, string defaultPrefix, string defaultFormat)
+        {
+            string newId = defaultPrefix + 1.ToString(defaultFormat);
+            if (dt == null) return newId;
+
+            try
+            {
+                int maxNumeric = 0;
+                string currentPrefix = "";
+                int padLength = 0;
+
+                foreach (DataRow row in dt.Rows)
+                {
+                    if (row[columnName] == DBNull.Value) continue;
+                    string idStr = row[columnName].ToString();
+                    var match = System.Text.RegularExpressions.Regex.Match(idStr, @"^([A-Za-z_]+)(\d+)$");
+                    if (match.Success)
+                    {
+                        int num = int.Parse(match.Groups[2].Value);
+                        if (num > maxNumeric)
+                        {
+                            maxNumeric = num;
+                            currentPrefix = match.Groups[1].Value;
+                            if (match.Groups[2].Value.StartsWith("0"))
+                                padLength = match.Groups[2].Value.Length;
+                            else
+                                padLength = 0;
+                        }
+                    }
+                }
+
+                if (maxNumeric > 0)
+                {
+                    if (padLength > 0)
+                        newId = currentPrefix + (maxNumeric + 1).ToString().PadLeft(padLength, '0');
+                    else
+                        newId = currentPrefix + (maxNumeric + 1).ToString();
+                }
+            }
+            catch { }
+            return newId;
+        }
+
         private void BtnAddPatient_Click(object sender, EventArgs e)
         {
             using (Form f = new Form() { Text = "Add Patient", Size = new Size(400, 520), StartPosition = FormStartPosition.CenterParent })
             {
                 int y = 20;
-                string newMaBN = "BN000001";
-                try {
-                    var dt = DbConnection.Instance.ExecuteQuery("SELECT MAX(MA_BN) AS MAX_ID FROM BENH_NHAN", null, CommandType.Text);
-                    if (dt.Rows.Count > 0 && dt.Rows[0]["MAX_ID"] != DBNull.Value) {
-                        string maxIdStr = dt.Rows[0]["MAX_ID"].ToString();
-                        if (maxIdStr.StartsWith("BN") && int.TryParse(maxIdStr.Substring(2), out int maxId)) {
-                            newMaBN = "BN" + (maxId + 1).ToString("D6");
-                        }
-                    }
-                } catch { }
+                string newMaBN = GenerateNextId(dgvPatient.DataSource as DataTable, "MA_BN", "BN", "D6");
 
                 TextBox txtMaBN = AddField(f, "Patient ID:", newMaBN, ref y, true);
                 TextBox txtSoNha = AddField(f, "House No:", "", ref y);
@@ -304,16 +338,7 @@ namespace ATBM_Hospital_Management.Views.Components
             using (Form f = new Form() { Text = "Add Record", Size = new Size(400, 520), StartPosition = FormStartPosition.CenterParent })
             {
                 int y = 20;
-                string newMaHSBA = "HS0000001";
-                try {
-                    var dt = DbConnection.Instance.ExecuteQuery("SELECT MAX(MA_HSBA) AS MAX_ID FROM HSBA", null, CommandType.Text);
-                    if (dt.Rows.Count > 0 && dt.Rows[0]["MAX_ID"] != DBNull.Value) {
-                        string maxIdStr = dt.Rows[0]["MAX_ID"].ToString();
-                        if (maxIdStr.StartsWith("HS") && int.TryParse(maxIdStr.Substring(2), out int maxId)) {
-                            newMaHSBA = "HS" + (maxId + 1).ToString("D7");
-                        }
-                    }
-                } catch { }
+                string newMaHSBA = GenerateNextId(dgvHSBA.DataSource as DataTable, "MA_HSBA", "HS", "D6");
 
                 string defaultMaBN = "";
                 if (dgvPatient != null && dgvPatient.SelectedRows.Count > 0) {
