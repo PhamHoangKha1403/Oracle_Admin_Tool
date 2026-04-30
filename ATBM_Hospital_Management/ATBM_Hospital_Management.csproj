@@ -153,6 +153,9 @@
     <Compile Include="Views\Components\CoordinatorView.cs">
       <SubType>UserControl</SubType>
     </Compile>
+    <Compile Include="Views\Components\TechnicianView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
     <Compile Include="Views\GrantView.cs">
       <SubType>UserControl</SubType>
     </Compile>
