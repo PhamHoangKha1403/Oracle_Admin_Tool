@@ -120,6 +120,12 @@
     <Compile Include="Views\DashboardView.Designer.cs">
       <DependentUpon>DashboardView.cs</DependentUpon>
     </Compile>
+    <Compile Include="Views\AuditView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Views\AuditView.Designer.cs">
+      <DependentUpon>AuditView.cs</DependentUpon>
+    </Compile>
     <Compile Include="Views\UserView.cs">
       <SubType>UserControl</SubType>
     </Compile>
