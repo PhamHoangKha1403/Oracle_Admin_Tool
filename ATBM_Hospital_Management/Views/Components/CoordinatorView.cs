@@ -135,18 +135,15 @@ namespace ATBM_Hospital_Management.Views.Components
 
             btnAddHSBA = new Button { Text = "ADD RECORD", Size = new Size(130, 40), BackColor = Color.SeaGreen, ForeColor = Color.White, FlatStyle = FlatStyle.Flat, Margin = new Padding(0, 0, 10, 0) };
             btnEditHSBA = new Button { Text = "EDIT RECORD", Size = new Size(130, 40), BackColor = Color.DodgerBlue, ForeColor = Color.White, FlatStyle = FlatStyle.Flat, Margin = new Padding(0, 0, 10, 0) };
-            
-            Button btnAddHSBADV = new Button { Text = "ADD SERVICE", Size = new Size(130, 40), BackColor = Color.SeaGreen, ForeColor = Color.White, FlatStyle = FlatStyle.Flat, Margin = new Padding(0, 0, 10, 0) };
+        
             btnEditHSBADV = new Button { Text = "EDIT SERVICE", Size = new Size(130, 40), BackColor = Color.Orange, ForeColor = Color.White, FlatStyle = FlatStyle.Flat, Margin = new Padding(0, 0, 15, 0) };
 
             btnAddHSBA.FlatAppearance.BorderSize = 0;
             btnEditHSBA.FlatAppearance.BorderSize = 0;
-            btnAddHSBADV.FlatAppearance.BorderSize = 0;
             btnEditHSBADV.FlatAppearance.BorderSize = 0;
 
             btnAddHSBA.Click += BtnAddHSBA_Click;
             btnEditHSBA.Click += BtnEditHSBA_Click;
-            btnAddHSBADV.Click += BtnAddHSBADV_Click;
             btnEditHSBADV.Click += BtnEditHSBADV_Click;
 
             Button btnSearchHSBA = new Button { Text = "SEARCH", Size = new Size(100, 40), BackColor = Color.SeaGreen, ForeColor = Color.White, FlatStyle = FlatStyle.Flat, Margin = new Padding(0) };
@@ -174,7 +171,6 @@ namespace ATBM_Hospital_Management.Views.Components
 
             pnlHSBAButtons.Controls.Add(btnAddHSBA);
             pnlHSBAButtons.Controls.Add(btnEditHSBA);
-            pnlHSBAButtons.Controls.Add(btnAddHSBADV);
             pnlHSBAButtons.Controls.Add(btnEditHSBADV);
             pnlHSBAButtons.Controls.Add(btnSearchHSBA);
             pnlHSBAButtons.Controls.Add(txtSearchHSBA);
@@ -510,52 +506,6 @@ namespace ATBM_Hospital_Management.Views.Components
                         };
                         DbConnection.Instance.ExecuteNonQuery("BEGIN sp_DPV_Update_HSBADV(:p_MAHSBA, :p_LOAIDV, :p_NGAYDV, :p_MAKTV); END;", parameters, CommandType.Text);
                         MessageBox.Show("Updated successfully!");
-                        f.DialogResult = DialogResult.OK;
-                        f.Close();
-                    }
-                    catch (Exception ex) { MessageBox.Show("Error: " + ex.Message); }
-                };
-                f.Controls.Add(btnSave);
-                if (f.ShowDialog() == DialogResult.OK) LoadHSBAData();
-            }
-        }
-
-        private void BtnAddHSBADV_Click(object sender, EventArgs e)
-        {
-            using (Form f = new Form() { Text = "Add Service", Size = new Size(400, 360), StartPosition = FormStartPosition.CenterParent })
-            {
-                int y = 20;
-                
-                string defaultMaHSBA = "";
-                if (dgvHSBA != null && dgvHSBA.SelectedRows.Count > 0) {
-                    defaultMaHSBA = dgvHSBA.SelectedRows[0].Cells["MA_HSBA"].Value?.ToString() ?? "";
-                }
-
-                TextBox txtMaHSBA = AddField(f, "Record ID:", defaultMaHSBA, ref y);
-                TextBox txtLoaiDV = AddField(f, "Service Type:", "", ref y);
-                
-                Label lblNgay = new Label { Text = "Service Date:", Location = new Point(20, y + 3), AutoSize = true };
-                DateTimePicker dtpNgay = new DateTimePicker { Location = new Point(140, y), Size = new Size(210, 25), Format = DateTimePickerFormat.Custom, CustomFormat="dd/MM/yyyy HH:mm:ss" };
-                f.Controls.Add(lblNgay); f.Controls.Add(dtpNgay); y += 40;
-
-                TextBox txtMaKTV = AddField(f, "Tech ID:", "", ref y);
-                TextBox txtKetQua = AddField(f, "Result:", "", ref y);
-
-                Button btnSave = new Button { Text = "Save", Location = new Point(140, y + 10), Size = new Size(100, 35) };
-                btnSave.Click += (s, args) =>
-                {
-                    try
-                    {
-                        var parameters = new Oracle.ManagedDataAccess.Client.OracleParameter[]
-                        {
-                            new Oracle.ManagedDataAccess.Client.OracleParameter("p_MAHSBA", txtMaHSBA.Text),
-                            new Oracle.ManagedDataAccess.Client.OracleParameter("p_LOAIDV", txtLoaiDV.Text),
-                            new Oracle.ManagedDataAccess.Client.OracleParameter("p_NGAYDV", dtpNgay.Value),
-                            new Oracle.ManagedDataAccess.Client.OracleParameter("p_MAKTV", txtMaKTV.Text),
-                            new Oracle.ManagedDataAccess.Client.OracleParameter("p_KETQUA", txtKetQua.Text)
-                        };
-                        DbConnection.Instance.ExecuteNonQuery("BEGIN sp_DPV_Insert_HSBADV(:p_MAHSBA, :p_LOAIDV, :p_NGAYDV, :p_MAKTV, :p_KETQUA); END;", parameters, CommandType.Text);
-                        MessageBox.Show("Service added successfully!");
                         f.DialogResult = DialogResult.OK;
                         f.Close();
                     }
