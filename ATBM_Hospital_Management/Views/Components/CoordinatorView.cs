@@ -11,6 +11,7 @@ namespace ATBM_Hospital_Management.Views.Components
         private TabControl tabControl;
         private TabPage tabPatient;
         private TabPage tabHSBA;
+        private TabPage tabThongBao;
 
         // Patient Tab Controls
         private DataGridView dgvPatient;
@@ -24,11 +25,16 @@ namespace ATBM_Hospital_Management.Views.Components
         private Button btnEditHSBA;
         private Button btnEditHSBADV;
 
+        // ThongBao Tab Controls
+        private DataGridView dgvThongBao;
+        private Button btnRefresh;
+
         public CoordinatorView()
         {
             InitializeUI();
             LoadPatientData();
             LoadHSBAData();
+            LoadThongBao();
         }
 
         private void InitializeUI()
@@ -46,11 +52,14 @@ namespace ATBM_Hospital_Management.Views.Components
 
             tabPatient = new TabPage("PATIENTS");
             tabHSBA = new TabPage("MEDICAL RECORDS");
+            tabThongBao = new TabPage("THONG BAO");
             tabControl.TabPages.Add(tabPatient);
             tabControl.TabPages.Add(tabHSBA);
+            tabControl.TabPages.Add(tabThongBao);
 
             InitializePatientTab();
             InitializeHSBATab();
+            InitializeThongBaoTab();
         }
 
         private void InitializePatientTab()
@@ -67,8 +76,8 @@ namespace ATBM_Hospital_Management.Views.Components
                 WrapContents = false
             };
 
-            btnAddPatient = new Button { Text = "ADD PATIENT", Size = new Size(200, 40), BackColor = Color.SeaGreen, ForeColor = Color.White, FlatStyle = FlatStyle.Flat, Margin = new Padding(0, 0, 15, 0) };
-            btnEditPatient = new Button { Text = "EDIT PATIENT", Size = new Size(200, 40), BackColor = Color.DodgerBlue, ForeColor = Color.White, FlatStyle = FlatStyle.Flat, Margin = new Padding(0) };
+            btnAddPatient = new Button { Text = "ADD PATIENT", Size = new Size(150, 40), BackColor = Color.SeaGreen, ForeColor = Color.White, FlatStyle = FlatStyle.Flat, Margin = new Padding(0, 0, 10, 0) };
+            btnEditPatient = new Button { Text = "EDIT PATIENT", Size = new Size(150, 40), BackColor = Color.DodgerBlue, ForeColor = Color.White, FlatStyle = FlatStyle.Flat, Margin = new Padding(0, 0, 15, 0) };
 
             btnAddPatient.FlatAppearance.BorderSize = 0;
             btnEditPatient.FlatAppearance.BorderSize = 0;
@@ -76,8 +85,33 @@ namespace ATBM_Hospital_Management.Views.Components
             btnAddPatient.Click += BtnAddPatient_Click;
             btnEditPatient.Click += BtnEditPatient_Click;
 
+            Button btnSearchPatient = new Button { Text = "SEARCH", Size = new Size(120, 40), BackColor = Color.SeaGreen, ForeColor = Color.White, FlatStyle = FlatStyle.Flat, Margin = new Padding(0) };
+            TextBox txtSearchPatient = new TextBox { AutoSize = false, Size = new Size(300, 40), Font = new Font("Segoe UI", 12F), Margin = new Padding(0) };
+            btnSearchPatient.FlatAppearance.BorderSize = 0;
+
+            btnSearchPatient.Click += (s, e) =>
+            {
+                if (dgvPatient.DataSource is DataTable dt)
+                {
+                    string keyword = txtSearchPatient.Text.Trim().Replace("'", "''");
+                    if (string.IsNullOrEmpty(keyword)) dt.DefaultView.RowFilter = "";
+                    else
+                    {
+                        var filters = new System.Collections.Generic.List<string>();
+                        foreach (DataColumn col in dt.Columns)
+                        {
+                            if (col.DataType == typeof(string))
+                                filters.Add($"[{col.ColumnName}] LIKE '%{keyword}%'");
+                        }
+                        dt.DefaultView.RowFilter = string.Join(" OR ", filters);
+                    }
+                }
+            };
+
             pnlButtons.Controls.Add(btnAddPatient);
             pnlButtons.Controls.Add(btnEditPatient);
+            pnlButtons.Controls.Add(btnSearchPatient);
+            pnlButtons.Controls.Add(txtSearchPatient);
             tabPatient.Controls.Add(pnlButtons);
 
             dgvPatient = new DataGridView
@@ -85,7 +119,7 @@ namespace ATBM_Hospital_Management.Views.Components
                 Location = new Point(15, 65),
                 Size = new Size(800, 300),
                 Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right,
-                AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill,
+                AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.DisplayedCells,
                 BackgroundColor = Color.White,
                 AllowUserToAddRows = false,
                 ReadOnly = true,
@@ -108,9 +142,10 @@ namespace ATBM_Hospital_Management.Views.Components
                 WrapContents = false
             };
 
-            btnAddHSBA = new Button { Text = "ADD RECORD", Size = new Size(200, 40), BackColor = Color.SeaGreen, ForeColor = Color.White, FlatStyle = FlatStyle.Flat, Margin = new Padding(0, 0, 15, 0) };
-            btnEditHSBA = new Button { Text = "EDIT RECORD", Size = new Size(200, 40), BackColor = Color.DodgerBlue, ForeColor = Color.White, FlatStyle = FlatStyle.Flat, Margin = new Padding(0, 0, 15, 0) };
-            btnEditHSBADV = new Button { Text = "EDIT SERVICE", Size = new Size(200, 40), BackColor = Color.Orange, ForeColor = Color.White, FlatStyle = FlatStyle.Flat, Margin = new Padding(0) };
+            btnAddHSBA = new Button { Text = "ADD RECORD", Size = new Size(130, 40), BackColor = Color.SeaGreen, ForeColor = Color.White, FlatStyle = FlatStyle.Flat, Margin = new Padding(0, 0, 10, 0) };
+            btnEditHSBA = new Button { Text = "EDIT RECORD", Size = new Size(130, 40), BackColor = Color.DodgerBlue, ForeColor = Color.White, FlatStyle = FlatStyle.Flat, Margin = new Padding(0, 0, 10, 0) };
+        
+            btnEditHSBADV = new Button { Text = "EDIT SERVICE", Size = new Size(130, 40), BackColor = Color.Orange, ForeColor = Color.White, FlatStyle = FlatStyle.Flat, Margin = new Padding(0, 0, 15, 0) };
 
             btnAddHSBA.FlatAppearance.BorderSize = 0;
             btnEditHSBA.FlatAppearance.BorderSize = 0;
@@ -120,34 +155,86 @@ namespace ATBM_Hospital_Management.Views.Components
             btnEditHSBA.Click += BtnEditHSBA_Click;
             btnEditHSBADV.Click += BtnEditHSBADV_Click;
 
+            Button btnSearchHSBA = new Button { Text = "SEARCH", Size = new Size(100, 40), BackColor = Color.SeaGreen, ForeColor = Color.White, FlatStyle = FlatStyle.Flat, Margin = new Padding(0) };
+            TextBox txtSearchHSBA = new TextBox { AutoSize = false, Size = new Size(250, 40), Font = new Font("Segoe UI", 12F), Margin = new Padding(0) };
+            btnSearchHSBA.FlatAppearance.BorderSize = 0;
+
+            btnSearchHSBA.Click += (s, e) =>
+            {
+                if (dgvHSBA.DataSource is DataTable dt)
+                {
+                    string keyword = txtSearchHSBA.Text.Trim().Replace("'", "''");
+                    if (string.IsNullOrEmpty(keyword)) dt.DefaultView.RowFilter = "";
+                    else
+                    {
+                        var filters = new System.Collections.Generic.List<string>();
+                        foreach (DataColumn col in dt.Columns)
+                        {
+                            if (col.DataType == typeof(string))
+                                filters.Add($"[{col.ColumnName}] LIKE '%{keyword}%'");
+                        }
+                        dt.DefaultView.RowFilter = string.Join(" OR ", filters);
+                    }
+                }
+            };
+
             pnlHSBAButtons.Controls.Add(btnAddHSBA);
             pnlHSBAButtons.Controls.Add(btnEditHSBA);
             pnlHSBAButtons.Controls.Add(btnEditHSBADV);
+            pnlHSBAButtons.Controls.Add(btnSearchHSBA);
+            pnlHSBAButtons.Controls.Add(txtSearchHSBA);
             tabHSBA.Controls.Add(pnlHSBAButtons);
 
-            Label lbl1 = new Label { Text = "Medical Records List", Location = new Point(15, 60), AutoSize = true, Font = new Font("Segoe UI", 10F, FontStyle.Bold) };
-            tabHSBA.Controls.Add(lbl1);
+            SplitContainer splitContainer = new SplitContainer
+            {
+                Location = new Point(15, 65),
+                Size = new Size(800, 500),
+                Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right,
+                Orientation = Orientation.Horizontal,
+                SplitterDistance = 250
+            };
 
+            Label lbl1 = new Label { Text = "Medical Records List", Dock = DockStyle.Top, AutoSize = true, Font = new Font("Segoe UI", 10F, FontStyle.Bold), Padding = new Padding(0, 0, 0, 5) };
             dgvHSBA = new DataGridView
             {
-                Location = new Point(15, 85),
-                Size = new Size(800, 150),
-                Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right,
-                AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill,
+                Dock = DockStyle.Fill,
+                AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.DisplayedCells,
                 BackgroundColor = Color.White,
                 AllowUserToAddRows = false,
                 ReadOnly = true,
                 SelectionMode = DataGridViewSelectionMode.FullRowSelect
             };
-            tabHSBA.Controls.Add(dgvHSBA);
+            splitContainer.Panel1.Controls.Add(dgvHSBA);
+            splitContainer.Panel1.Controls.Add(lbl1);
 
-            Label lbl2 = new Label { Text = "Medical Services List", Location = new Point(15, 250), AutoSize = true, Font = new Font("Segoe UI", 10F, FontStyle.Bold) };
-            tabHSBA.Controls.Add(lbl2);
-
+            Label lbl2 = new Label { Text = "Medical Services List", Dock = DockStyle.Top, AutoSize = true, Font = new Font("Segoe UI", 10F, FontStyle.Bold), Padding = new Padding(0, 5, 0, 5) };
             dgvHSBADV = new DataGridView
             {
-                Location = new Point(15, 275),
-                Size = new Size(800, 150),
+                Dock = DockStyle.Fill,
+                AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.DisplayedCells,
+                BackgroundColor = Color.White,
+                AllowUserToAddRows = false,
+                ReadOnly = true,
+                SelectionMode = DataGridViewSelectionMode.FullRowSelect
+            };
+            splitContainer.Panel2.Controls.Add(dgvHSBADV);
+            splitContainer.Panel2.Controls.Add(lbl2);
+
+            tabHSBA.Controls.Add(splitContainer);
+        }
+
+        private void InitializeThongBaoTab()
+        {
+            tabThongBao.Padding = new Padding(15);
+            tabThongBao.BackColor = Color.White;
+            btnRefresh = new Button { Text = "REFRESH", Size = new Size(200, 40), BackColor = Color.SeaGreen, ForeColor = Color.White, FlatStyle = FlatStyle.Flat, Location = new Point(15, 15) };
+            btnRefresh.FlatAppearance.BorderSize = 0;
+            btnRefresh.Click += (s, e) => LoadThongBao();
+            tabThongBao.Controls.Add(btnRefresh);
+            dgvThongBao = new DataGridView
+            {
+                Location = new Point(15, 65),
+                Size = new Size(800, 360),
                 Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right,
                 AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill,
                 BackgroundColor = Color.White,
@@ -155,7 +242,7 @@ namespace ATBM_Hospital_Management.Views.Components
                 ReadOnly = true,
                 SelectionMode = DataGridViewSelectionMode.FullRowSelect
             };
-            tabHSBA.Controls.Add(dgvHSBADV);
+            tabThongBao.Controls.Add(dgvThongBao);
         }
 
         private void LoadPatientData()
@@ -184,6 +271,29 @@ namespace ATBM_Hospital_Management.Views.Components
             catch (Exception ex) { MessageBox.Show(ex.Message); }
         }
 
+        private void LoadThongBao()
+        {
+            try
+            {
+                var pOut = new Oracle.ManagedDataAccess.Client.OracleParameter(
+                    "p_cursor",
+                    Oracle.ManagedDataAccess.Client.OracleDbType.RefCursor)
+                {
+                    Direction = ParameterDirection.Output
+                };
+
+                dgvThongBao.DataSource = DbConnection.Instance.ExecuteQuery(
+                    "BEGIN SP_GET_THONGBAO(:p_cursor); END;",
+                    new[] { pOut },
+                    CommandType.Text
+                );
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error loading notifications: " + ex.Message);
+            }
+        }
+
         private TextBox AddField(Form form, string label, string defaultValue, ref int y, bool isReadOnly = false)
         {
             Label lbl = new Label { Text = label, Location = new Point(20, y + 3), AutoSize = true };
@@ -194,12 +304,57 @@ namespace ATBM_Hospital_Management.Views.Components
             return txt;
         }
 
+        private string GenerateNextId(DataTable dt, string columnName, string defaultPrefix, string defaultFormat)
+        {
+            string newId = defaultPrefix + 1.ToString(defaultFormat);
+            if (dt == null) return newId;
+
+            try
+            {
+                int maxNumeric = 0;
+                string currentPrefix = "";
+                int padLength = 0;
+
+                foreach (DataRow row in dt.Rows)
+                {
+                    if (row[columnName] == DBNull.Value) continue;
+                    string idStr = row[columnName].ToString();
+                    var match = System.Text.RegularExpressions.Regex.Match(idStr, @"^([A-Za-z_]+)(\d+)$");
+                    if (match.Success)
+                    {
+                        int num = int.Parse(match.Groups[2].Value);
+                        if (num > maxNumeric)
+                        {
+                            maxNumeric = num;
+                            currentPrefix = match.Groups[1].Value;
+                            if (match.Groups[2].Value.StartsWith("0"))
+                                padLength = match.Groups[2].Value.Length;
+                            else
+                                padLength = 0;
+                        }
+                    }
+                }
+
+                if (maxNumeric > 0)
+                {
+                    if (padLength > 0)
+                        newId = currentPrefix + (maxNumeric + 1).ToString().PadLeft(padLength, '0');
+                    else
+                        newId = currentPrefix + (maxNumeric + 1).ToString();
+                }
+            }
+            catch { }
+            return newId;
+        }
+
         private void BtnAddPatient_Click(object sender, EventArgs e)
         {
             using (Form f = new Form() { Text = "Add Patient", Size = new Size(400, 520), StartPosition = FormStartPosition.CenterParent })
             {
                 int y = 20;
-                TextBox txtMaBN = AddField(f, "Patient ID:", "", ref y);
+                string newMaBN = GenerateNextId(dgvPatient.DataSource as DataTable, "MA_BN", "BN", "D6");
+
+                TextBox txtMaBN = AddField(f, "Patient ID:", newMaBN, ref y, true);
                 TextBox txtSoNha = AddField(f, "House No:", "", ref y);
                 TextBox txtTenDuong = AddField(f, "Street:", "", ref y);
                 TextBox txtQuanHuyen = AddField(f, "District:", "", ref y);
@@ -288,8 +443,15 @@ namespace ATBM_Hospital_Management.Views.Components
             using (Form f = new Form() { Text = "Add Record", Size = new Size(400, 520), StartPosition = FormStartPosition.CenterParent })
             {
                 int y = 20;
-                TextBox txtMaHSBA = AddField(f, "Record ID:", "", ref y);
-                TextBox txtMaBN = AddField(f, "Patient ID:", "", ref y);
+                string newMaHSBA = GenerateNextId(dgvHSBA.DataSource as DataTable, "MA_HSBA", "HS", "D6");
+
+                string defaultMaBN = "";
+                if (dgvPatient != null && dgvPatient.SelectedRows.Count > 0) {
+                    defaultMaBN = dgvPatient.SelectedRows[0].Cells["MA_BN"].Value?.ToString() ?? "";
+                }
+
+                TextBox txtMaHSBA = AddField(f, "Record ID:", newMaHSBA, ref y, true);
+                TextBox txtMaBN = AddField(f, "Patient ID:", defaultMaBN, ref y);
                 
                 Label lblNgay = new Label { Text = "Date:", Location = new Point(20, y + 3), AutoSize = true };
                 DateTimePicker dtpNgay = new DateTimePicker { Location = new Point(140, y), Size = new Size(210, 25), Format = DateTimePickerFormat.Short };
@@ -393,7 +555,7 @@ namespace ATBM_Hospital_Management.Views.Components
                         {
                             new Oracle.ManagedDataAccess.Client.OracleParameter("p_MAHSBA", txtMaHSBA.Text),
                             new Oracle.ManagedDataAccess.Client.OracleParameter("p_LOAIDV", txtLoaiDV.Text),
-                            new Oracle.ManagedDataAccess.Client.OracleParameter("p_NGAYDV", dtpNgay.Value.Date),
+                            new Oracle.ManagedDataAccess.Client.OracleParameter("p_NGAYDV", dtpNgay.Value),
                             new Oracle.ManagedDataAccess.Client.OracleParameter("p_MAKTV", txtMaKTV.Text)
                         };
                         DbConnection.Instance.ExecuteNonQuery("BEGIN sp_DPV_Update_HSBADV(:p_MAHSBA, :p_LOAIDV, :p_NGAYDV, :p_MAKTV); END;", parameters, CommandType.Text);

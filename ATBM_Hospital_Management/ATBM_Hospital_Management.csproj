@@ -103,7 +103,7 @@
     <Compile Include="Database\DbConnection.cs" />
     <Compile Include="Database\DbaService.cs" />
     <Compile Include="Database\AccountService.cs" />
-    <Compile Include="Views\KTV\ServiceRecordView.cs">
+<Compile Include="Views\KTV\ServiceRecordView.cs">
       <SubType>UserControl</SubType>
     </Compile>
     <Compile Include="Views\KTV\ServiceRecordView.Designer.cs">
@@ -114,6 +114,30 @@
     </Compile>
     <Compile Include="Views\KTV\ServiceResultEntryView.Designer.cs">
       <DependentUpon>ServiceResultEntryView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Views\DoctorView_HealthRecord.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Views\DoctorView_HealthRecord.Designer.cs">
+      <DependentUpon>DoctorView_HealthRecord.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Views\DoctorView_HealthRecordList.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Views\DoctorView_HealthRecordList.Designer.cs">
+      <DependentUpon>DoctorView_HealthRecordList.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Views\DoctorView_PatientList.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Views\DoctorView_PatientList.Designer.cs">
+      <DependentUpon>DoctorView_PatientList.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Views\DoctorView_PatientDetail.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Views\DoctorView_PatientDetail.Designer.cs">
+      <DependentUpon>DoctorView_PatientDetail.cs</DependentUpon>
     </Compile>
     <Compile Include="Views\LoginForm.cs">
       <SubType>Form</SubType>
@@ -132,6 +156,12 @@
     </Compile>
     <Compile Include="Views\DashboardView.Designer.cs">
       <DependentUpon>DashboardView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Views\AuditView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Views\AuditView.Designer.cs">
+      <DependentUpon>AuditView.cs</DependentUpon>
     </Compile>
     <Compile Include="Views\UserView.cs">
       <SubType>UserControl</SubType>
@@ -164,6 +194,9 @@
       <SubType>UserControl</SubType>
     </Compile>
     <Compile Include="Views\Components\CoordinatorView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Views\Components\TechnicianView.cs">
       <SubType>UserControl</SubType>
     </Compile>
     <Compile Include="Views\GrantView.cs">
@@ -204,6 +237,18 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <EmbeddedResource Include="Views\DoctorView_HealthRecord.resx">
+      <DependentUpon>DoctorView_HealthRecord.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Views\DoctorView_HealthRecordList.resx">
+      <DependentUpon>DoctorView_HealthRecordList.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Views\DoctorView_PatientList.resx">
+      <DependentUpon>DoctorView_PatientList.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Views\DoctorView_PatientDetail.resx">
+      <DependentUpon>DoctorView_PatientDetail.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Views\RevokeView.resx">
       <DependentUpon>RevokeView.cs</DependentUpon>
     </EmbeddedResource>

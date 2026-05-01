@@ -30,6 +30,20 @@ namespace ATBM_Hospital_Management.Views
             else if (tab == tpRevoke)     view = new RevokeView();
             else if (tab == tpPrivQuery)  view = new PrivilegeQueryView();
             else if (tab == tpRegister)   view = new RegisterView();
+            else if (tab == tpAudit)
+            {
+                // create AuditView with strict docking/location/margins so it fills the tab exactly
+                var auditView = new AuditView();
+                auditView.Dock = DockStyle.Fill;
+                auditView.Location = new System.Drawing.Point(0, 0); // important to anchor at origin
+                auditView.Margin = new Padding(0);
+
+                tab.Padding = new Padding(0);
+                tab.Controls.Clear();
+                tab.Controls.Add(auditView);
+
+                return; // we've handled adding the view
+            }
 
             if (view != null)
             {
@@ -73,6 +87,13 @@ namespace ATBM_Hospital_Management.Views
                 else if (role == "RL_DIEUPHOIVIEN")
                 {
                     tpMedical.Controls.Add(new Components.CoordinatorView { Dock = DockStyle.Fill });
+                }else if (role == "RL_BACSI")
+                {
+                    tpMedical.Controls.Add(new Components.DoctorView_PatientList { Dock = DockStyle.Fill });
+                }
+                else if (role == "RL_KYTHUATVIEN")
+                {
+                    tpMedical.Controls.Add(new Components.TechnicianView { Dock = DockStyle.Fill });
                 }
                 else if (role == "RL_KYTHUATVIEN")
                 {

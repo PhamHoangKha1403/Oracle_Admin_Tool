@@ -310,6 +310,101 @@ namespace ATBM_Hospital_Management.Database
             return _db.ExecuteQuery(sql, p);
         }
 
+
+        // --- Lấy bảng Audit ---
+        public DataTable GetAudit()
+        {
+            // Use the FGA-specific stored procedure that returns the FGA audit ref cursor
+            string spName = "SP_GET_AUDIT_FGA";
+            OracleParameter[] p = {
+                new OracleParameter("p_cursor", OracleDbType.RefCursor, ParameterDirection.Output)
+            };
+            return _db.ExecuteQuery(spName, p, CommandType.StoredProcedure);
+        }
+
+        // --- Các method hỗ trợ bật/tắt policies, lấy policies để hiển thị trên UI ---
+
+        public DataTable GetFgaPolicies(string objectName = null)
+        {
+            // ALL_FGA_POLICIES is safer for non-DBA users than DBA_FGA_POLICIES
+            string sql = "SELECT POLICY_NAME, OBJECT_SCHEMA, OBJECT_NAME, ENABLED FROM ALL_FGA_POLICIES WHERE OBJECT_SCHEMA = 'ADMIN_PH2'";
+            if (!string.IsNullOrEmpty(objectName))
+            {
+                sql += " AND OBJECT_NAME = :objectName";
+                sql += " ORDER BY OBJECT_NAME, POLICY_NAME";
+                OracleParameter[] p = { new OracleParameter("objectName", objectName.ToUpper()) };
+                return _db.ExecuteQuery(sql, p);
+            }
+            sql += " ORDER BY OBJECT_NAME, POLICY_NAME";
+            return _db.ExecuteQuery(sql);
+        }
+
+        public void EnablePoliciesForObject(string objectName = null)
+        {
+            DataTable policies = GetFgaPolicies(objectName);
+            if (policies == null) return;
+            foreach (DataRow r in policies.Rows)
+            {
+                string obj = r["OBJECT_NAME"]?.ToString();
+                string policy = r["POLICY_NAME"]?.ToString();
+                if (!string.IsNullOrWhiteSpace(obj) && !string.IsNullOrWhiteSpace(policy))
+                    EnablePolicy(obj, policy);
+            }
+        }
+
+        public void DisablePoliciesForObject(string objectName = null)
+        {
+            DataTable policies = GetFgaPolicies(objectName);
+            if (policies == null) return;
+            foreach (DataRow r in policies.Rows)
+            {
+                string obj = r["OBJECT_NAME"]?.ToString();
+                string policy = r["POLICY_NAME"]?.ToString();
+                if (!string.IsNullOrWhiteSpace(obj) && !string.IsNullOrWhiteSpace(policy))
+                    DisablePolicy(obj, policy);
+            }
+        }
+
+        private void EnablePolicy(string objectName, string policyName)
+        {
+            OracleConnection conn = _db.GetConnection();
+            using (OracleCommand cmd = new OracleCommand("ENABLE_POLICY", conn))
+            {
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.Add("p_object_name", OracleDbType.Varchar2).Value = objectName;
+                cmd.Parameters.Add("p_policy_name", OracleDbType.Varchar2).Value = policyName;
+                try
+                {
+                    if (cmd.Connection.State != ConnectionState.Open) cmd.Connection.Open();
+                    cmd.ExecuteNonQuery();
+                }
+                catch (OracleException ex)
+                {
+                    throw new Exception("Error enabling policy: " + ex.Message);
+                }
+            }
+        }
+
+        private void DisablePolicy(string objectName, string policyName)
+        {
+            OracleConnection conn = _db.GetConnection();
+            using (OracleCommand cmd = new OracleCommand("DISABLE_POLICY", conn))
+            {
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.Add("p_object_name", OracleDbType.Varchar2).Value = objectName;
+                cmd.Parameters.Add("p_policy_name", OracleDbType.Varchar2).Value = policyName;
+                try
+                {
+                    if (cmd.Connection.State != ConnectionState.Open) cmd.Connection.Open();
+                    cmd.ExecuteNonQuery();
+                }
+                catch (OracleException ex)
+                {
+                    throw new Exception("Error disabling policy: " + ex.Message);
+                }
+            }
+        }
+
         public DataTable GetPrivilegesByObject(string grantee, string owner, string tableName)
         {
             grantee = (grantee ?? "").Trim().ToUpper();
