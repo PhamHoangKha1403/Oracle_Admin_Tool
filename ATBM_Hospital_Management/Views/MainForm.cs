@@ -72,6 +72,9 @@ namespace ATBM_Hospital_Management.Views
                 else if (role == "RL_DIEUPHOIVIEN")
                 {
                     tpMedical.Controls.Add(new Components.CoordinatorView { Dock = DockStyle.Fill });
+                }else if (role == "RL_BACSI")
+                {
+                    tpMedical.Controls.Add(new Components.DoctorView_PatientList { Dock = DockStyle.Fill });
                 }
                 else if (role == "RL_KYTHUATVIEN")
                 {
