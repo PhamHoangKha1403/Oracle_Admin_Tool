@@ -1,0 +1,823 @@
+Folder PATH listing for volume New Volume
+Volume serial number is 5675-BB2A
+D:.
+|   .gitignore
+|   ATBM_Hospital_Management.sln
+|   structure.txt
+|   
++---.vs
+|   |   slnx.sqlite
+|   |   
+|   +---ATBM_Hospital_Management
+|   |   +---FileContentIndex
+|   |   |       4d7a62cb-2629-46d0-8b94-77d11af09fb7.vsidx
+|   |   |       
+|   |   \---v18
+|   |           DocumentLayout.backup.json
+|   |           DocumentLayout.json
+|   |           
+|   +---Oracle_Admin_Tool
+|   |   \---CopilotIndices
+|   |       \---18.5.39187.10602
+|   |               CodeChunks.db
+|   |               CodeChunks.db-shm
+|   |               CodeChunks.db-wal
+|   |               SemanticSymbols.db
+|   |               SemanticSymbols.db-shm
+|   |               SemanticSymbols.db-wal
+|   |               
+|   \---Oracle_Admin_Tool.slnx
+|       +---copilot-chat
+|       |   \---b17ddb55
+|       |       \---sessions
+|       +---FileContentIndex
+|       |       d4f2ff61-8c39-466e-99cf-3b065119316c.vsidx
+|       |       
+|       \---v18
+|               .wsuo
+|               
++---ATBM_Hospital_Management
+|   |   App.config
+|   |   ATBM_Hospital_Management.csproj
+|   |   FodyWeavers.xml
+|   |   FodyWeavers.xsd
+|   |   Form1.cs
+|   |   Form1.Designer.cs
+|   |   Form1.resx
+|   |   Oracle.DataAccess.Common.Configuration.Section.xsd
+|   |   Oracle.ManagedDataAccess.Client.Configuration.Section.xsd
+|   |   packages.config
+|   |   Program.cs
+|   |   
+|   +---bin
+|   |   \---Debug
+|   |           ATBM_Hospital_Management.exe
+|   |           ATBM_Hospital_Management.exe.config
+|   |           ATBM_Hospital_Management.pdb
+|   |           Costura.dll
+|   |           Costura.pdb
+|   |           Costura.xml
+|   |           MaterialSkin.dll
+|   |           Microsoft.Bcl.AsyncInterfaces.dll
+|   |           Microsoft.Bcl.AsyncInterfaces.xml
+|   |           Oracle.ManagedDataAccess.dll
+|   |           System.Buffers.dll
+|   |           System.Buffers.xml
+|   |           System.Diagnostics.DiagnosticSource.dll
+|   |           System.Diagnostics.DiagnosticSource.xml
+|   |           System.Formats.Asn1.dll
+|   |           System.Formats.Asn1.xml
+|   |           System.Memory.dll
+|   |           System.Memory.xml
+|   |           System.Numerics.Vectors.dll
+|   |           System.Numerics.Vectors.xml
+|   |           System.Runtime.CompilerServices.Unsafe.dll
+|   |           System.Runtime.CompilerServices.Unsafe.xml
+|   |           System.Text.Encodings.Web.dll
+|   |           System.Text.Encodings.Web.xml
+|   |           System.Text.Json.dll
+|   |           System.Text.Json.xml
+|   |           System.Threading.Tasks.Extensions.dll
+|   |           System.Threading.Tasks.Extensions.xml
+|   |           System.ValueTuple.dll
+|   |           System.ValueTuple.xml
+|   |           
+|   +---Database
+|   |   |   AccountService.cs
+|   |   |   DbaService.cs
+|   |   |   DbConnection.cs
+|   |   |   UserService.cs
+|   |   |   
+|   |   \---Data
+|   |           BENH_NHAN.sql
+|   |           chema.sql
+|   |           DON_THUOC.sql
+|   |           generate_data.py
+|   |           HSBA.sql
+|   |           HSBA_DV.sql
+|   |           KHOA.sql
+|   |           NHAN_VIEN.sql
+|   |           stored_procedures.sql
+|   |           THONG_BAO.sql
+|   |           
+|   +---obj
+|   |   \---Debug
+|   |       |   .NETFramework,Version=v4.7.2.AssemblyAttributes.cs
+|   |       |   ATBM_Hos.8061F4AD.Up2Date
+|   |       |   ATBM_Hospital_Management.csproj.AssemblyReference.cache
+|   |       |   ATBM_Hospital_Management.csproj.CoreCompileInputs.cache
+|   |       |   ATBM_Hospital_Management.csproj.FileListAbsolute.txt
+|   |       |   ATBM_Hospital_Management.csproj.GenerateResource.cache
+|   |       |   ATBM_Hospital_Management.exe
+|   |       |   ATBM_Hospital_Management.Form1.resources
+|   |       |   ATBM_Hospital_Management.pdb
+|   |       |   ATBM_Hospital_Management.Properties.Resources.resources
+|   |       |   ATBM_Hospital_Management.Views.RevokeView.resources
+|   |       |   DesignTimeResolveAssemblyReferencesInput.cache
+|   |       |   
+|   |       \---TempPE
+|   +---Properties
+|   |       AssemblyInfo.cs
+|   |       Resources.Designer.cs
+|   |       Resources.resx
+|   |       Settings.Designer.cs
+|   |       Settings.settings
+|   |       
+|   \---Views
+|       |   DashboardView.cs
+|       |   DashboardView.Designer.cs
+|       |   GrantView.cs
+|       |   GrantView.Designer.cs
+|       |   LoginForm.cs
+|       |   LoginForm.Designer.cs
+|       |   MainForm.cs
+|       |   MainForm.Designer.cs
+|       |   ObjectView.cs
+|       |   ObjectView.Designer.cs
+|       |   PermissionView.cs
+|       |   PermissionView.Designer.cs
+|       |   PrivilegeQueryView.cs
+|       |   PrivilegeQueryView.Designer.cs
+|       |   RegisterView.cs
+|       |   RegisterView.Designer.cs
+|       |   RevokeView.cs
+|       |   RevokeView.Designer.cs
+|       |   RevokeView.resx
+|       |   RoleView.cs
+|       |   RoleView.Designer.cs
+|       |   UserView.cs
+|       |   UserView.Designer.cs
+|       |   
+|       \---Components
+|               CoordinatorView.cs
+|               DropDownComboBox.cs
+|               PatientView.cs
+|               
++---Database
+|       data.sql
+|       schema.sql
+|       
+\---packages
+    +---Costura.Fody.6.0.0
+    |   |   .signature.p7s
+    |   |   Costura.Fody.6.0.0.nupkg
+    |   |   icon.png
+    |   |   
+    |   +---build
+    |   |       Costura.Fody.props
+    |   |       Costura.Fody.targets
+    |   |       
+    |   +---lib
+    |   |   \---netstandard2.0
+    |   |           Costura.dll
+    |   |           Costura.pdb
+    |   |           Costura.xml
+    |   |           
+    |   +---netclassicweaver
+    |   |       Costura.Fody.dll
+    |   |       Costura.Fody.xcf
+    |   |       
+    |   \---netstandardweaver
+    |           Costura.Fody.dll
+    |           Costura.Fody.xcf
+    |           
+    +---Fody.6.8.2
+    |   |   .signature.p7s
+    |   |   Fody.6.8.2.nupkg
+    |   |   License.txt
+    |   |   readme.md
+    |   |   
+    |   +---build
+    |   |       Fody.targets
+    |   |       
+    |   +---netclassictask
+    |   |       Fody.dll
+    |   |       FodyCommon.dll
+    |   |       FodyHelpers.dll
+    |   |       FodyIsolated.dll
+    |   |       Mono.Cecil.dll
+    |   |       Mono.Cecil.pdb
+    |   |       Mono.Cecil.Pdb.dll
+    |   |       Mono.Cecil.Pdb.pdb
+    |   |       Mono.Cecil.Rocks.dll
+    |   |       Mono.Cecil.Rocks.pdb
+    |   |       
+    |   \---netstandardtask
+    |           Fody.dll
+    |           FodyCommon.dll
+    |           FodyHelpers.dll
+    |           FodyIsolated.dll
+    |           Mono.Cecil.dll
+    |           Mono.Cecil.pdb
+    |           Mono.Cecil.Pdb.dll
+    |           Mono.Cecil.Pdb.pdb
+    |           Mono.Cecil.Rocks.dll
+    |           Mono.Cecil.Rocks.pdb
+    |           
+    +---MaterialSkin.2.2.3.1
+    |   |   .signature.p7s
+    |   |   MaterialSkin.2.2.3.1.nupkg
+    |   |   nugetIcon.png
+    |   |   README.md
+    |   |   
+    |   \---lib
+    |       +---net45
+    |       |       MaterialSkin.dll
+    |       |       
+    |       +---net461
+    |       |       MaterialSkin.dll
+    |       |       
+    |       +---net48
+    |       |       MaterialSkin.dll
+    |       |       
+    |       \---net5.0-windows7.0
+    |               MaterialSkin.dll
+    |               
+    +---Microsoft.Bcl.AsyncInterfaces.8.0.0
+    |   |   .signature.p7s
+    |   |   Icon.png
+    |   |   LICENSE.TXT
+    |   |   Microsoft.Bcl.AsyncInterfaces.8.0.0.nupkg
+    |   |   PACKAGE.md
+    |   |   THIRD-PARTY-NOTICES.TXT
+    |   |   useSharedDesignerContext.txt
+    |   |   
+    |   +---buildTransitive
+    |   |   +---net461
+    |   |   |       Microsoft.Bcl.AsyncInterfaces.targets
+    |   |   |       
+    |   |   \---net462
+    |   |           _._
+    |   |           
+    |   \---lib
+    |       +---net462
+    |       |       Microsoft.Bcl.AsyncInterfaces.dll
+    |       |       Microsoft.Bcl.AsyncInterfaces.xml
+    |       |       
+    |       +---netstandard2.0
+    |       |       Microsoft.Bcl.AsyncInterfaces.dll
+    |       |       Microsoft.Bcl.AsyncInterfaces.xml
+    |       |       
+    |       \---netstandard2.1
+    |               Microsoft.Bcl.AsyncInterfaces.dll
+    |               Microsoft.Bcl.AsyncInterfaces.xml
+    |               
+    +---Oracle.ManagedDataAccess.23.26.100
+    |   |   .signature.p7s
+    |   |   info.txt
+    |   |   LICENSE.txt
+    |   |   Oracle.ManagedDataAccess.23.26.100.nupkg
+    |   |   oracle.png
+    |   |   README.md
+    |   |   
+    |   +---bin
+    |   |   \---x64
+    |   |           Oracle.ManagedDataAccessIOP.dll
+    |   |           
+    |   +---content
+    |   |   \---net472
+    |   |           App.config.install.xdt
+    |   |           App.config.transform
+    |   |           App.config.uninstall.xdt
+    |   |           Oracle.DataAccess.Common.Configuration.Section.xsd
+    |   |           Oracle.ManagedDataAccess.Client.Configuration.Section.xsd
+    |   |           Web.config.install.xdt
+    |   |           Web.config.transform
+    |   |           Web.config.uninstall.xdt
+    |   |           
+    |   +---lib
+    |   |   \---net472
+    |   |           Oracle.ManagedDataAccess.dll
+    |   |           
+    |   \---PerfCounters
+    |           register_odpm_perfmon_counters.ps1
+    |           unregister_odpm_perfmon_counters.ps1
+    |           
+    +---System.Buffers.4.6.0
+    |   |   .signature.p7s
+    |   |   Icon.png
+    |   |   PACKAGE.md
+    |   |   System.Buffers.4.6.0.nupkg
+    |   |   
+    |   +---buildTransitive
+    |   |   +---net461
+    |   |   |       System.Buffers.targets
+    |   |   |       
+    |   |   \---net462
+    |   |           _._
+    |   |           
+    |   \---lib
+    |       +---net462
+    |       |       System.Buffers.dll
+    |       |       System.Buffers.xml
+    |       |       
+    |       +---netcoreapp2.1
+    |       |       _._
+    |       |       
+    |       \---netstandard2.0
+    |               System.Buffers.dll
+    |               System.Buffers.xml
+    |               
+    +---System.Diagnostics.DiagnosticSource.6.0.2
+    |   |   .signature.p7s
+    |   |   Icon.png
+    |   |   LICENSE.TXT
+    |   |   System.Diagnostics.DiagnosticSource.6.0.2.nupkg
+    |   |   THIRD-PARTY-NOTICES.TXT
+    |   |   useSharedDesignerContext.txt
+    |   |   
+    |   +---buildTransitive
+    |   |   +---netcoreapp2.0
+    |   |   |       System.Diagnostics.DiagnosticSource.targets
+    |   |   |       
+    |   |   \---netcoreapp3.1
+    |   |           _._
+    |   |           
+    |   \---lib
+    |       +---net461
+    |       |       System.Diagnostics.DiagnosticSource.dll
+    |       |       System.Diagnostics.DiagnosticSource.xml
+    |       |       
+    |       +---net5.0
+    |       |       System.Diagnostics.DiagnosticSource.dll
+    |       |       System.Diagnostics.DiagnosticSource.xml
+    |       |       
+    |       +---net6.0
+    |       |       System.Diagnostics.DiagnosticSource.dll
+    |       |       System.Diagnostics.DiagnosticSource.xml
+    |       |       
+    |       \---netstandard2.0
+    |               System.Diagnostics.DiagnosticSource.dll
+    |               System.Diagnostics.DiagnosticSource.xml
+    |               
+    +---System.Formats.Asn1.8.0.1
+    |   |   .signature.p7s
+    |   |   Icon.png
+    |   |   LICENSE.TXT
+    |   |   System.Formats.Asn1.8.0.1.nupkg
+    |   |   THIRD-PARTY-NOTICES.TXT
+    |   |   useSharedDesignerContext.txt
+    |   |   
+    |   +---buildTransitive
+    |   |   +---net461
+    |   |   |       System.Formats.Asn1.targets
+    |   |   |       
+    |   |   +---net462
+    |   |   |       _._
+    |   |   |       
+    |   |   +---net6.0
+    |   |   |       _._
+    |   |   |       
+    |   |   \---netcoreapp2.0
+    |   |           System.Formats.Asn1.targets
+    |   |           
+    |   \---lib
+    |       +---net462
+    |       |       System.Formats.Asn1.dll
+    |       |       System.Formats.Asn1.xml
+    |       |       
+    |       +---net6.0
+    |       |       System.Formats.Asn1.dll
+    |       |       System.Formats.Asn1.xml
+    |       |       
+    |       +---net7.0
+    |       |       System.Formats.Asn1.dll
+    |       |       System.Formats.Asn1.xml
+    |       |       
+    |       +---net8.0
+    |       |       System.Formats.Asn1.dll
+    |       |       System.Formats.Asn1.xml
+    |       |       
+    |       \---netstandard2.0
+    |               System.Formats.Asn1.dll
+    |               System.Formats.Asn1.xml
+    |               
+    +---System.Memory.4.6.0
+    |   |   .signature.p7s
+    |   |   Icon.png
+    |   |   PACKAGE.md
+    |   |   System.Memory.4.6.0.nupkg
+    |   |   
+    |   +---buildTransitive
+    |   |   +---net461
+    |   |   |       System.Memory.targets
+    |   |   |       
+    |   |   \---net462
+    |   |           _._
+    |   |           
+    |   \---lib
+    |       +---net462
+    |       |       System.Memory.dll
+    |       |       System.Memory.xml
+    |       |       
+    |       +---netcoreapp2.1
+    |       |       _._
+    |       |       
+    |       \---netstandard2.0
+    |               System.Memory.dll
+    |               System.Memory.xml
+    |               
+    +---System.Numerics.Vectors.4.6.0
+    |   |   .signature.p7s
+    |   |   Icon.png
+    |   |   PACKAGE.md
+    |   |   System.Numerics.Vectors.4.6.0.nupkg
+    |   |   
+    |   +---buildTransitive
+    |   |   +---net461
+    |   |   |       System.Numerics.Vectors.targets
+    |   |   |       
+    |   |   \---net462
+    |   |           _._
+    |   |           
+    |   \---lib
+    |       +---net462
+    |       |       System.Numerics.Vectors.dll
+    |       |       System.Numerics.Vectors.xml
+    |       |       
+    |       +---netcoreapp2.0
+    |       |       _._
+    |       |       
+    |       \---netstandard2.0
+    |               System.Numerics.Vectors.dll
+    |               System.Numerics.Vectors.xml
+    |               
+    +---System.Runtime.CompilerServices.Unsafe.6.1.0
+    |   |   .signature.p7s
+    |   |   Icon.png
+    |   |   PACKAGE.md
+    |   |   System.Runtime.CompilerServices.Unsafe.6.1.0.nupkg
+    |   |   
+    |   +---buildTransitive
+    |   |   +---net461
+    |   |   |       System.Runtime.CompilerServices.Unsafe.targets
+    |   |   |       
+    |   |   +---net462
+    |   |   |       _._
+    |   |   |       
+    |   |   +---net6.0
+    |   |   |       _._
+    |   |   |       
+    |   |   \---netcoreapp2.0
+    |   |           System.Runtime.CompilerServices.Unsafe.targets
+    |   |           
+    |   \---lib
+    |       +---net462
+    |       |       System.Runtime.CompilerServices.Unsafe.dll
+    |       |       System.Runtime.CompilerServices.Unsafe.xml
+    |       |       
+    |       +---net7.0
+    |       |       _._
+    |       |       
+    |       \---netstandard2.0
+    |               System.Runtime.CompilerServices.Unsafe.dll
+    |               System.Runtime.CompilerServices.Unsafe.xml
+    |               
+    +---System.Text.Encodings.Web.8.0.0
+    |   |   .signature.p7s
+    |   |   Icon.png
+    |   |   LICENSE.TXT
+    |   |   System.Text.Encodings.Web.8.0.0.nupkg
+    |   |   THIRD-PARTY-NOTICES.TXT
+    |   |   useSharedDesignerContext.txt
+    |   |   
+    |   +---buildTransitive
+    |   |   +---net461
+    |   |   |       System.Text.Encodings.Web.targets
+    |   |   |       
+    |   |   +---net462
+    |   |   |       _._
+    |   |   |       
+    |   |   +---net6.0
+    |   |   |       _._
+    |   |   |       
+    |   |   \---netcoreapp2.0
+    |   |           System.Text.Encodings.Web.targets
+    |   |           
+    |   +---lib
+    |   |   +---net462
+    |   |   |       System.Text.Encodings.Web.dll
+    |   |   |       System.Text.Encodings.Web.xml
+    |   |   |       
+    |   |   +---net6.0
+    |   |   |       System.Text.Encodings.Web.dll
+    |   |   |       System.Text.Encodings.Web.xml
+    |   |   |       
+    |   |   +---net7.0
+    |   |   |       System.Text.Encodings.Web.dll
+    |   |   |       System.Text.Encodings.Web.xml
+    |   |   |       
+    |   |   +---net8.0
+    |   |   |       System.Text.Encodings.Web.dll
+    |   |   |       System.Text.Encodings.Web.xml
+    |   |   |       
+    |   |   \---netstandard2.0
+    |   |           System.Text.Encodings.Web.dll
+    |   |           System.Text.Encodings.Web.xml
+    |   |           
+    |   \---runtimes
+    |       \---browser
+    |           \---lib
+    |               +---net6.0
+    |               |       System.Text.Encodings.Web.dll
+    |               |       System.Text.Encodings.Web.xml
+    |               |       
+    |               +---net7.0
+    |               |       System.Text.Encodings.Web.dll
+    |               |       System.Text.Encodings.Web.xml
+    |               |       
+    |               \---net8.0
+    |                       System.Text.Encodings.Web.dll
+    |                       System.Text.Encodings.Web.xml
+    |                       
+    +---System.Text.Json.8.0.5
+    |   |   .signature.p7s
+    |   |   Icon.png
+    |   |   LICENSE.TXT
+    |   |   PACKAGE.md
+    |   |   System.Text.Json.8.0.5.nupkg
+    |   |   THIRD-PARTY-NOTICES.TXT
+    |   |   useSharedDesignerContext.txt
+    |   |   
+    |   +---analyzers
+    |   |   \---dotnet
+    |   |       +---roslyn3.11
+    |   |       |   \---cs
+    |   |       |       |   System.Text.Json.SourceGeneration.dll
+    |   |       |       |   
+    |   |       |       +---cs
+    |   |       |       |       System.Text.Json.SourceGeneration.resources.dll
+    |   |       |       |       
+    |   |       |       +---de
+    |   |       |       |       System.Text.Json.SourceGeneration.resources.dll
+    |   |       |       |       
+    |   |       |       +---es
+    |   |       |       |       System.Text.Json.SourceGeneration.resources.dll
+    |   |       |       |       
+    |   |       |       +---fr
+    |   |       |       |       System.Text.Json.SourceGeneration.resources.dll
+    |   |       |       |       
+    |   |       |       +---it
+    |   |       |       |       System.Text.Json.SourceGeneration.resources.dll
+    |   |       |       |       
+    |   |       |       +---ja
+    |   |       |       |       System.Text.Json.SourceGeneration.resources.dll
+    |   |       |       |       
+    |   |       |       +---ko
+    |   |       |       |       System.Text.Json.SourceGeneration.resources.dll
+    |   |       |       |       
+    |   |       |       +---pl
+    |   |       |       |       System.Text.Json.SourceGeneration.resources.dll
+    |   |       |       |       
+    |   |       |       +---pt-BR
+    |   |       |       |       System.Text.Json.SourceGeneration.resources.dll
+    |   |       |       |       
+    |   |       |       +---ru
+    |   |       |       |       System.Text.Json.SourceGeneration.resources.dll
+    |   |       |       |       
+    |   |       |       +---tr
+    |   |       |       |       System.Text.Json.SourceGeneration.resources.dll
+    |   |       |       |       
+    |   |       |       +---zh-Hans
+    |   |       |       |       System.Text.Json.SourceGeneration.resources.dll
+    |   |       |       |       
+    |   |       |       \---zh-Hant
+    |   |       |               System.Text.Json.SourceGeneration.resources.dll
+    |   |       |               
+    |   |       +---roslyn4.0
+    |   |       |   \---cs
+    |   |       |       |   System.Text.Json.SourceGeneration.dll
+    |   |       |       |   
+    |   |       |       +---cs
+    |   |       |       |       System.Text.Json.SourceGeneration.resources.dll
+    |   |       |       |       
+    |   |       |       +---de
+    |   |       |       |       System.Text.Json.SourceGeneration.resources.dll
+    |   |       |       |       
+    |   |       |       +---es
+    |   |       |       |       System.Text.Json.SourceGeneration.resources.dll
+    |   |       |       |       
+    |   |       |       +---fr
+    |   |       |       |       System.Text.Json.SourceGeneration.resources.dll
+    |   |       |       |       
+    |   |       |       +---it
+    |   |       |       |       System.Text.Json.SourceGeneration.resources.dll
+    |   |       |       |       
+    |   |       |       +---ja
+    |   |       |       |       System.Text.Json.SourceGeneration.resources.dll
+    |   |       |       |       
+    |   |       |       +---ko
+    |   |       |       |       System.Text.Json.SourceGeneration.resources.dll
+    |   |       |       |       
+    |   |       |       +---pl
+    |   |       |       |       System.Text.Json.SourceGeneration.resources.dll
+    |   |       |       |       
+    |   |       |       +---pt-BR
+    |   |       |       |       System.Text.Json.SourceGeneration.resources.dll
+    |   |       |       |       
+    |   |       |       +---ru
+    |   |       |       |       System.Text.Json.SourceGeneration.resources.dll
+    |   |       |       |       
+    |   |       |       +---tr
+    |   |       |       |       System.Text.Json.SourceGeneration.resources.dll
+    |   |       |       |       
+    |   |       |       +---zh-Hans
+    |   |       |       |       System.Text.Json.SourceGeneration.resources.dll
+    |   |       |       |       
+    |   |       |       \---zh-Hant
+    |   |       |               System.Text.Json.SourceGeneration.resources.dll
+    |   |       |               
+    |   |       \---roslyn4.4
+    |   |           \---cs
+    |   |               |   System.Text.Json.SourceGeneration.dll
+    |   |               |   
+    |   |               +---cs
+    |   |               |       System.Text.Json.SourceGeneration.resources.dll
+    |   |               |       
+    |   |               +---de
+    |   |               |       System.Text.Json.SourceGeneration.resources.dll
+    |   |               |       
+    |   |               +---es
+    |   |               |       System.Text.Json.SourceGeneration.resources.dll
+    |   |               |       
+    |   |               +---fr
+    |   |               |       System.Text.Json.SourceGeneration.resources.dll
+    |   |               |       
+    |   |               +---it
+    |   |               |       System.Text.Json.SourceGeneration.resources.dll
+    |   |               |       
+    |   |               +---ja
+    |   |               |       System.Text.Json.SourceGeneration.resources.dll
+    |   |               |       
+    |   |               +---ko
+    |   |               |       System.Text.Json.SourceGeneration.resources.dll
+    |   |               |       
+    |   |               +---pl
+    |   |               |       System.Text.Json.SourceGeneration.resources.dll
+    |   |               |       
+    |   |               +---pt-BR
+    |   |               |       System.Text.Json.SourceGeneration.resources.dll
+    |   |               |       
+    |   |               +---ru
+    |   |               |       System.Text.Json.SourceGeneration.resources.dll
+    |   |               |       
+    |   |               +---tr
+    |   |               |       System.Text.Json.SourceGeneration.resources.dll
+    |   |               |       
+    |   |               +---zh-Hans
+    |   |               |       System.Text.Json.SourceGeneration.resources.dll
+    |   |               |       
+    |   |               \---zh-Hant
+    |   |                       System.Text.Json.SourceGeneration.resources.dll
+    |   |                       
+    |   +---buildTransitive
+    |   |   +---net461
+    |   |   |       System.Text.Json.targets
+    |   |   |       
+    |   |   +---net462
+    |   |   |       System.Text.Json.targets
+    |   |   |       
+    |   |   +---net6.0
+    |   |   |       System.Text.Json.targets
+    |   |   |       
+    |   |   +---netcoreapp2.0
+    |   |   |       System.Text.Json.targets
+    |   |   |       
+    |   |   \---netstandard2.0
+    |   |           System.Text.Json.targets
+    |   |           
+    |   \---lib
+    |       +---net462
+    |       |       System.Text.Json.dll
+    |       |       System.Text.Json.xml
+    |       |       
+    |       +---net6.0
+    |       |       System.Text.Json.dll
+    |       |       System.Text.Json.xml
+    |       |       
+    |       +---net7.0
+    |       |       System.Text.Json.dll
+    |       |       System.Text.Json.xml
+    |       |       
+    |       +---net8.0
+    |       |       System.Text.Json.dll
+    |       |       System.Text.Json.xml
+    |       |       
+    |       \---netstandard2.0
+    |               System.Text.Json.dll
+    |               System.Text.Json.xml
+    |               
+    +---System.Threading.Tasks.Extensions.4.6.0
+    |   |   .signature.p7s
+    |   |   Icon.png
+    |   |   PACKAGE.md
+    |   |   System.Threading.Tasks.Extensions.4.6.0.nupkg
+    |   |   
+    |   +---buildTransitive
+    |   |   +---net461
+    |   |   |       System.Threading.Tasks.Extensions.targets
+    |   |   |       
+    |   |   \---net462
+    |   |           _._
+    |   |           
+    |   \---lib
+    |       +---net462
+    |       |       System.Threading.Tasks.Extensions.dll
+    |       |       System.Threading.Tasks.Extensions.xml
+    |       |       
+    |       +---netcoreapp2.1
+    |       |       _._
+    |       |       
+    |       \---netstandard2.0
+    |               System.Threading.Tasks.Extensions.dll
+    |               System.Threading.Tasks.Extensions.xml
+    |               
+    \---System.ValueTuple.4.5.0
+        |   .signature.p7s
+        |   LICENSE.TXT
+        |   System.ValueTuple.4.5.0.nupkg
+        |   THIRD-PARTY-NOTICES.TXT
+        |   useSharedDesignerContext.txt
+        |   version.txt
+        |   
+        +---lib
+        |   +---MonoAndroid10
+        |   |       _._
+        |   |       
+        |   +---MonoTouch10
+        |   |       _._
+        |   |       
+        |   +---net461
+        |   |       System.ValueTuple.dll
+        |   |       System.ValueTuple.xml
+        |   |       
+        |   +---net47
+        |   |       System.ValueTuple.dll
+        |   |       System.ValueTuple.xml
+        |   |       
+        |   +---netcoreapp2.0
+        |   |       _._
+        |   |       
+        |   +---netstandard1.0
+        |   |       System.ValueTuple.dll
+        |   |       System.ValueTuple.xml
+        |   |       
+        |   +---netstandard2.0
+        |   |       _._
+        |   |       
+        |   +---portable-net40+sl4+win8+wp8
+        |   |       System.ValueTuple.dll
+        |   |       System.ValueTuple.xml
+        |   |       
+        |   +---uap10.0.16299
+        |   |       _._
+        |   |       
+        |   +---xamarinios10
+        |   |       _._
+        |   |       
+        |   +---xamarinmac20
+        |   |       _._
+        |   |       
+        |   +---xamarintvos10
+        |   |       _._
+        |   |       
+        |   \---xamarinwatchos10
+        |           _._
+        |           
+        \---ref
+            +---MonoAndroid10
+            |       _._
+            |       
+            +---MonoTouch10
+            |       _._
+            |       
+            +---net461
+            |       System.ValueTuple.dll
+            |       
+            +---net47
+            |       System.ValueTuple.dll
+            |       
+            +---netcoreapp2.0
+            |       _._
+            |       
+            +---netstandard2.0
+            |       _._
+            |       
+            +---portable-net40+sl4+win8+wp8
+            |       System.ValueTuple.dll
+            |       
+            +---uap10.0.16299
+            |       _._
+            |       
+            +---xamarinios10
+            |       _._
+            |       
+            +---xamarinmac20
+            |       _._
+            |       
+            +---xamarintvos10
+            |       _._
+            |       
+            \---xamarinwatchos10
+                    _._
+                    

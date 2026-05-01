@@ -1,6 +1,7 @@
 using System;
 using System.Windows.Forms;
 using ATBM_Hospital_Management.Database;
+using ATBM_Hospital_Management.Views.KTV;
 
 namespace ATBM_Hospital_Management.Views
 {
@@ -93,6 +94,10 @@ namespace ATBM_Hospital_Management.Views
                 else if (role == "RL_KYTHUATVIEN")
                 {
                     tpMedical.Controls.Add(new Components.TechnicianView { Dock = DockStyle.Fill });
+                }
+                else if (role == "RL_KYTHUATVIEN")
+                {
+                    tpMedical.Controls.Add(new KTV.ServiceRecordView { Dock = DockStyle.Fill });
                 }
                 else
                 {

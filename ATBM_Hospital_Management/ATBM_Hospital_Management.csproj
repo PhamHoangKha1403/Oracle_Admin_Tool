@@ -93,6 +93,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Database\TechnicanService.cs" />
     <Compile Include="Form1.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -102,6 +103,18 @@
     <Compile Include="Database\DbConnection.cs" />
     <Compile Include="Database\DbaService.cs" />
     <Compile Include="Database\AccountService.cs" />
+<Compile Include="Views\KTV\ServiceRecordView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Views\KTV\ServiceRecordView.Designer.cs">
+      <DependentUpon>ServiceRecordView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Views\KTV\ServiceResultEntryView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Views\KTV\ServiceResultEntryView.Designer.cs">
+      <DependentUpon>ServiceResultEntryView.cs</DependentUpon>
+    </Compile>
     <Compile Include="Views\DoctorView_HealthRecord.cs">
       <SubType>UserControl</SubType>
     </Compile>
