@@ -11,6 +11,7 @@ namespace ATBM_Hospital_Management.Views.Components
         private TabControl tabControl;
         private TabPage tabPatient;
         private TabPage tabHSBA;
+        private TabPage tabThongBao;
 
         // Patient Tab Controls
         private DataGridView dgvPatient;
@@ -24,11 +25,16 @@ namespace ATBM_Hospital_Management.Views.Components
         private Button btnEditHSBA;
         private Button btnEditHSBADV;
 
+        // ThongBao Tab Controls
+        private DataGridView dgvThongBao;
+        private Button btnRefresh;
+
         public CoordinatorView()
         {
             InitializeUI();
             LoadPatientData();
             LoadHSBAData();
+            LoadThongBao();
         }
 
         private void InitializeUI()
@@ -46,11 +52,14 @@ namespace ATBM_Hospital_Management.Views.Components
 
             tabPatient = new TabPage("PATIENTS");
             tabHSBA = new TabPage("MEDICAL RECORDS");
+            tabThongBao = new TabPage("THONG BAO");
             tabControl.TabPages.Add(tabPatient);
             tabControl.TabPages.Add(tabHSBA);
+            tabControl.TabPages.Add(tabThongBao);
 
             InitializePatientTab();
             InitializeHSBATab();
+            InitializeThongBaoTab();
         }
 
         private void InitializePatientTab()
@@ -214,6 +223,28 @@ namespace ATBM_Hospital_Management.Views.Components
             tabHSBA.Controls.Add(splitContainer);
         }
 
+        private void InitializeThongBaoTab()
+        {
+            tabThongBao.Padding = new Padding(15);
+            tabThongBao.BackColor = Color.White;
+            btnRefresh = new Button { Text = "REFRESH", Size = new Size(200, 40), BackColor = Color.SeaGreen, ForeColor = Color.White, FlatStyle = FlatStyle.Flat, Location = new Point(15, 15) };
+            btnRefresh.FlatAppearance.BorderSize = 0;
+            btnRefresh.Click += (s, e) => LoadThongBao();
+            tabThongBao.Controls.Add(btnRefresh);
+            dgvThongBao = new DataGridView
+            {
+                Location = new Point(15, 65),
+                Size = new Size(800, 360),
+                Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right,
+                AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill,
+                BackgroundColor = Color.White,
+                AllowUserToAddRows = false,
+                ReadOnly = true,
+                SelectionMode = DataGridViewSelectionMode.FullRowSelect
+            };
+            tabThongBao.Controls.Add(dgvThongBao);
+        }
+
         private void LoadPatientData()
         {
             try
@@ -238,6 +269,29 @@ namespace ATBM_Hospital_Management.Views.Components
                 dgvHSBADV.DataSource = DbConnection.Instance.ExecuteQuery("BEGIN sp_DPV_Select_HSBADV(:p_cursor); END;", new[] { pOutHSBADV }, CommandType.Text);
             }
             catch (Exception ex) { MessageBox.Show(ex.Message); }
+        }
+
+        private void LoadThongBao()
+        {
+            try
+            {
+                var pOut = new Oracle.ManagedDataAccess.Client.OracleParameter(
+                    "p_cursor",
+                    Oracle.ManagedDataAccess.Client.OracleDbType.RefCursor)
+                {
+                    Direction = ParameterDirection.Output
+                };
+
+                dgvThongBao.DataSource = DbConnection.Instance.ExecuteQuery(
+                    "BEGIN SP_GET_THONGBAO(:p_cursor); END;",
+                    new[] { pOut },
+                    CommandType.Text
+                );
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error loading notifications: " + ex.Message);
+            }
         }
 
         private TextBox AddField(Form form, string label, string defaultValue, ref int y, bool isReadOnly = false)
