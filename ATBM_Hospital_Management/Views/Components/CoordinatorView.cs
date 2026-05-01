@@ -110,7 +110,7 @@ namespace ATBM_Hospital_Management.Views.Components
                 Location = new Point(15, 65),
                 Size = new Size(800, 300),
                 Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right,
-                AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill,
+                AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.DisplayedCells,
                 BackgroundColor = Color.White,
                 AllowUserToAddRows = false,
                 ReadOnly = true,
@@ -193,7 +193,7 @@ namespace ATBM_Hospital_Management.Views.Components
             dgvHSBA = new DataGridView
             {
                 Dock = DockStyle.Fill,
-                AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill,
+                AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.DisplayedCells,
                 BackgroundColor = Color.White,
                 AllowUserToAddRows = false,
                 ReadOnly = true,
@@ -206,7 +206,7 @@ namespace ATBM_Hospital_Management.Views.Components
             dgvHSBADV = new DataGridView
             {
                 Dock = DockStyle.Fill,
-                AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill,
+                AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.DisplayedCells,
                 BackgroundColor = Color.White,
                 AllowUserToAddRows = false,
                 ReadOnly = true,

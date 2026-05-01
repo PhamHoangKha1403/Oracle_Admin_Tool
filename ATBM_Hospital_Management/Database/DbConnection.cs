@@ -148,6 +148,7 @@ namespace ATBM_Hospital_Management.Database
             DataTable dt = new DataTable();
             using (OracleCommand cmd = new OracleCommand(sql, _connection))
             {
+                cmd.BindByName = true;
                 // Thêm dòng này để C# biết đang gọi SQL thường hay Stored Procedure
                 cmd.CommandType = commandType;
 
@@ -169,6 +170,7 @@ namespace ATBM_Hospital_Management.Database
         {
             using (OracleCommand cmd = new OracleCommand(sql, _connection))
             {
+                cmd.BindByName = true;
                 // Thêm dòng này để Oracle biết đang chạy Raw SQL hay Stored Procedure
                 cmd.CommandType = commandType;
 
@@ -186,6 +188,7 @@ namespace ATBM_Hospital_Management.Database
         {
             using (OracleCommand cmd = new OracleCommand(sql, _connection))
             {
+                cmd.BindByName = true;
                 if (parameters != null)
                     cmd.Parameters.AddRange(parameters);
                 return cmd.ExecuteScalar();
