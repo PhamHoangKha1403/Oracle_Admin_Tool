@@ -52,7 +52,7 @@ namespace ATBM_Hospital_Management.Views.Components
 
             tabPatient = new TabPage("PATIENTS");
             tabHSBA = new TabPage("MEDICAL RECORDS");
-            tabThongBao = new TabPage("THONG BAO");
+            tabThongBao = new TabPage("NOTIFICATIONS");
             tabControl.TabPages.Add(tabPatient);
             tabControl.TabPages.Add(tabHSBA);
             tabControl.TabPages.Add(tabThongBao);
@@ -227,7 +227,7 @@ namespace ATBM_Hospital_Management.Views.Components
         {
             tabThongBao.Padding = new Padding(15);
             tabThongBao.BackColor = Color.White;
-            btnRefresh = new Button { Text = "REFRESH", Size = new Size(200, 40), BackColor = Color.SeaGreen, ForeColor = Color.White, FlatStyle = FlatStyle.Flat, Location = new Point(15, 15) };
+            btnRefresh = new Button { Text = "REFRESH", Size = new Size(150, 40), BackColor = Color.SeaGreen, ForeColor = Color.White, FlatStyle = FlatStyle.Flat, Location = new Point(15, 15) };
             btnRefresh.FlatAppearance.BorderSize = 0;
             btnRefresh.Click += (s, e) => LoadThongBao();
             tabThongBao.Controls.Add(btnRefresh);

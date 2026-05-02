@@ -46,7 +46,7 @@ namespace ATBM_Hospital_Management.Views.Components
                 Text = "Edit Information",
                 Font = new Font("Segoe UI", 10F, FontStyle.Bold),
                 Location = new Point(20, 60),
-                Size = new Size(180, 35),
+                Size = new Size(180, 40),
                 BackColor = Color.FromArgb(0, 120, 215),
                 ForeColor = Color.White,
                 FlatStyle = FlatStyle.Flat

@@ -124,6 +124,7 @@ namespace ATBM_Hospital_Management.Views
             this.lblPageTitle.Text = "Audit";
             this.lblPageTitle.Font = new System.Drawing.Font("Segoe UI", 13F, System.Drawing.FontStyle.Bold);
             this.lblPageTitle.Location = new System.Drawing.Point(20, 28);
+            this.lblPageTitle.AutoSize = true;
 
             this.pnlHeader.Controls.Add(this.lblPageTitle);
 
