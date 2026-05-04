@@ -293,7 +293,7 @@ namespace ATBM_Hospital_Management.Views.Components
                             new Oracle.ManagedDataAccess.Client.OracleParameter("p_NEWKETQUA", txtKetQua.Text)
                         };
 
-                        string auditSql = "INSERT INTO AUDIT_HSBADV_LOG (MAHSBA, LOAIDV, NGAYDV, MAKTV, OLD_KETQUA, NEW_KETQUA) " +
+                        string auditSql = "INSERT INTO ADMIN_PH2.AUDIT_HSBADV_LOG (MAHSBA, LOAIDV, NGAYDV, MAKTV, OLD_KETQUA, NEW_KETQUA) " +
                                           "VALUES (:p_MAHSBA, :p_LOAIDV, :p_NGAYDV, :p_MAKTV, :p_OLDKETQUA, :p_NEWKETQUA)";
                         
                         DbConnection.Instance.ExecuteNonQuery(auditSql, auditParams, CommandType.Text);
