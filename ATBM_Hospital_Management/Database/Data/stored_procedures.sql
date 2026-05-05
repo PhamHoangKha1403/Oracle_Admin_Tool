@@ -457,13 +457,18 @@ AS
 BEGIN
     v_user := SYS_CONTEXT('USERENV', 'SESSION_USER');
     
-    -- Lấy kết quả cũ để ghi audit log
-    SELECT KET_QUA INTO v_old_ketqua
-    FROM HSBA_DV
-    WHERE MA_HSBA = p_MAHSBA
-      AND LOAI_DV = p_LOAIDV
-      AND NGAY_DV = p_NGAYDV
-      AND MA_KTV = v_user;
+    BEGIN
+        -- Lấy kết quả cũ để ghi audit log
+        SELECT KET_QUA INTO v_old_ketqua
+        FROM HSBA_DV
+        WHERE MA_HSBA = p_MAHSBA
+          AND LOAI_DV = p_LOAIDV
+          AND NGAY_DV = p_NGAYDV
+          AND MA_KTV = v_user;
+    EXCEPTION
+        WHEN NO_DATA_FOUND THEN
+            RAISE_APPLICATION_ERROR(-20005, 'Khong tim thay dich vu hoac ban khong co quyen cap nhat dich vu nay.');
+    END;
       
     -- Cập nhật kết quả mới
     UPDATE HSBA_DV

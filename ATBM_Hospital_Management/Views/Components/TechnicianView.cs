@@ -260,9 +260,9 @@ namespace ATBM_Hospital_Management.Views.Components
                 TextBox txtLoaiDV = new TextBox { Text = row.Cells["LOAI_DV"].Value?.ToString(), Location = new Point(140, y), Size = new Size(210, 25), ReadOnly = true };
                 f.Controls.Add(lblLoaiDV); f.Controls.Add(txtLoaiDV); y += 40;
                 
-                DateTime dtNgayDV;
-                DateTime.TryParse(row.Cells["NGAY_DV"].Value?.ToString(), out dtNgayDV);
-
+                DateTime dtNgayDV = row.Cells["NGAY_DV"].Value is DateTime dt 
+                    ? dt 
+                    : (DateTime.TryParse(row.Cells["NGAY_DV"].Value?.ToString(), out DateTime parsed) ? parsed : DateTime.Now);
                 Label lblKetQua = new Label { Text = "Result:", Location = new Point(20, y + 3), AutoSize = true };
                 TextBox txtKetQua = new TextBox { Text = currentKetQua, Location = new Point(140, y), Size = new Size(210, 25) };
                 f.Controls.Add(lblKetQua); f.Controls.Add(txtKetQua); y += 40;
@@ -276,7 +276,7 @@ namespace ATBM_Hospital_Management.Views.Components
                         {
                             new Oracle.ManagedDataAccess.Client.OracleParameter("p_MAHSBA", txtMaHSBA.Text),
                             new Oracle.ManagedDataAccess.Client.OracleParameter("p_LOAIDV", txtLoaiDV.Text),
-                            new Oracle.ManagedDataAccess.Client.OracleParameter("p_NGAYDV", dtNgayDV.Date),
+                            new Oracle.ManagedDataAccess.Client.OracleParameter("p_NGAYDV", dtNgayDV),
                             new Oracle.ManagedDataAccess.Client.OracleParameter("p_KETQUA", txtKetQua.Text)
                         };
 
