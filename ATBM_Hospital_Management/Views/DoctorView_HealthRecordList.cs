@@ -3,6 +3,7 @@ using Oracle.ManagedDataAccess.Client;
 using System;
 using System.Data;
 using System.Drawing;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace ATBM_Hospital_Management.Views.Components
@@ -17,14 +18,15 @@ namespace ATBM_Hospital_Management.Views.Components
             InitializeComponent();
             _db = DbConnection.Instance;
             _parentView = parent;
-            this.Load += DoctorView_HealthRecordList_Load;
+            SetupDataGrid();
+            this.Load += async (s, e) =>
+            {
+                await Task.Delay(50); // nhường UI thread
+                await LoadHSBA();
+            };
         }
 
-        private void DoctorView_HealthRecordList_Load(object sender, EventArgs e)
-        {
-            SetupDataGrid();
-            LoadHSBA();
-        }
+        
 
         private void SetupDataGrid()
         {
@@ -89,27 +91,37 @@ namespace ATBM_Hospital_Management.Views.Components
             dataGridView1.Columns.Add(col);
         }
 
-        private void LoadHSBA()
+        private async Task LoadHSBA()
         {
             try
             {
-                OracleParameter p_cursor = new OracleParameter
+                lblRecordCount.Text = "Đang tải...";
+
+                DataTable dt = await Task.Run(() =>
                 {
-                    ParameterName = "p_cursor",
-                    OracleDbType = OracleDbType.RefCursor,
-                    Direction = ParameterDirection.Output
-                };
+                    var p_cursor = new OracleParameter
+                    {
+                        ParameterName = "p_cursor",
+                        OracleDbType = OracleDbType.RefCursor,
+                        Direction = ParameterDirection.Output
+                    };
 
-                DataTable dt = _db.ExecuteQuery(
-                    "ADMIN_PH2.sp_BS_Select_HSBA",
-                    new[] { p_cursor },
-                    CommandType.StoredProcedure);
+                    return _db.ExecuteQuery(
+                        "ADMIN_PH2.sp_BS_Select_HSBA",
+                        new[] { p_cursor },
+                        CommandType.StoredProcedure);
+                });
 
-                dataGridView1.DataSource = dt;
-                lblRecordCount.Text = $"Tổng: {(dt?.Rows.Count ?? 0)} hồ sơ";
+                // Đảm bảo thao tác trên UI Thread
+                this.BeginInvoke(new MethodInvoker(() => {
+                    dataGridView1.DataSource = null; // Reset trước khi gán mới
+                    dataGridView1.DataSource = dt;
 
-                foreach (DataGridViewColumn col in dataGridView1.Columns)
-                    col.HeaderCell.Style.Alignment = DataGridViewContentAlignment.MiddleCenter;
+                    lblRecordCount.Text = $"Tổng: {(dt?.Rows.Count ?? 0)} hồ sơ";
+
+                    // Ép DataGridView vẽ lại ngay lập tức
+                    dataGridView1.Refresh();
+                }));
             }
             catch (Exception ex)
             {
