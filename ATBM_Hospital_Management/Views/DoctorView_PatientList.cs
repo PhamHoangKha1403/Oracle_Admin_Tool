@@ -1,9 +1,10 @@
-﻿using System;
+﻿using ATBM_Hospital_Management.Database;
+using Oracle.ManagedDataAccess.Client;
+using System;
 using System.Data;
 using System.Drawing;
+using System.Threading.Tasks;
 using System.Windows.Forms;
-using Oracle.ManagedDataAccess.Client;
-using ATBM_Hospital_Management.Database;
 
 namespace ATBM_Hospital_Management.Views.Components
 {
@@ -16,24 +17,40 @@ namespace ATBM_Hospital_Management.Views.Components
         {
             InitializeComponent();
             _db = DbConnection.Instance;
+
             if (lblTitle != null)
-            {
                 lblTitle.Text = "DANH SÁCH BỆNH NHÂN";
-            }
+
             if (!string.IsNullOrWhiteSpace(userName))
                 lblUserName.Text = userName;
 
+            // Đợi form render xong mới chạy
+            this.Load += (s, e) =>
+            {
+                this.BeginInvoke(new Action(async () =>
+                {
+                    lblTitle.AutoSize = false;
+                    lblTitle.Height = 100;
+
+                    ShowMainListView();
+                    SetupDataGrid();
+                    SetActiveNav(btnBenhNhan);
+                    await LoadPatients();
+                }));
+            };
         }
 
-        public void DoctorView_Load(object sender, EventArgs e)
+        public async void DoctorView_Load(object sender, EventArgs e)
         {
             lblTitle.AutoSize = false;
             lblTitle.Height = 100;
 
-            ShowMainListView(); 
+            ShowMainListView();
 
             SetupDataGrid();
+
             LoadPatients();
+
             SetActiveNav(btnBenhNhan);
         }
 
@@ -116,7 +133,8 @@ namespace ATBM_Hospital_Management.Views.Components
             dataGridView1.Columns.Add(btnCol); // Cho phép chữ tự xuống dòng nếu cột quá hẹp
             dataGridView1.DefaultCellStyle.WrapMode = DataGridViewTriState.True;
             // Tự động giãn dòng theo nội dung
-            dataGridView1.AutoSizeRowsMode = DataGridViewAutoSizeRowsMode.AllCells;
+            dataGridView1.AutoSizeRowsMode = DataGridViewAutoSizeRowsMode.None;
+            dataGridView1.RowTemplate.Height = 40;
         }
 
         // Hàm phụ trợ để code sạch hơn
@@ -135,33 +153,37 @@ namespace ATBM_Hospital_Management.Views.Components
             dataGridView1.Columns.Add(col);
         }
 
-        private void LoadPatients()
+        private async Task LoadPatients()
         {
-            try
+            lblRecordCount.Text = "Đang tải...";
+
+            DataTable result = await Task.Run(() =>
             {
-                OracleParameter p_cursor = new OracleParameter
+                var p_cursor = new OracleParameter
                 {
                     ParameterName = "p_cursor",
                     OracleDbType = OracleDbType.RefCursor,
                     Direction = ParameterDirection.Output
                 };
+                return _db.ExecuteQuery(
+                    "ADMIN_PH2.sp_BS_Select_BENHNHAN",
+                    new[] { p_cursor },
+                    CommandType.StoredProcedure);
+            });
 
-                // Gọi đúng SP và truyền CommandType.StoredProcedure
-                _currentPatients = _db.ExecuteQuery("ADMIN_PH2.sp_BS_Select_BENHNHAN", new[] { p_cursor }, CommandType.StoredProcedure);
+            // Tắt render trong lúc bind để tránh lag
+            dataGridView1.SuspendLayout();
+            dataGridView1.AutoSizeRowsMode = DataGridViewAutoSizeRowsMode.None;
 
-                dataGridView1.DataSource = _currentPatients;
-                lblRecordCount.Text = $"Tổng: {(_currentPatients?.Rows.Count ?? 0)} bệnh nhân";
-                dataGridView1.ColumnHeadersDefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
-                foreach (DataGridViewColumn col in dataGridView1.Columns)
-                {
-                    col.HeaderCell.Style.Alignment = DataGridViewContentAlignment.MiddleCenter;
-                }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show("Lỗi tải dữ liệu: " + ex.Message, "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
-            
+            _currentPatients = result;
+            dataGridView1.DataSource = _currentPatients;
+
+            dataGridView1.ResumeLayout();
+
+            lblRecordCount.Text = $"Tổng: {(_currentPatients?.Rows.Count ?? 0)} bệnh nhân";
+
+            foreach (DataGridViewColumn col in dataGridView1.Columns)
+                col.HeaderCell.Style.Alignment = DataGridViewContentAlignment.MiddleCenter;
         }
 
         // Hàm này dùng để cập nhật giao diện nút bấm
@@ -185,16 +207,27 @@ namespace ATBM_Hospital_Management.Views.Components
         // Hàm dùng để nạp trang mới vào vùng nội dung (panelContent)
         public void ShowPage(UserControl page)
         {
-            // Ẩn vùng danh sách đi thay vì xóa nó hoàn toàn để giữ trạng thái
-            if (pnlMainList != null) pnlMainList.Visible = false;
+            if (page == null) return;
 
-            panelContent.Controls.Clear(); // Xóa các page Detail cũ (nếu có)
-            if (page != null)
+            // 1. Ẩn tất cả các trang đang có trong panelContent thay vì Dispose chúng
+            foreach (Control ctrl in panelContent.Controls)
+            {
+                ctrl.Visible = false;
+            }
+
+            // 2. Nếu trang này chưa có trong panel thì mới thêm vào
+            if (!panelContent.Controls.Contains(page))
             {
                 page.Dock = DockStyle.Fill;
                 panelContent.Controls.Add(page);
-                page.BringToFront();
             }
+
+            // 3. Hiện trang cần dùng và đưa lên trên cùng
+            page.Visible = true;
+            page.BringToFront();
+
+            // 4. Nếu trang có hàm nạp lại dữ liệu, bạn có thể gọi ở đây
+            // hoặc xử lý bên trong sự kiện VisibleChanged của trang đó
         }
 
         private void btnBenhNhan_Click(object sender, EventArgs e)
@@ -207,6 +240,8 @@ namespace ATBM_Hospital_Management.Views.Components
         private void btnHoSoBenhAn_Click(object sender, EventArgs e)
         {
             SetActiveNav(btnHoSoBenhAn);
+
+            // Dispose page cũ nếu có trước khi tạo mới
             var listPage = new DoctorView_HealthRecordList(this);
             ShowPage(listPage);
         }

@@ -66,7 +66,7 @@ namespace ATBM_Hospital_Management.Views
 
             // ======= DYNAMIC ROUTER =======
             string role = DbConnection.Instance.GetCurrentUserRole();
-            
+
             if (role == "DBA")
             {
                 // Giữ nguyên giao diện DBA hiện hành
