@@ -12,6 +12,11 @@ namespace ATBM_Hospital_Management.Views.Components
         private Button btnEdit;
         private Panel infoPanel;
 
+        private TextBox txtHoTen;
+        private TextBox txtPhai;
+        private TextBox txtNgaySinh;
+        private TextBox txtCCCD;
+        private TextBox txtSDT;
         private TextBox txtSoNha;
         private TextBox txtTenDuong;
         private TextBox txtQuanHuyen;
@@ -59,13 +64,19 @@ namespace ATBM_Hospital_Management.Views.Components
             infoPanel = new Panel
             {
                 Location = new Point(20, 110),
-                Size = new Size(550, 340),
+                Size = new Size(550, 520),
                 BackColor = Color.WhiteSmoke,
-                BorderStyle = BorderStyle.FixedSingle
+                BorderStyle = BorderStyle.FixedSingle,
+                AutoScroll = true
             };
 
             int y = 20;
 
+            txtHoTen = AddInfoField(infoPanel, "Name:", ref y);
+            txtPhai = AddInfoField(infoPanel, "Gender:", ref y);
+            txtNgaySinh = AddInfoField(infoPanel, "DOB:", ref y);
+            txtCCCD = AddInfoField(infoPanel, "ID Card:", ref y);
+            txtSDT = AddInfoField(infoPanel, "Phone:", ref y);
             txtSoNha = AddInfoField(infoPanel, "House No:", ref y);
             txtTenDuong = AddInfoField(infoPanel, "Street:", ref y);
             txtQuanHuyen = AddInfoField(infoPanel, "District:", ref y);
@@ -124,6 +135,17 @@ namespace ATBM_Hospital_Management.Views.Components
                 {
                     DataRow row = dt.Rows[0];
 
+                    txtHoTen.Text = row["HO_TEN"]?.ToString();
+                    txtPhai.Text = row["PHAI"]?.ToString();
+                    
+                    if (DateTime.TryParse(row["NGAY_SINH"]?.ToString(), out DateTime dtNgaySinh))
+                        txtNgaySinh.Text = dtNgaySinh.ToString("dd/MM/yyyy");
+                    else
+                        txtNgaySinh.Text = row["NGAY_SINH"]?.ToString();
+                        
+                    txtCCCD.Text = row["CCCD"]?.ToString();
+                    txtSDT.Text = row["SDT"]?.ToString();
+                    
                     txtSoNha.Text = row["SO_NHA"]?.ToString();
                     txtTenDuong.Text = row["TEN_DUONG"]?.ToString();
                     txtQuanHuyen.Text = row["QUAN_HUYEN"]?.ToString();

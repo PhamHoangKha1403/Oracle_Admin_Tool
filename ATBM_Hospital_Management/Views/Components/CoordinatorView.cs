@@ -372,6 +372,7 @@ namespace ATBM_Hospital_Management.Views.Components
                 TextBox txtTienSu = AddField(f, "Med History:", "", ref y);
                 TextBox txtTienSuGD = AddField(f, "Fam History:", "", ref y);
                 TextBox txtDiUng = AddField(f, "Allergies:", "", ref y);
+                TextBox txtChuyenKhoa = AddField(f, "Department ID:", "", ref y);
 
                 Button btnSave = new Button { Text = "Save", Location = new Point(140, y + 10), Size = new Size(100, 35) };
                 btnSave.Click += (s, args) =>
@@ -392,10 +393,11 @@ namespace ATBM_Hospital_Management.Views.Components
                             new Oracle.ManagedDataAccess.Client.OracleParameter("p_TINHTP", txtTinhTp.Text),
                             new Oracle.ManagedDataAccess.Client.OracleParameter("p_TIENSUBENH", txtTienSu.Text),
                             new Oracle.ManagedDataAccess.Client.OracleParameter("p_TIENSUBENHGD", txtTienSuGD.Text),
-                            new Oracle.ManagedDataAccess.Client.OracleParameter("p_DIUNGTHUOC", txtDiUng.Text)
+                            new Oracle.ManagedDataAccess.Client.OracleParameter("p_DIUNGTHUOC", txtDiUng.Text),
+                            new Oracle.ManagedDataAccess.Client.OracleParameter("p_CHUYENKHOA", string.IsNullOrEmpty(txtChuyenKhoa.Text) ? (object)DBNull.Value : txtChuyenKhoa.Text)
                         };
 
-                        DbConnection.Instance.ExecuteNonQuery("BEGIN sp_DPV_Insert_BENHNHAN(:p_MABN, :p_HOTEN, :p_PHAI, :p_NGAYSINH, :p_CCCD, :p_SDT, :p_SONHA, :p_TENDUONG, :p_QUANHUYEN, :p_TINHTP, :p_TIENSUBENH, :p_TIENSUBENHGD, :p_DIUNGTHUOC); END;", parameters, CommandType.Text);
+                        DbConnection.Instance.ExecuteNonQuery("BEGIN sp_DPV_Insert_BENHNHAN(:p_MABN, :p_HOTEN, :p_PHAI, :p_NGAYSINH, :p_CCCD, :p_SDT, :p_SONHA, :p_TENDUONG, :p_QUANHUYEN, :p_TINHTP, :p_TIENSUBENH, :p_TIENSUBENHGD, :p_DIUNGTHUOC, :p_CHUYENKHOA); END;", parameters, CommandType.Text);
                         MessageBox.Show("Added successfully!");
                         f.DialogResult = DialogResult.OK;
                         f.Close();
@@ -411,29 +413,30 @@ namespace ATBM_Hospital_Management.Views.Components
         {
             if (dgvPatient.SelectedRows.Count == 0) { MessageBox.Show("Select a patient."); return; }
             var row = dgvPatient.SelectedRows[0];
+            DataRowView drv = row.DataBoundItem as DataRowView;
 
             using (Form f = new Form() { Text = "Edit Patient", Size = new Size(400, 750), StartPosition = FormStartPosition.CenterParent })
             {
                 int y = 20;
                 TextBox txtMaBN = AddField(f, "Patient ID:", row.Cells["MA_BN"].Value?.ToString(), ref y, true);
                 
-                string hoTen = dgvPatient.Columns.Contains("HO_TEN") ? row.Cells["HO_TEN"].Value?.ToString() : "";
+                string hoTen = drv != null ? drv["HO_TEN"]?.ToString() : row.Cells["HO_TEN"].Value?.ToString();
                 TextBox txtHoTen = AddField(f, "Name:", hoTen, ref y);
                 
-                string phai = dgvPatient.Columns.Contains("PHAI") ? row.Cells["PHAI"].Value?.ToString() : "";
+                string phai = drv != null ? drv["PHAI"]?.ToString() : row.Cells["PHAI"].Value?.ToString();
                 TextBox txtPhai = AddField(f, "Gender:", phai, ref y);
                 
                 DateTime dtNgaySinh;
-                string nsStr = dgvPatient.Columns.Contains("NGAY_SINH") ? row.Cells["NGAY_SINH"].Value?.ToString() : "";
+                string nsStr = drv != null ? drv["NGAY_SINH"]?.ToString() : row.Cells["NGAY_SINH"].Value?.ToString();
                 DateTime.TryParse(nsStr, out dtNgaySinh);
                 Label lblNgaySinh = new Label { Text = "DOB:", Location = new Point(20, y + 3), AutoSize = true };
                 DateTimePicker dtpNgaySinh = new DateTimePicker { Location = new Point(140, y), Size = new Size(210, 25), Format = DateTimePickerFormat.Short, Value = dtNgaySinh > DateTime.MinValue ? dtNgaySinh : DateTime.Now };
                 f.Controls.Add(lblNgaySinh); f.Controls.Add(dtpNgaySinh); y += 40;
                 
-                string cccd = dgvPatient.Columns.Contains("CCCD") ? row.Cells["CCCD"].Value?.ToString() : "";
+                string cccd = drv != null ? drv["CCCD"]?.ToString() : row.Cells["CCCD"].Value?.ToString();
                 TextBox txtCCCD = AddField(f, "ID Card:", cccd, ref y);
                 
-                string sdt = dgvPatient.Columns.Contains("SDT") ? row.Cells["SDT"].Value?.ToString() : "";
+                string sdt = drv != null ? drv["SDT"]?.ToString() : row.Cells["SDT"].Value?.ToString();
                 TextBox txtSDT = AddField(f, "Phone:", sdt, ref y);
                 
                 TextBox txtSoNha = AddField(f, "House No:", row.Cells["SO_NHA"].Value?.ToString(), ref y);
@@ -443,6 +446,9 @@ namespace ATBM_Hospital_Management.Views.Components
                 TextBox txtTienSu = AddField(f, "Med History:", row.Cells["TIEN_SU_BENH"].Value?.ToString(), ref y);
                 TextBox txtTienSuGD = AddField(f, "Fam History:", row.Cells["TIEN_SU_BENH_GD"].Value?.ToString(), ref y);
                 TextBox txtDiUng = AddField(f, "Allergies:", row.Cells["DI_UNG_THUOC"].Value?.ToString(), ref y);
+                
+                string chuyenKhoa = drv != null ? drv["CHUYEN_KHOA"]?.ToString() : "";
+                TextBox txtChuyenKhoa = AddField(f, "Department ID:", chuyenKhoa, ref y);
 
                 Button btnSave = new Button { Text = "Update", Location = new Point(140, y + 10), Size = new Size(100, 35) };
                 btnSave.Click += (s, args) =>
@@ -463,10 +469,11 @@ namespace ATBM_Hospital_Management.Views.Components
                             new Oracle.ManagedDataAccess.Client.OracleParameter("p_TINHTP", txtTinhTp.Text),
                             new Oracle.ManagedDataAccess.Client.OracleParameter("p_TIENSUBENH", txtTienSu.Text),
                             new Oracle.ManagedDataAccess.Client.OracleParameter("p_TIENSUBENHGD", txtTienSuGD.Text),
-                            new Oracle.ManagedDataAccess.Client.OracleParameter("p_DIUNGTHUOC", txtDiUng.Text)
+                            new Oracle.ManagedDataAccess.Client.OracleParameter("p_DIUNGTHUOC", txtDiUng.Text),
+                            new Oracle.ManagedDataAccess.Client.OracleParameter("p_CHUYENKHOA", string.IsNullOrEmpty(txtChuyenKhoa.Text) ? (object)DBNull.Value : txtChuyenKhoa.Text)
                         };
 
-                        DbConnection.Instance.ExecuteNonQuery("BEGIN sp_DPV_Update_BENHNHAN(:p_MABN, :p_HOTEN, :p_PHAI, :p_NGAYSINH, :p_CCCD, :p_SDT, :p_SONHA, :p_TENDUONG, :p_QUANHUYEN, :p_TINHTP, :p_TIENSUBENH, :p_TIENSUBENHGD, :p_DIUNGTHUOC); END;", parameters, CommandType.Text);
+                        DbConnection.Instance.ExecuteNonQuery("BEGIN sp_DPV_Update_BENHNHAN(:p_MABN, :p_HOTEN, :p_PHAI, :p_NGAYSINH, :p_CCCD, :p_SDT, :p_SONHA, :p_TENDUONG, :p_QUANHUYEN, :p_TINHTP, :p_TIENSUBENH, :p_TIENSUBENHGD, :p_DIUNGTHUOC, :p_CHUYENKHOA); END;", parameters, CommandType.Text);
                         MessageBox.Show("Updated successfully!");
                         f.DialogResult = DialogResult.OK;
                         f.Close();

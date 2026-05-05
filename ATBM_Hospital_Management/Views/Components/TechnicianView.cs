@@ -282,22 +282,6 @@ namespace ATBM_Hospital_Management.Views.Components
 
                         DbConnection.Instance.ExecuteNonQuery("BEGIN sp_KTV_Update_KETQUA(:p_MAHSBA, :p_LOAIDV, :p_NGAYDV, :p_KETQUA); END;", updateParams, CommandType.Text);
 
-                        string currentUser = DbConnection.Instance.GetCurrentUser();
-                        var auditParams = new Oracle.ManagedDataAccess.Client.OracleParameter[]
-                        {
-                            new Oracle.ManagedDataAccess.Client.OracleParameter("p_MAHSBA", txtMaHSBA.Text),
-                            new Oracle.ManagedDataAccess.Client.OracleParameter("p_LOAIDV", txtLoaiDV.Text),
-                            new Oracle.ManagedDataAccess.Client.OracleParameter("p_NGAYDV", dtNgayDV.Date),
-                            new Oracle.ManagedDataAccess.Client.OracleParameter("p_MAKTV", currentUser),
-                            new Oracle.ManagedDataAccess.Client.OracleParameter("p_OLDKETQUA", currentKetQua),
-                            new Oracle.ManagedDataAccess.Client.OracleParameter("p_NEWKETQUA", txtKetQua.Text)
-                        };
-
-                        string auditSql = "INSERT INTO ADMIN_PH2.AUDIT_HSBADV_LOG (MAHSBA, LOAIDV, NGAYDV, MAKTV, OLD_KETQUA, NEW_KETQUA) " +
-                                          "VALUES (:p_MAHSBA, :p_LOAIDV, :p_NGAYDV, :p_MAKTV, :p_OLDKETQUA, :p_NEWKETQUA)";
-                        
-                        DbConnection.Instance.ExecuteNonQuery(auditSql, auditParams, CommandType.Text);
-
                         MessageBox.Show("Result updated and audited successfully!");
                         f.DialogResult = DialogResult.OK;
                         f.Close();
