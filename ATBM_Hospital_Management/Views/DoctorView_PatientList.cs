@@ -1,4 +1,4 @@
-﻿using ATBM_Hospital_Management.Database;
+using ATBM_Hospital_Management.Database;
 using Oracle.ManagedDataAccess.Client;
 using System;
 using System.Data;
@@ -12,6 +12,9 @@ namespace ATBM_Hospital_Management.Views.Components
     {
         private readonly DbConnection _db;
         private DataTable _currentPatients;
+        private TextBox txtSearch;
+        private Button btnSearch;
+        private Panel pnlSearch;
 
         public DoctorView_PatientList(string userName = "")
         {
@@ -54,6 +57,54 @@ namespace ATBM_Hospital_Management.Views.Components
             SetActiveNav(btnBenhNhan);
         }
 
+        private void SetupSearchBar()
+        {
+            pnlSearch = new Panel { Dock = DockStyle.Top, Height = 50 };
+            pnlSearch.Padding = new Padding(0, 0, 0, 10);
+            
+            txtSearch = new TextBox 
+            { 
+                Location = new Point(0, 10), 
+                Width = 300, 
+                Font = new Font("Segoe UI", 12f),
+                ForeColor = Color.Gray,
+                Text = "Nhập mã, tên hoặc CCCD..."
+            };
+            txtSearch.Enter += (s, e) => { if (txtSearch.Text == "Nhập mã, tên hoặc CCCD...") { txtSearch.Text = ""; txtSearch.ForeColor = Color.Black; } };
+            txtSearch.Leave += (s, e) => { if (string.IsNullOrWhiteSpace(txtSearch.Text)) { txtSearch.Text = "Nhập mã, tên hoặc CCCD..."; txtSearch.ForeColor = Color.Gray; } };
+            txtSearch.KeyDown += (s, e) => { if (e.KeyCode == Keys.Enter) { e.SuppressKeyPress = true; btnSearch.PerformClick(); } };
+
+            btnSearch = new Button
+            {
+                Location = new Point(310, 8),
+                Size = new Size(100, 32),
+                Text = "Tìm kiếm",
+                BackColor = Color.FromArgb(47, 121, 138),
+                ForeColor = Color.White,
+                FlatStyle = FlatStyle.Flat,
+                Font = new Font("Segoe UI", 10f, FontStyle.Bold)
+            };
+            btnSearch.FlatAppearance.BorderSize = 0;
+            btnSearch.Click += btnSearch_Click;
+
+            pnlSearch.Controls.Add(txtSearch);
+            pnlSearch.Controls.Add(btnSearch);
+        }
+
+        private void btnSearch_Click(object sender, EventArgs e)
+        {
+            if (_currentPatients == null) return;
+            string search = txtSearch.Text.Trim();
+            if (search == "Nhập mã, tên hoặc CCCD..." || string.IsNullOrWhiteSpace(search))
+            {
+                _currentPatients.DefaultView.RowFilter = "";
+            }
+            else
+            {
+                _currentPatients.DefaultView.RowFilter = $"MA_BN LIKE '%{search}%' OR HO_TEN LIKE '%{search}%' OR CCCD LIKE '%{search}%'";
+            }
+        }
+
         // Hàm này đảm bảo giao diện danh sách hiện ra
         private void ShowMainListView()
         {
@@ -67,7 +118,10 @@ namespace ATBM_Hospital_Management.Views.Components
 
                 dataGridView1.Dock = DockStyle.Fill;
 
+                if (pnlSearch == null) SetupSearchBar();
+
                 pnlMainList.Controls.Add(dataGridView1); // Nằm dưới cùng
+                pnlMainList.Controls.Add(pnlSearch);     // Giữa
                 pnlMainList.Controls.Add(lblTitle);      // Nằm trên cùng
 
                 pnlMainList.Visible = true;

@@ -124,7 +124,7 @@ BEGIN
     v_user := SYS_CONTEXT('USERENV', 'SESSION_USER');
     
     OPEN p_cursor FOR
-        SELECT QUE_QUAN, SDT
+        SELECT MA_NV, HO_TEN, PHAI, NGAY_SINH, CCCD, QUE_QUAN, SDT, VAI_TRO, CHUYEN_KHOA
         FROM NHAN_VIEN
         WHERE MA_NV = v_user;
 END sp_NV_Select_NHANVIEN;
@@ -402,6 +402,7 @@ GRANT EXECUTE ON sp_NV_Select_NHANVIEN TO RL_DIEUPHOIVIEN;
 GRANT EXECUTE ON sp_NV_Update_NHANVIEN TO RL_DIEUPHOIVIEN;
 GRANT EXECUTE ON sp_NV_Select_NHANVIEN TO RL_KYTHUATVIEN;
 GRANT EXECUTE ON sp_NV_Update_NHANVIEN TO RL_KYTHUATVIEN;
+GRANT EXECUTE ON sp_NV_Select_NHANVIEN TO RL_BENHNHAN;
 
 -- Cho bệnh nhân
 CREATE OR REPLACE PUBLIC SYNONYM sp_BN_Select_BENHNHAN FOR sp_BN_Select_BENHNHAN;
@@ -431,6 +432,50 @@ GRANT EXECUTE ON sp_DPV_Insert_HSBADV TO RL_DIEUPHOIVIEN;
 GRANT EXECUTE ON sp_DPV_Update_HSBADV TO RL_DIEUPHOIVIEN;
 
 -- ============================================================
+-- Cho Bác sĩ (HSBA, HSBADV)
+-- ============================================================
+CREATE OR REPLACE PROCEDURE sp_BS_Update_HSBA(
+    p_ma_hsba IN VARCHAR2,
+    p_chan_doan IN NVARCHAR2,
+    p_dieu_tri IN NVARCHAR2,
+    p_ket_luan IN NVARCHAR2
+) AUTHID CURRENT_USER
+AS
+    v_user VARCHAR2(100);
+BEGIN
+    v_user := SYS_CONTEXT('USERENV', 'SESSION_USER');
+    UPDATE HSBA
+    SET CHAN_DOAN = p_chan_doan,
+        DIEU_TRI = p_dieu_tri,
+        KET_LUAN = p_ket_luan
+    WHERE MA_HSBA = p_ma_hsba
+      AND MA_BS = v_user;
+    COMMIT;
+END sp_BS_Update_HSBA;
+/
+
+CREATE OR REPLACE PROCEDURE sp_BS_Insert_HSBADV(
+    p_ma_hsba IN VARCHAR2,
+    p_loai_dv IN VARCHAR2,
+    p_ngay_dv IN DATE,
+    p_ma_ktv IN VARCHAR2,
+    p_ket_qua IN NVARCHAR2
+) AUTHID CURRENT_USER
+AS
+BEGIN
+    INSERT INTO HSBA_DV (MA_HSBA, LOAI_DV, NGAY_DV, MA_KTV, KET_QUA)
+    VALUES (p_ma_hsba, p_loai_dv, p_ngay_dv, p_ma_ktv, p_ket_qua);
+    COMMIT;
+END sp_BS_Insert_HSBADV;
+/
+
+CREATE OR REPLACE PUBLIC SYNONYM sp_BS_Update_HSBA FOR sp_BS_Update_HSBA;
+CREATE OR REPLACE PUBLIC SYNONYM sp_BS_Insert_HSBADV FOR sp_BS_Insert_HSBADV;
+GRANT EXECUTE ON sp_BS_Update_HSBA TO RL_BACSI;
+GRANT EXECUTE ON sp_BS_Insert_HSBADV TO RL_BACSI;
+
+-- ============================================================
+
 -- sp_KTV_Select_HSBADV
 -- ============================================================
 CREATE OR REPLACE PROCEDURE sp_KTV_Select_HSBADV(p_cursor OUT SYS_REFCURSOR)

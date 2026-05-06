@@ -1,4 +1,4 @@
-﻿using ATBM_Hospital_Management.Database;
+using ATBM_Hospital_Management.Database;
 using Oracle.ManagedDataAccess.Client;
 using System;
 using System.Data;
@@ -12,6 +12,10 @@ namespace ATBM_Hospital_Management.Views.Components
     {
         private readonly DbConnection _db;
         private DoctorView_PatientList _parentView;
+        private DataTable _currentRecords;
+        private TextBox txtSearch;
+        private Button btnSearch;
+        private Panel pnlSearch;
 
         public DoctorView_HealthRecordList(DoctorView_PatientList parent)
         {
@@ -22,11 +26,67 @@ namespace ATBM_Hospital_Management.Views.Components
             this.Load += async (s, e) =>
             {
                 await Task.Delay(50); // nhường UI thread
+                SetupSearchBar();
                 await LoadHSBA();
             };
         }
 
-        
+        private void SetupSearchBar()
+        {
+            pnlSearch = new Panel { Dock = DockStyle.Top, Height = 50 };
+            pnlSearch.Padding = new Padding(0, 0, 0, 10);
+            
+            txtSearch = new TextBox 
+            { 
+                Location = new Point(0, 10), 
+                Width = 300, 
+                Font = new Font("Segoe UI", 12f),
+                ForeColor = Color.Gray,
+                Text = "Nhập mã HSBA hoặc mã BN..."
+            };
+            txtSearch.Enter += (s, e) => { if (txtSearch.Text == "Nhập mã HSBA hoặc mã BN...") { txtSearch.Text = ""; txtSearch.ForeColor = Color.Black; } };
+            txtSearch.Leave += (s, e) => { if (string.IsNullOrWhiteSpace(txtSearch.Text)) { txtSearch.Text = "Nhập mã HSBA hoặc mã BN..."; txtSearch.ForeColor = Color.Gray; } };
+            txtSearch.KeyDown += (s, e) => { if (e.KeyCode == Keys.Enter) { e.SuppressKeyPress = true; btnSearch.PerformClick(); } };
+
+            btnSearch = new Button
+            {
+                Location = new Point(310, 8),
+                Size = new Size(100, 32),
+                Text = "Tìm kiếm",
+                BackColor = Color.FromArgb(47, 121, 138),
+                ForeColor = Color.White,
+                FlatStyle = FlatStyle.Flat,
+                Font = new Font("Segoe UI", 10f, FontStyle.Bold)
+            };
+            btnSearch.FlatAppearance.BorderSize = 0;
+            btnSearch.Click += btnSearch_Click;
+
+            pnlSearch.Controls.Add(txtSearch);
+            pnlSearch.Controls.Add(btnSearch);
+
+            // Thêm vào panel chính
+            pnlMainList.Controls.Add(pnlSearch);
+            pnlSearch.SendToBack(); // Đưa thanh search lên dưới lblTitle nếu lblTitle cũng trong pnlMainList, nhưng lblTitle không nằm trong pnlMainList
+            
+            // Layout lại pnlMainList:
+            // Theo code Designer, pnlMainList chứa dataGridView1 (Dock=Fill)
+            // Ta đưa pnlSearch vào pnlMainList (Dock=Top), lúc này nó có thể che mất Top của dataGridView1
+            pnlSearch.BringToFront(); // Để không bị DataGridView đè
+        }
+
+        private void btnSearch_Click(object sender, EventArgs e)
+        {
+            if (_currentRecords == null) return;
+            string search = txtSearch.Text.Trim();
+            if (search == "Nhập mã HSBA hoặc mã BN..." || string.IsNullOrWhiteSpace(search))
+            {
+                _currentRecords.DefaultView.RowFilter = "";
+            }
+            else
+            {
+                _currentRecords.DefaultView.RowFilter = $"MA_HSBA LIKE '%{search}%' OR MA_BN LIKE '%{search}%'";
+            }
+        }
 
         private void SetupDataGrid()
         {
@@ -114,8 +174,9 @@ namespace ATBM_Hospital_Management.Views.Components
 
                 // Đảm bảo thao tác trên UI Thread
                 this.BeginInvoke(new MethodInvoker(() => {
+                    _currentRecords = dt;
                     dataGridView1.DataSource = null; // Reset trước khi gán mới
-                    dataGridView1.DataSource = dt;
+                    dataGridView1.DataSource = _currentRecords;
 
                     lblRecordCount.Text = $"Tổng: {(dt?.Rows.Count ?? 0)} hồ sơ";
 

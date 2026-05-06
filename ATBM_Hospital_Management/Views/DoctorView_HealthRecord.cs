@@ -1,4 +1,4 @@
-﻿using ATBM_Hospital_Management.Database;
+using ATBM_Hospital_Management.Database;
 using ATBM_Hospital_Management.Views.Components;
 using Oracle.ManagedDataAccess.Client;
 using System;
@@ -432,7 +432,7 @@ namespace ATBM_Hospital_Management.Views
                 new OracleParameter("p_loai_dv", txtLoai.Text),
                 new OracleParameter("p_ngay_dv", OracleDbType.Date) { Value = DateTime.Now },
                 new OracleParameter("p_ma_ktv", txtKTV.Text),
-                new OracleParameter("p_ket_qua", DBNull.Value)
+                new OracleParameter("p_ket_qua", OracleDbType.NVarchar2) { Value = DBNull.Value }
             };
                     _db.ExecuteNonQuery("ADMIN_PH2.sp_BS_Insert_HSBADV", p, CommandType.StoredProcedure);
                     _db.ExecuteNonQuery("COMMIT");
