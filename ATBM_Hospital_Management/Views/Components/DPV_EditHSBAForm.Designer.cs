@@ -180,7 +180,7 @@ namespace ATBM_Hospital_Management.Views.Components
             this.btnSave.Name = "btnSave";
             this.btnSave.Size = new System.Drawing.Size(100, 35);
             this.btnSave.TabIndex = 16;
-            this.btnSave.Text = "Update";
+            this.btnSave.Text = "Cập nhật";
             this.btnSave.UseVisualStyleBackColor = true;
             this.btnSave.Click += new System.EventHandler(this.BtnSave_Click);
             // 

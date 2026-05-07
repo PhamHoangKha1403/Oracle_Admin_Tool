@@ -60,10 +60,10 @@ namespace ATBM_Hospital_Management.Views.Components
             };
             this.Controls.Add(tabControl);
 
-            tabServices = new TabPage("MY SERVICES");
-            tabAuditLog = new TabPage("EDIT HISTORY");
-            tabThongBao = new TabPage("NOTIFICATIONS");
-            tabProfile = new TabPage("MY PROFILE");
+            tabServices = new TabPage("DỊCH VỤ");
+            tabAuditLog = new TabPage("LỊCH SỬ CHỈNH SỬA");
+            tabThongBao = new TabPage("THÔNG BÁO");
+            tabProfile = new TabPage("THÔNG TIN CỦA TÔI");
             tabControl.TabPages.Add(tabServices);
             tabControl.TabPages.Add(tabAuditLog);
             tabControl.TabPages.Add(tabThongBao);
@@ -91,7 +91,7 @@ namespace ATBM_Hospital_Management.Views.Components
 
             btnUpdateResult = new Button 
             { 
-                Text = "UPDATE RESULT", 
+                Text = "Cập nhật kết quả", 
                 Size = new Size(160, 40), 
                 BackColor = Color.DodgerBlue, 
                 ForeColor = Color.White, 
@@ -103,7 +103,7 @@ namespace ATBM_Hospital_Management.Views.Components
 
             Button btnSearchServices = new Button 
             { 
-                Text = "SEARCH", 
+                Text = "Tìm kiếm", 
                 Size = new Size(150, 40), 
                 BackColor = Color.SeaGreen, 
                 ForeColor = Color.White, 
@@ -192,7 +192,7 @@ namespace ATBM_Hospital_Management.Views.Components
 
             Button btnSearchAudit = new Button 
             { 
-                Text = "SEARCH", 
+                Text = "Tìm kiếm", 
                 Size = new Size(150, 40), 
                 BackColor = Color.SeaGreen, 
                 ForeColor = Color.White, 
@@ -294,7 +294,7 @@ namespace ATBM_Hospital_Management.Views.Components
 
             btnEditProfile = new Button
             {
-                Text = "UPDATE PROFILE",
+                Text = "Chỉnh sửa thông tin",
                 Size = new Size(180, 42),
                 BackColor = Color.DarkOrange,
                 ForeColor = Color.White,
@@ -319,7 +319,7 @@ namespace ATBM_Hospital_Management.Views.Components
 
             Label lblTitle = new Label
             {
-                Text = "PERSONAL INFORMATION",
+                Text = "Thông tin cá nhân",
                 Font = new Font("Segoe UI", 18F, FontStyle.Bold),
                 ForeColor = Color.DodgerBlue,
                 AutoSize = true,
@@ -483,7 +483,7 @@ namespace ATBM_Hospital_Management.Views.Components
 
                 Button btnSave = new Button
                 {
-                    Text = "UPDATE",
+                    Text = "Lưu",
                     Size = new Size(120, 38),
                     BackColor = Color.DodgerBlue,
                     ForeColor = Color.White,
@@ -623,7 +623,7 @@ namespace ATBM_Hospital_Management.Views.Components
                 TextBox txtKetQua = new TextBox { Text = currentKetQua, Location = new Point(140, y), Size = new Size(210, 25) };
                 f.Controls.Add(lblKetQua); f.Controls.Add(txtKetQua); y += 40;
 
-                Button btnSave = new Button { Text = "Update", Location = new Point(140, y + 10), Size = new Size(100, 35), BackColor = Color.DodgerBlue, ForeColor = Color.White, FlatStyle = FlatStyle.Flat };
+                Button btnSave = new Button { Text = "Lưu", Location = new Point(140, y + 10), Size = new Size(100, 35), BackColor = Color.DodgerBlue, ForeColor = Color.White, FlatStyle = FlatStyle.Flat };
                 btnSave.Click += (s, args) =>
                 {
                     try

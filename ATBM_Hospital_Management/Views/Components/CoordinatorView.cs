@@ -65,10 +65,10 @@ namespace ATBM_Hospital_Management.Views.Components
             };
             this.Controls.Add(tabControl);
 
-            tabPatient = new TabPage("PATIENTS");
-            tabHSBA = new TabPage("MEDICAL RECORDS");
-            tabThongBao = new TabPage("NOTIFICATIONS");
-            tabProfile = new TabPage("MY PROFILE");
+            tabPatient = new TabPage("BỆNH NHÂN");
+            tabHSBA = new TabPage("HỒ SƠ BỆNH ÁN");
+            tabThongBao = new TabPage("THÔNG BÁO");
+            tabProfile = new TabPage("HỒ SƠ CỦA TÔI");
             tabControl.TabPages.Add(tabPatient);
             tabControl.TabPages.Add(tabHSBA);
             tabControl.TabPages.Add(tabThongBao);
@@ -77,32 +77,32 @@ namespace ATBM_Hospital_Management.Views.Components
             InitializePatientTab();
             InitializeHSBATab();
             InitializeThongBaoTab();
-            InitializeProfileTab();
+            InitializeProfileTab();  
         }
 
         private void InitializePatientTab()
         {
-            tabPatient.Padding = new Padding(15);
+            tabPatient.Padding = new Padding(0, 70, 0, 0);
             tabPatient.BackColor = Color.White;
 
             FlowLayoutPanel pnlButtons = new FlowLayoutPanel
             {
-                Location = new Point(15, 15),
+                Location = new Point(0, 15),
                 AutoSize = true,
                 AutoSizeMode = AutoSizeMode.GrowAndShrink,
                 FlowDirection = FlowDirection.LeftToRight,
                 WrapContents = false
             };
 
-            btnAddPatient = new Button { Text = "ADD PATIENT", Size = new Size(150, 40), BackColor = Color.DodgerBlue, ForeColor = Color.White, FlatStyle = FlatStyle.Flat, Margin = new Padding(0, 0, 10, 0) };
+            btnAddPatient = new Button { Text = " Thêm Bệnh Nhân", Size = new Size(200, 40), BackColor = Color.DodgerBlue, ForeColor = Color.White, FlatStyle = FlatStyle.Flat, Margin = new Padding(0, 0, 10, 0) };
             btnAddPatient.FlatAppearance.BorderSize = 0;
             btnAddPatient.Click += BtnAddPatient_Click;
 
-            btnEditPatient = new Button { Text = "EDIT PATIENT", Size = new Size(150, 40), BackColor = Color.DarkOrange, ForeColor = Color.White, FlatStyle = FlatStyle.Flat, Margin = new Padding(0, 0, 15, 0) };
+            btnEditPatient = new Button { Text = " Sửa Bệnh Nhân", Size = new Size(200, 40), BackColor = Color.DarkOrange, ForeColor = Color.White, FlatStyle = FlatStyle.Flat, Margin = new Padding(0, 0, 15, 0) };
             btnEditPatient.FlatAppearance.BorderSize = 0;
             btnEditPatient.Click += BtnEditPatient_Click;
 
-            Button btnSearchPatient = new Button { Text = "SEARCH", Size = new Size(120, 40), BackColor = Color.SeaGreen, ForeColor = Color.White, FlatStyle = FlatStyle.Flat, Margin = new Padding(0) };
+            Button btnSearchPatient = new Button { Text = "Tìm Kiếm", Size = new Size(200, 40), BackColor = Color.SeaGreen, ForeColor = Color.White, FlatStyle = FlatStyle.Flat, Margin = new Padding(0) };
             TextBox txtSearchPatient = new TextBox { AutoSize = false, Size = new Size(300, 40), Font = new Font("Segoe UI", 12F), Margin = new Padding(0) };
             btnSearchPatient.FlatAppearance.BorderSize = 0;
 
@@ -133,10 +133,8 @@ namespace ATBM_Hospital_Management.Views.Components
 
             dgvPatient = new DataGridView
             {
-                Location = new Point(15, 65),
-                Size = new Size(800, 300),
-                Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right,
-                AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.DisplayedCells,
+                Dock = DockStyle.Fill,
+                AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill,
                 BackgroundColor = Color.White,
                 AllowUserToAddRows = false,
                 ReadOnly = true,
@@ -169,26 +167,26 @@ namespace ATBM_Hospital_Management.Views.Components
 
             FlowLayoutPanel pnlHSBAButtons = new FlowLayoutPanel
             {
-                Location = new Point(15, 15),
+                Location = new Point(0, 15),
                 AutoSize = true,
                 AutoSizeMode = AutoSizeMode.GrowAndShrink,
                 FlowDirection = FlowDirection.LeftToRight,
                 WrapContents = false
             };
 
-            btnAddHSBA = new Button { Text = "ADD RECORD", Size = new Size(130, 40), BackColor = Color.DodgerBlue, ForeColor = Color.White, FlatStyle = FlatStyle.Flat, Margin = new Padding(0, 0, 10, 0) };
+            btnAddHSBA = new Button { Text = "Thêm hồ sơ bệnh án", Size = new Size(200, 40), BackColor = Color.DodgerBlue, ForeColor = Color.White, FlatStyle = FlatStyle.Flat, Margin = new Padding(0, 0, 10, 0) };
             btnAddHSBA.FlatAppearance.BorderSize = 0;
             btnAddHSBA.Click += BtnAddHSBA_Click;
 
-            btnEditHSBA = new Button { Text = "EDIT RECORD", Size = new Size(130, 40), BackColor = Color.DarkOrange, ForeColor = Color.White, FlatStyle = FlatStyle.Flat, Margin = new Padding(0, 0, 10, 0) };
+            btnEditHSBA = new Button { Text = "Sửa hồ sơ bệnh án", Size = new Size(200, 40), BackColor = Color.DarkOrange, ForeColor = Color.White, FlatStyle = FlatStyle.Flat, Margin = new Padding(0, 0, 10, 0) };
             btnEditHSBA.FlatAppearance.BorderSize = 0;
             btnEditHSBA.Click += BtnEditHSBA_Click;
         
-            btnEditHSBADV = new Button { Text = "EDIT SERVICE", Size = new Size(130, 40), BackColor = Color.Orange, ForeColor = Color.White, FlatStyle = FlatStyle.Flat, Margin = new Padding(0, 0, 15, 0) };
+            btnEditHSBADV = new Button { Text = "Sửa dịch vụ", Size = new Size(200, 40), BackColor = Color.Orange, ForeColor = Color.White, FlatStyle = FlatStyle.Flat, Margin = new Padding(0, 0, 15, 0) };
             btnEditHSBADV.FlatAppearance.BorderSize = 0;
             btnEditHSBADV.Click += BtnEditHSBADV_Click;
 
-            Button btnSearchHSBA = new Button { Text = "SEARCH", Size = new Size(100, 40), BackColor = Color.SeaGreen, ForeColor = Color.White, FlatStyle = FlatStyle.Flat, Margin = new Padding(0) };
+            Button btnSearchHSBA = new Button { Text = "Tìm kiếm", Size = new Size(200, 40), BackColor = Color.SeaGreen, ForeColor = Color.White, FlatStyle = FlatStyle.Flat, Margin = new Padding(0) };
             TextBox txtSearchHSBA = new TextBox { AutoSize = false, Size = new Size(250, 40), Font = new Font("Segoe UI", 12F), Margin = new Padding(0) };
             btnSearchHSBA.FlatAppearance.BorderSize = 0;
 
@@ -220,18 +218,18 @@ namespace ATBM_Hospital_Management.Views.Components
 
             SplitContainer splitContainer = new SplitContainer
             {
-                Location = new Point(15, 65),
+                Location = new Point(15, 60),
                 Size = new Size(800, 500),
                 Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right,
                 Orientation = Orientation.Horizontal,
                 SplitterDistance = 250
             };
 
-            Label lbl1 = new Label { Text = "Danh sách Hồ sơ bệnh án", Font = new Font("Segoe UI Semibold", 12F), Dock = DockStyle.Top, Padding = new Padding(0, 0, 0, 10) };
+            Label lbl1 = new Label { Text = "Danh sách hồ sơ bệnh án", Font = new Font("Segoe UI Semibold", 12F), Dock = DockStyle.Top, Height = 40, Margin = new Padding(0, 0, 0, 10) };
             dgvHSBA = new DataGridView
             {
-                Dock = DockStyle.Fill,
-                AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.DisplayedCells,
+                Location = new Point(15, 50),
+                Size = new Size(4000, 500),
                 BackgroundColor = Color.White,
                 AllowUserToAddRows = false,
                 ReadOnly = true,
@@ -251,10 +249,11 @@ namespace ATBM_Hospital_Management.Views.Components
             splitContainer.Panel1.Controls.Add(lbl1);
             splitContainer.Panel1.Controls.Add(dgvHSBA);
 
-            Label lbl2 = new Label { Text = "Dịch vụ của Hồ sơ bệnh án", Font = new Font("Segoe UI Semibold", 12F), Dock = DockStyle.Top, Padding = new Padding(0, 0, 0, 10) };
+            Label lbl2 = new Label { Text = "Dịch vụ của Hồ sơ bệnh án", Font = new Font("Segoe UI Semibold", 12F), Dock = DockStyle.Top, Height = 40, Margin = new Padding(0, 0, 0, 10) };
             dgvHSBADV = new DataGridView
             {
-                Dock = DockStyle.Fill,
+                Location = new Point(15, 50),
+                Size = new Size(4000, 500),
                 AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.DisplayedCells,
                 BackgroundColor = Color.White,
                 AllowUserToAddRows = false,
@@ -278,7 +277,7 @@ namespace ATBM_Hospital_Management.Views.Components
 
         private void InitializeThongBaoTab()
         {
-            tabThongBao.Padding = new Padding(15);
+            tabThongBao.Padding = new Padding(0, 70, 0, 0);
             tabThongBao.BackColor = Color.White;
             btnRefresh = new Button { Text = "REFRESH", Size = new Size(150, 40), BackColor = Color.SeaGreen, ForeColor = Color.White, FlatStyle = FlatStyle.Flat, Location = new Point(15, 15) };
             btnRefresh.FlatAppearance.BorderSize = 0;
@@ -287,7 +286,7 @@ namespace ATBM_Hospital_Management.Views.Components
             dgvThongBao = new DataGridView
             {
                 Location = new Point(15, 65),
-                Size = new Size(800, 360),
+                Size = new Size(200, 50),
                 Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right,
                 AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill,
                 BackgroundColor = Color.White,
@@ -314,7 +313,7 @@ namespace ATBM_Hospital_Management.Views.Components
 
             btnEditProfile = new Button
             {
-                Text = "UPDATE PROFILE",
+                Text = "Cập nhật thông tin",
                 Size = new Size(180, 42),
                 BackColor = Color.DarkOrange,
                 ForeColor = Color.White,
@@ -339,7 +338,7 @@ namespace ATBM_Hospital_Management.Views.Components
 
             Label lblTitle = new Label
             {
-                Text = "PERSONAL INFORMATION",
+                Text = "THÔNG TIN CÁ NHÂN",
                 Font = new Font("Segoe UI", 18F, FontStyle.Bold),
                 ForeColor = Color.DodgerBlue,
                 AutoSize = true,
@@ -706,7 +705,7 @@ namespace ATBM_Hospital_Management.Views.Components
 
                 Button btnSave = new Button
                 {
-                    Text = "UPDATE",
+                    Text = "Cập nhật",
                     Size = new Size(120, 38),
                     BackColor = Color.DodgerBlue,
                     ForeColor = Color.White,

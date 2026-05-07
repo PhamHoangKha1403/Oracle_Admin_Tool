@@ -48,10 +48,10 @@ namespace ATBM_Hospital_Management.Views.Components
 
             btnEdit = new Button
             {
-                Text = "Edit Information",
+                Text = "Chỉnh sửa thông tin",
                 Font = new Font("Segoe UI", 10F, FontStyle.Bold),
                 Location = new Point(20, 60),
-                Size = new Size(150, 40),
+                Size = new Size(200, 50),
                 BackColor = Color.FromArgb(0, 120, 215),
                 ForeColor = Color.White,
                 FlatStyle = FlatStyle.Flat
@@ -188,7 +188,7 @@ namespace ATBM_Hospital_Management.Views.Components
 
                 Button btnSave = new Button
                 {
-                    Text = "Save Changes",
+                    Text = "Lưu",
                     Location = new Point(140, y + 20),
                     Size = new Size(120, 40),
                     BackColor = Color.SeaGreen,
