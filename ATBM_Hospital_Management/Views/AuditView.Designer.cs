@@ -22,9 +22,11 @@ namespace ATBM_Hospital_Management.Views
             this.cbAuditToggle = new System.Windows.Forms.ComboBox();
             this.dgvAudit = new System.Windows.Forms.DataGridView();
             this.colAuditUser = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.colAuditObjectName = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.colAuditColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.colAuditAction = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.colAuditTime = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.colReturnCode = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.pnlHeader = new System.Windows.Forms.Panel();
             this.lblPageTitle = new System.Windows.Forms.Label();
             this.pnlBody = new System.Windows.Forms.Panel();
@@ -97,9 +99,11 @@ namespace ATBM_Hospital_Management.Views
             this.dgvAudit.ColumnHeadersHeight = 34;
             this.dgvAudit.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
             this.colAuditUser,
+            this.colAuditObjectName,
             this.colAuditColumn,
             this.colAuditAction,
-            this.colAuditTime});
+            this.colAuditTime,
+            this.colReturnCode});
             this.dgvAudit.Dock = System.Windows.Forms.DockStyle.Fill;
             this.dgvAudit.Location = new System.Drawing.Point(0, 90);
             this.dgvAudit.Name = "dgvAudit";
@@ -112,23 +116,31 @@ namespace ATBM_Hospital_Management.Views
             // 
             // colAuditUser
             // 
-            this.colAuditUser.HeaderText = "DB_USER";
+            this.colAuditUser.HeaderText = "NGƯỜI DÙNG";
             this.colAuditUser.MinimumWidth = 8;
             this.colAuditUser.Name = "colAuditUser";
             this.colAuditUser.ReadOnly = true;
-            this.colAuditUser.Width = 200;
+            this.colAuditUser.Width = 150;
+            // 
+            // colAuditObjectName
+            // 
+            this.colAuditObjectName.HeaderText = "ĐỐI TƯỢNG";
+            this.colAuditObjectName.MinimumWidth = 8;
+            this.colAuditObjectName.Name = "colAuditObjectName";
+            this.colAuditObjectName.ReadOnly = true;
+            this.colAuditObjectName.Width = 150;
             // 
             // colAuditColumn
             // 
-            this.colAuditColumn.HeaderText = "POLICY_NAME";
+            this.colAuditColumn.HeaderText = "POLICY";
             this.colAuditColumn.MinimumWidth = 8;
             this.colAuditColumn.Name = "colAuditColumn";
             this.colAuditColumn.ReadOnly = true;
-            this.colAuditColumn.Width = 300;
+            this.colAuditColumn.Width = 150;
             // 
             // colAuditAction
             // 
-            this.colAuditAction.HeaderText = "STATEMENT_TYPE";
+            this.colAuditAction.HeaderText = "HÀNH ĐỘNG";
             this.colAuditAction.MinimumWidth = 8;
             this.colAuditAction.Name = "colAuditAction";
             this.colAuditAction.ReadOnly = true;
@@ -136,11 +148,19 @@ namespace ATBM_Hospital_Management.Views
             // 
             // colAuditTime
             // 
-            this.colAuditTime.HeaderText = "TIMESTAMP";
+            this.colAuditTime.HeaderText = "THỜI GIAN";
             this.colAuditTime.MinimumWidth = 8;
             this.colAuditTime.Name = "colAuditTime";
             this.colAuditTime.ReadOnly = true;
-            this.colAuditTime.Width = 200;
+            this.colAuditTime.Width = 180;
+            // 
+            // colReturnCode
+            // 
+            this.colReturnCode.HeaderText = "TRẠNG THÁI";
+            this.colReturnCode.MinimumWidth = 8;
+            this.colReturnCode.Name = "colReturnCode";
+            this.colReturnCode.ReadOnly = true;
+            this.colReturnCode.Width = 150;
             // 
             // pnlHeader
             // 
@@ -259,9 +279,11 @@ namespace ATBM_Hospital_Management.Views
         private System.Windows.Forms.ComboBox cbAuditToggle;
         private System.Windows.Forms.DataGridView dgvAudit;
         private System.Windows.Forms.DataGridViewTextBoxColumn colAuditUser;
+        private System.Windows.Forms.DataGridViewTextBoxColumn colAuditObjectName;
         private System.Windows.Forms.DataGridViewTextBoxColumn colAuditColumn;
         private System.Windows.Forms.DataGridViewTextBoxColumn colAuditAction;
         private System.Windows.Forms.DataGridViewTextBoxColumn colAuditTime;
+        private System.Windows.Forms.DataGridViewTextBoxColumn colReturnCode;
         private System.Windows.Forms.Label lblTable;
         private System.Windows.Forms.Panel pnlHeader;
         private System.Windows.Forms.Label lblPageTitle;
