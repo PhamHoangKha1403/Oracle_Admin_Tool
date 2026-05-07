@@ -139,10 +139,10 @@ namespace ATBM_Hospital_Management.Views
             txtAuditSearch.Text = SearchPlaceholder;
             txtAuditSearch.ForeColor = Color.FromArgb(120, 120, 120);
 
-            colAuditUser.HeaderText = "USERNAME";
-            colAuditColumn.HeaderText = "POLICY_NAME";
-            colAuditAction.HeaderText = "ACTION_TYPE";
-            colAuditTime.HeaderText = "TIME_FULL";
+            colAuditUser.HeaderText = "NGƯỜI DÙNG";
+            colAuditColumn.HeaderText = "TÊN CHÍNH SÁCH";
+            colAuditAction.HeaderText = "HÀNH ĐỘNG";
+            colAuditTime.HeaderText = "THỜI GIAN";
 
             cbAuditTable.Items.Clear();
             cbAuditTable.Items.Add("Tất cả bảng");
