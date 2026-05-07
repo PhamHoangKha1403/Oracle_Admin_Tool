@@ -208,6 +208,36 @@
     <Compile Include="Views\Components\CoordinatorView.cs">
       <SubType>UserControl</SubType>
     </Compile>
+    <Compile Include="Views\Components\DPV_AddPatientForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Views\Components\DPV_AddPatientForm.Designer.cs">
+      <DependentUpon>DPV_AddPatientForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Components\DPV_EditPatientForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Views\Components\DPV_EditPatientForm.Designer.cs">
+      <DependentUpon>DPV_EditPatientForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Components\DPV_AddHSBAForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Views\Components\DPV_AddHSBAForm.Designer.cs">
+      <DependentUpon>DPV_AddHSBAForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Components\DPV_EditHSBAForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Views\Components\DPV_EditHSBAForm.Designer.cs">
+      <DependentUpon>DPV_EditHSBAForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Components\DPV_EditHSBADVForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Views\Components\DPV_EditHSBADVForm.Designer.cs">
+      <DependentUpon>DPV_EditHSBADVForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="Views\Components\TechnicianView.cs">
       <SubType>UserControl</SubType>
     </Compile>
