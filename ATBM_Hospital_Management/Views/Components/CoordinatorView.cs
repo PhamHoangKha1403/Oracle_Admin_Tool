@@ -248,8 +248,8 @@ namespace ATBM_Hospital_Management.Views.Components
                 if (dgvHSBA.Columns.Contains("MA_KHOA")) dgvHSBA.Columns["MA_KHOA"].HeaderText = "Mã khoa";
                 if (dgvHSBA.Columns.Contains("KET_LUAN")) dgvHSBA.Columns["KET_LUAN"].HeaderText = "Kết luận";
             };
-            splitContainer.Panel1.Controls.Add(dgvHSBA);
             splitContainer.Panel1.Controls.Add(lbl1);
+            splitContainer.Panel1.Controls.Add(dgvHSBA);
 
             Label lbl2 = new Label { Text = "Dịch vụ của Hồ sơ bệnh án", Font = new Font("Segoe UI Semibold", 12F), Dock = DockStyle.Top, Padding = new Padding(0, 0, 0, 10) };
             dgvHSBADV = new DataGridView
@@ -270,8 +270,8 @@ namespace ATBM_Hospital_Management.Views.Components
                 if (dgvHSBADV.Columns.Contains("KET_QUA")) dgvHSBADV.Columns["KET_QUA"].HeaderText = "Kết quả";
                 if (dgvHSBADV.Columns.Contains("LOAI_DV")) dgvHSBADV.Columns["LOAI_DV"].HeaderText = "Loại DV";
             };
-            splitContainer.Panel2.Controls.Add(dgvHSBADV);
             splitContainer.Panel2.Controls.Add(lbl2);
+            splitContainer.Panel2.Controls.Add(dgvHSBADV);
 
             tabHSBA.Controls.Add(splitContainer);
         }
@@ -498,7 +498,7 @@ namespace ATBM_Hospital_Management.Views.Components
         private TextBox AddField(Form form, string label, string defaultValue, ref int y, bool isReadOnly = false)
         {
             Label lbl = new Label { Text = label, Location = new Point(20, y + 3), AutoSize = true };
-            TextBox txt = new TextBox { Text = defaultValue, Location = new Point(140, y), Size = new Size(210, 25), ReadOnly = isReadOnly };
+            TextBox txt = new TextBox { Text = defaultValue, Location = new Point(160, y), Size = new Size(230, 25), ReadOnly = isReadOnly };
             form.Controls.Add(lbl);
             form.Controls.Add(txt);
             y += 40;
@@ -510,8 +510,8 @@ namespace ATBM_Hospital_Management.Views.Components
             Label lbl = new Label { Text = label, Location = new Point(20, y + 3), AutoSize = true };
             ComboBox cmb = new ComboBox 
             { 
-                Location = new Point(140, y), 
-                Size = new Size(210, 25),
+                Location = new Point(160, y), 
+                Size = new Size(230, 25),
                 DropDownStyle = ComboBoxStyle.DropDownList,
                 DataSource = dtSource,
                 ValueMember = valueMember,
@@ -520,6 +520,30 @@ namespace ATBM_Hospital_Management.Views.Components
             if (!string.IsNullOrEmpty(selectedValue))
             {
                 cmb.SelectedValue = selectedValue;
+            }
+            form.Controls.Add(lbl);
+            form.Controls.Add(cmb);
+            y += 40;
+            return cmb;
+        }
+
+        private ComboBox AddSimpleComboBoxField(Form form, string label, string selectedValue, string[] items, ref int y)
+        {
+            Label lbl = new Label { Text = label, Location = new Point(20, y + 3), AutoSize = true };
+            ComboBox cmb = new ComboBox 
+            { 
+                Location = new Point(160, y), 
+                Size = new Size(230, 25),
+                DropDownStyle = ComboBoxStyle.DropDownList
+            };
+            cmb.Items.AddRange(items);
+            if (!string.IsNullOrEmpty(selectedValue))
+            {
+                cmb.SelectedItem = selectedValue;
+            }
+            else if (items.Length > 0)
+            {
+                cmb.SelectedIndex = 0;
             }
             form.Controls.Add(lbl);
             form.Controls.Add(cmb);
@@ -572,17 +596,17 @@ namespace ATBM_Hospital_Management.Views.Components
 
         private void BtnAddPatient_Click(object sender, EventArgs e)
         {
-            using (Form f = new Form() { Text = "Thêm bệnh nhân", Size = new Size(400, 750), StartPosition = FormStartPosition.CenterParent })
+            using (Form f = new Form() { Text = "Thêm bệnh nhân", Size = new Size(440, 780), StartPosition = FormStartPosition.CenterParent, AutoScroll = true })
             {
                 int y = 20;
                 string newMaBN = GenerateNextId(dgvPatient.DataSource as DataTable, "MA_BN", "BN", "D6");
 
                 TextBox txtMaBN = AddField(f, "Mã BN:", newMaBN, ref y, true);
                 TextBox txtHoTen = AddField(f, "Họ tên:", "", ref y);
-                TextBox txtPhai = AddField(f, "Phái:", "", ref y);
+                ComboBox cmbPhai = AddSimpleComboBoxField(f, "Phái:", "Nam", new string[] { "Nam", "Nữ" }, ref y);
                 
                 Label lblNgaySinh = new Label { Text = "Ngày sinh:", Location = new Point(20, y + 3), AutoSize = true };
-                DateTimePicker dtpNgaySinh = new DateTimePicker { Location = new Point(140, y), Size = new Size(210, 25), Format = DateTimePickerFormat.Short };
+                DateTimePicker dtpNgaySinh = new DateTimePicker { Location = new Point(160, y), Size = new Size(230, 25), Format = DateTimePickerFormat.Short };
                 f.Controls.Add(lblNgaySinh); f.Controls.Add(dtpNgaySinh); y += 40;
                 
                 TextBox txtCCCD = AddField(f, "CCCD:", "", ref y);
@@ -597,7 +621,7 @@ namespace ATBM_Hospital_Management.Views.Components
                 TextBox txtDiUng = AddField(f, "Dị ứng thuốc:", "", ref y);
                 
                 DataTable dtKhoa = null;
-                try { dtKhoa = DbConnection.Instance.ExecuteQuery("SELECT MA_KHOA, TEN_KHOA FROM KHOA", null, CommandType.Text); } catch { }
+                try { dtKhoa = DbConnection.Instance.ExecuteQuery("SELECT MA_KHOA, TEN_KHOA FROM ADMIN_PH2.KHOA", null, CommandType.Text); } catch { }
                 ComboBox cmbChuyenKhoa = null;
                 TextBox txtChuyenKhoa = null;
                 if (dtKhoa != null && dtKhoa.Rows.Count > 0)
@@ -609,7 +633,7 @@ namespace ATBM_Hospital_Management.Views.Components
                     txtChuyenKhoa = AddField(f, "Mã chuyên khoa:", "", ref y);
                 }
 
-                Button btnSave = new Button { Text = "Save", Location = new Point(140, y + 10), Size = new Size(100, 35) };
+                Button btnSave = new Button { Text = "Save", Location = new Point(160, y + 10), Size = new Size(100, 35) };
                 btnSave.Click += (s, args) =>
                 {
                     try
@@ -618,7 +642,7 @@ namespace ATBM_Hospital_Management.Views.Components
                         {
                             new Oracle.ManagedDataAccess.Client.OracleParameter("p_MABN", txtMaBN.Text),
                             new Oracle.ManagedDataAccess.Client.OracleParameter("p_HOTEN", txtHoTen.Text),
-                            new Oracle.ManagedDataAccess.Client.OracleParameter("p_PHAI", txtPhai.Text),
+                            new Oracle.ManagedDataAccess.Client.OracleParameter("p_PHAI", cmbPhai.SelectedItem?.ToString()),
                             new Oracle.ManagedDataAccess.Client.OracleParameter("p_NGAYSINH", dtpNgaySinh.Value),
                             new Oracle.ManagedDataAccess.Client.OracleParameter("p_CCCD", txtCCCD.Text),
                             new Oracle.ManagedDataAccess.Client.OracleParameter("p_SDT", txtSDT.Text),
@@ -650,7 +674,7 @@ namespace ATBM_Hospital_Management.Views.Components
             var row = dgvPatient.SelectedRows[0];
             DataRowView drv = row.DataBoundItem as DataRowView;
 
-            using (Form f = new Form() { Text = "Cập nhật bệnh nhân", Size = new Size(400, 750), StartPosition = FormStartPosition.CenterParent })
+            using (Form f = new Form() { Text = "Cập nhật bệnh nhân", Size = new Size(440, 780), StartPosition = FormStartPosition.CenterParent, AutoScroll = true })
             {
                 int y = 20;
                 TextBox txtMaBN = AddField(f, "Mã BN:", row.Cells["MA_BN"].Value?.ToString(), ref y, true);
@@ -659,13 +683,13 @@ namespace ATBM_Hospital_Management.Views.Components
                 TextBox txtHoTen = AddField(f, "Họ tên:", hoTen, ref y);
                 
                 string phai = drv != null ? drv["PHAI"]?.ToString() : row.Cells["PHAI"].Value?.ToString();
-                TextBox txtPhai = AddField(f, "Phái:", phai, ref y);
+                ComboBox cmbPhai = AddSimpleComboBoxField(f, "Phái:", phai, new string[] { "Nam", "Nữ" }, ref y);
                 
                 DateTime dtNgaySinh;
                 string nsStr = drv != null ? drv["NGAY_SINH"]?.ToString() : row.Cells["NGAY_SINH"].Value?.ToString();
                 DateTime.TryParse(nsStr, out dtNgaySinh);
                 Label lblNgaySinh = new Label { Text = "Ngày sinh:", Location = new Point(20, y + 3), AutoSize = true };
-                DateTimePicker dtpNgaySinh = new DateTimePicker { Location = new Point(140, y), Size = new Size(210, 25), Format = DateTimePickerFormat.Short, Value = dtNgaySinh > DateTime.MinValue ? dtNgaySinh : DateTime.Now };
+                DateTimePicker dtpNgaySinh = new DateTimePicker { Location = new Point(160, y), Size = new Size(230, 25), Format = DateTimePickerFormat.Short, Value = dtNgaySinh > DateTime.MinValue ? dtNgaySinh : DateTime.Now };
                 f.Controls.Add(lblNgaySinh); f.Controls.Add(dtpNgaySinh); y += 40;
                 
                 string cccd = drv != null ? drv["CCCD"]?.ToString() : row.Cells["CCCD"].Value?.ToString();
@@ -684,7 +708,7 @@ namespace ATBM_Hospital_Management.Views.Components
                 
                 string chuyenKhoa = drv != null ? drv["CHUYEN_KHOA"]?.ToString() : "";
                 DataTable dtKhoa = null;
-                try { dtKhoa = DbConnection.Instance.ExecuteQuery("SELECT MA_KHOA, TEN_KHOA FROM KHOA", null, CommandType.Text); } catch { }
+                try { dtKhoa = DbConnection.Instance.ExecuteQuery("SELECT MA_KHOA, TEN_KHOA FROM ADMIN_PH2.KHOA", null, CommandType.Text); } catch { }
                 ComboBox cmbChuyenKhoa = null;
                 TextBox txtChuyenKhoa = null;
                 if (dtKhoa != null && dtKhoa.Rows.Count > 0)
@@ -696,7 +720,7 @@ namespace ATBM_Hospital_Management.Views.Components
                     txtChuyenKhoa = AddField(f, "Mã chuyên khoa:", chuyenKhoa, ref y);
                 }
 
-                Button btnSave = new Button { Text = "Update", Location = new Point(140, y + 10), Size = new Size(100, 35) };
+                Button btnSave = new Button { Text = "Update", Location = new Point(160, y + 10), Size = new Size(100, 35) };
                 btnSave.Click += (s, args) =>
                 {
                     try
@@ -705,7 +729,7 @@ namespace ATBM_Hospital_Management.Views.Components
                         {
                             new Oracle.ManagedDataAccess.Client.OracleParameter("p_MABN", txtMaBN.Text),
                             new Oracle.ManagedDataAccess.Client.OracleParameter("p_HOTEN", txtHoTen.Text),
-                            new Oracle.ManagedDataAccess.Client.OracleParameter("p_PHAI", txtPhai.Text),
+                            new Oracle.ManagedDataAccess.Client.OracleParameter("p_PHAI", cmbPhai.SelectedItem?.ToString()),
                             new Oracle.ManagedDataAccess.Client.OracleParameter("p_NGAYSINH", dtpNgaySinh.Value),
                             new Oracle.ManagedDataAccess.Client.OracleParameter("p_CCCD", txtCCCD.Text),
                             new Oracle.ManagedDataAccess.Client.OracleParameter("p_SDT", txtSDT.Text),
@@ -733,7 +757,7 @@ namespace ATBM_Hospital_Management.Views.Components
 
         private void BtnAddHSBA_Click(object sender, EventArgs e)
         {
-            using (Form f = new Form() { Text = "Thêm Hồ sơ bệnh án", Size = new Size(400, 520), StartPosition = FormStartPosition.CenterParent })
+            using (Form f = new Form() { Text = "Thêm Hồ sơ bệnh án", Size = new Size(440, 550), StartPosition = FormStartPosition.CenterParent, AutoScroll = true })
             {
                 int y = 20;
                 string newMaHSBA = GenerateNextId(dgvHSBA.DataSource as DataTable, "MA_HSBA", "HS", "D6");
@@ -747,7 +771,7 @@ namespace ATBM_Hospital_Management.Views.Components
                 TextBox txtMaBN = AddField(f, "Mã BN:", defaultMaBN, ref y);
                 
                 Label lblNgay = new Label { Text = "Ngày khám:", Location = new Point(20, y + 3), AutoSize = true };
-                DateTimePicker dtpNgay = new DateTimePicker { Location = new Point(140, y), Size = new Size(210, 25), Format = DateTimePickerFormat.Short };
+                DateTimePicker dtpNgay = new DateTimePicker { Location = new Point(160, y), Size = new Size(230, 25), Format = DateTimePickerFormat.Short };
                 f.Controls.Add(lblNgay); f.Controls.Add(dtpNgay); y += 40;
 
                 TextBox txtChanDoan = AddField(f, "Chẩn đoán:", "", ref y);
@@ -755,7 +779,7 @@ namespace ATBM_Hospital_Management.Views.Components
                 TextBox txtMaBS = AddField(f, "Mã BS:", "", ref y);
                 
                 DataTable dtKhoa = null;
-                try { dtKhoa = DbConnection.Instance.ExecuteQuery("SELECT MA_KHOA, TEN_KHOA FROM KHOA", null, CommandType.Text); } catch { }
+                try { dtKhoa = DbConnection.Instance.ExecuteQuery("SELECT MA_KHOA, TEN_KHOA FROM ADMIN_PH2.KHOA", null, CommandType.Text); } catch { }
                 ComboBox cmbMaKhoa = null;
                 TextBox txtMaKhoa = null;
                 if (dtKhoa != null && dtKhoa.Rows.Count > 0)
@@ -769,7 +793,7 @@ namespace ATBM_Hospital_Management.Views.Components
                 
                 TextBox txtKetLuan = AddField(f, "Kết luận:", "", ref y);
 
-                Button btnSave = new Button { Text = "Save", Location = new Point(140, y + 10), Size = new Size(100, 35) };
+                Button btnSave = new Button { Text = "Save", Location = new Point(160, y + 10), Size = new Size(100, 35) };
                 btnSave.Click += (s, args) =>
                 {
                     try
@@ -802,14 +826,14 @@ namespace ATBM_Hospital_Management.Views.Components
             if (dgvHSBA.SelectedRows.Count == 0) { MessageBox.Show("Vui lòng chọn hồ sơ."); return; }
             var row = dgvHSBA.SelectedRows[0];
 
-            using (Form f = new Form() { Text = "Cập nhật HSBA", Size = new Size(400, 300), StartPosition = FormStartPosition.CenterParent })
+            using (Form f = new Form() { Text = "Cập nhật HSBA", Size = new Size(440, 330), StartPosition = FormStartPosition.CenterParent, AutoScroll = true })
             {
                 int y = 20;
                 TextBox txtMaHSBA = AddField(f, "Mã HSBA:", row.Cells["MA_HSBA"].Value?.ToString(), ref y, true);
                 
                 string currentKhoa = row.Cells["MA_KHOA"].Value?.ToString();
                 DataTable dtKhoa = null;
-                try { dtKhoa = DbConnection.Instance.ExecuteQuery("SELECT MA_KHOA, TEN_KHOA FROM KHOA", null, CommandType.Text); } catch { }
+                try { dtKhoa = DbConnection.Instance.ExecuteQuery("SELECT MA_KHOA, TEN_KHOA FROM ADMIN_PH2.KHOA", null, CommandType.Text); } catch { }
                 ComboBox cmbMaKhoa = null;
                 TextBox txtMaKhoa = null;
                 if (dtKhoa != null && dtKhoa.Rows.Count > 0)
@@ -823,7 +847,7 @@ namespace ATBM_Hospital_Management.Views.Components
                 
                 TextBox txtMaBS = AddField(f, "Mã BS:", row.Cells["MA_BS"].Value?.ToString(), ref y);
 
-                Button btnSave = new Button { Text = "Update", Location = new Point(140, y + 10), Size = new Size(100, 35) };
+                Button btnSave = new Button { Text = "Update", Location = new Point(160, y + 10), Size = new Size(100, 35) };
                 btnSave.Click += (s, args) =>
                 {
                     try
@@ -851,7 +875,7 @@ namespace ATBM_Hospital_Management.Views.Components
             if (dgvHSBADV.SelectedRows.Count == 0) { MessageBox.Show("Vui lòng chọn dịch vụ."); return; }
             var row = dgvHSBADV.SelectedRows[0];
 
-            using (Form f = new Form() { Text = "Cập nhật dịch vụ", Size = new Size(400, 320), StartPosition = FormStartPosition.CenterParent })
+            using (Form f = new Form() { Text = "Cập nhật dịch vụ", Size = new Size(440, 350), StartPosition = FormStartPosition.CenterParent, AutoScroll = true })
             {
                 int y = 20;
                 TextBox txtMaHSBA = AddField(f, "Mã HSBA:", row.Cells["MA_HSBA"].Value?.ToString(), ref y, true);
@@ -861,12 +885,12 @@ namespace ATBM_Hospital_Management.Views.Components
                 DateTime.TryParse(row.Cells["NGAY_DV"].Value?.ToString(), out dtNgayDV);
                 
                 Label lblNgay = new Label { Text = "Ngày DV:", Location = new Point(20, y + 3), AutoSize = true };
-                DateTimePicker dtpNgay = new DateTimePicker { Location = new Point(140, y), Size = new Size(210, 25), Format = DateTimePickerFormat.Custom, CustomFormat="dd/MM/yyyy", Value = dtNgayDV > DateTime.MinValue ? dtNgayDV : DateTime.Now, Enabled = false };
+                DateTimePicker dtpNgay = new DateTimePicker { Location = new Point(160, y), Size = new Size(230, 25), Format = DateTimePickerFormat.Custom, CustomFormat="dd/MM/yyyy", Value = dtNgayDV > DateTime.MinValue ? dtNgayDV : DateTime.Now, Enabled = false };
                 f.Controls.Add(lblNgay); f.Controls.Add(dtpNgay); y += 40;
 
                 TextBox txtMaKTV = AddField(f, "Mã KTV mới:", row.Cells["MA_KTV"].Value?.ToString(), ref y);
 
-                Button btnSave = new Button { Text = "Update", Location = new Point(140, y + 10), Size = new Size(100, 35) };
+                Button btnSave = new Button { Text = "Update", Location = new Point(160, y + 10), Size = new Size(100, 35) };
                 btnSave.Click += (s, args) =>
                 {
                     try
@@ -895,10 +919,11 @@ namespace ATBM_Hospital_Management.Views.Components
             using (Form f = new Form()
             {
                 Text = "Cập nhật thông tin cá nhân",
-                Size = new Size(400, 260),
+                Size = new Size(440, 290),
                 StartPosition = FormStartPosition.CenterParent,
                 FormBorderStyle = FormBorderStyle.FixedDialog,
-                MaximizeBox = false
+                MaximizeBox = false,
+                AutoScroll = true
             })
             {
                 int y = 20;
@@ -936,7 +961,7 @@ namespace ATBM_Hospital_Management.Views.Components
                     BackColor = Color.DodgerBlue,
                     ForeColor = Color.White,
                     FlatStyle = FlatStyle.Flat,
-                    Location = new Point(140, y + 15)
+                    Location = new Point(160, y + 15)
                 };
 
                 btnSave.FlatAppearance.BorderSize = 0;
