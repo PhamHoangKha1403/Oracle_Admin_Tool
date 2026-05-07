@@ -428,14 +428,15 @@ namespace ATBM_Hospital_Management.Views
                 try
                 {
                     OracleParameter[] p = {
-                new OracleParameter("p_ma_hsba", _maHSBA),
-                new OracleParameter("p_loai_dv", txtLoai.Text),
-                new OracleParameter("p_ngay_dv", OracleDbType.Date) { Value = DateTime.Now },
-                new OracleParameter("p_ma_ktv", txtKTV.Text),
-                new OracleParameter("p_ket_qua", OracleDbType.NVarchar2) { Value = DBNull.Value }
-            };
+                    new OracleParameter("p_ma_hsba", OracleDbType.Varchar2) { Value = _maHSBA },
+                    new OracleParameter("p_loai_dv", OracleDbType.Varchar2) { Value = txtLoai.Text },
+                    new OracleParameter("p_ngay_dv", OracleDbType.Date) { Value = DateTime.Now },
+                    new OracleParameter("p_ma_ktv", OracleDbType.Varchar2) { Value = txtKTV.Text },
+                    new OracleParameter("p_ket_qua", OracleDbType.NVarchar2) { Value = DBNull.Value } 
+};
+
+                    // Đảm bảo tên SP có kèm Schema nếu cần
                     _db.ExecuteNonQuery("ADMIN_PH2.sp_BS_Insert_HSBADV", p, CommandType.StoredProcedure);
-                    _db.ExecuteNonQuery("COMMIT");
                     LoadHSBADV();
                     MessageBox.Show("Đã thêm dịch vụ!");
                 }
