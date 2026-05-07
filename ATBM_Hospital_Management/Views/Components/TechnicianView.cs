@@ -224,6 +224,14 @@ namespace ATBM_Hospital_Management.Views.Components
                 if (dgvAuditLog.Columns.Contains("OLD_KETQUA")) dgvAuditLog.Columns["OLD_KETQUA"].HeaderText = "Kết quả cũ";
                 if (dgvAuditLog.Columns.Contains("NEW_KETQUA")) dgvAuditLog.Columns["NEW_KETQUA"].HeaderText = "Kết quả mới";
                 if (dgvAuditLog.Columns.Contains("NGAY_GHI")) dgvAuditLog.Columns["NGAY_GHI"].HeaderText = "Ngày sửa";
+
+                // Thêm các cột cho FGA Audit (DBA_AUDIT_TRAIL) phòng trường hợp DB chưa update SP
+                if (dgvAuditLog.Columns.Contains("DB_USER")) dgvAuditLog.Columns["DB_USER"].HeaderText = "Người dùng DB";
+                if (dgvAuditLog.Columns.Contains("POLICY_NAME")) dgvAuditLog.Columns["POLICY_NAME"].HeaderText = "Tên Policy";
+                if (dgvAuditLog.Columns.Contains("STATEMENT_TYPE")) dgvAuditLog.Columns["STATEMENT_TYPE"].HeaderText = "Loại thao tác";
+                if (dgvAuditLog.Columns.Contains("TIMESTAMP")) dgvAuditLog.Columns["TIMESTAMP"].HeaderText = "Thời gian";
+                if (dgvAuditLog.Columns.Contains("OBJECT_NAME")) dgvAuditLog.Columns["OBJECT_NAME"].HeaderText = "Bảng";
+                if (dgvAuditLog.Columns.Contains("SQL_TEXT")) dgvAuditLog.Columns["SQL_TEXT"].HeaderText = "Lệnh SQL";
             };
 
             tabAuditLog.Controls.Add(pnlTopAudit);
