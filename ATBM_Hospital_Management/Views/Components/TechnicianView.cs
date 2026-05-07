@@ -11,6 +11,7 @@ namespace ATBM_Hospital_Management.Views.Components
         private TabControl tabControl;
         private TabPage tabServices;
         private TabPage tabAuditLog;
+        private TabPage tabThongBao;
 
         // Services Tab Controls
         private DataGridView dgvServices;
@@ -19,11 +20,16 @@ namespace ATBM_Hospital_Management.Views.Components
         // Audit Log Tab Controls
         private DataGridView dgvAuditLog;
 
+        // ThongBao Tab Controls
+        private DataGridView dgvThongBao;
+        private Button btnRefresh;
+
         public TechnicianView()
         {
             InitializeUI();
             LoadServicesData();
             LoadAuditLogData();
+            LoadThongBao();
         }
 
         private void InitializeUI()
@@ -41,11 +47,14 @@ namespace ATBM_Hospital_Management.Views.Components
 
             tabServices = new TabPage("MY SERVICES");
             tabAuditLog = new TabPage("EDIT HISTORY");
+            tabThongBao = new TabPage("NOTIFICATIONS");
             tabControl.TabPages.Add(tabServices);
             tabControl.TabPages.Add(tabAuditLog);
+            tabControl.TabPages.Add(tabThongBao);
 
             InitializeServicesTab();
             InitializeAuditLogTab();
+            InitializeThongBaoTab();
         }
 
         private void InitializeServicesTab()
@@ -127,6 +136,15 @@ namespace ATBM_Hospital_Management.Views.Components
                 ReadOnly = true,
                 SelectionMode = DataGridViewSelectionMode.FullRowSelect
             };
+            dgvServices.DataBindingComplete += (s, e) =>
+            {
+                if (dgvServices.Columns.Contains("MA_HSBA")) dgvServices.Columns["MA_HSBA"].HeaderText = "Mã HSBA";
+                if (dgvServices.Columns.Contains("MA_DV")) dgvServices.Columns["MA_DV"].HeaderText = "Mã DV";
+                if (dgvServices.Columns.Contains("NGAY_DV")) dgvServices.Columns["NGAY_DV"].HeaderText = "Ngày DV";
+                if (dgvServices.Columns.Contains("MA_KTV")) dgvServices.Columns["MA_KTV"].HeaderText = "Mã KTV";
+                if (dgvServices.Columns.Contains("KET_QUA")) dgvServices.Columns["KET_QUA"].HeaderText = "Kết quả";
+                if (dgvServices.Columns.Contains("LOAI_DV")) dgvServices.Columns["LOAI_DV"].HeaderText = "Loại DV";
+            };
 
             tabServices.Controls.Add(pnlTopServices);
             tabServices.Controls.Add(dgvServices);
@@ -148,7 +166,7 @@ namespace ATBM_Hospital_Management.Views.Components
 
             Label lblTitle = new Label 
             { 
-                Text = "Edit History (Audit Log)", 
+                Text = "Lịch sử chỉnh sửa", 
                 AutoSize = true, 
                 Font = new Font("Segoe UI", 12F, FontStyle.Bold),
                 Margin = new Padding(0, 10, 15, 0) // Padding top to align with 40px buttons
@@ -207,9 +225,48 @@ namespace ATBM_Hospital_Management.Views.Components
                 ReadOnly = true,
                 SelectionMode = DataGridViewSelectionMode.FullRowSelect
             };
+            dgvAuditLog.DataBindingComplete += (s, e) =>
+            {
+                if (dgvAuditLog.Columns.Contains("MAHSBA")) dgvAuditLog.Columns["MAHSBA"].HeaderText = "Mã HSBA";
+                if (dgvAuditLog.Columns.Contains("LOAIDV")) dgvAuditLog.Columns["LOAIDV"].HeaderText = "Loại DV";
+                if (dgvAuditLog.Columns.Contains("NGAYDV")) dgvAuditLog.Columns["NGAYDV"].HeaderText = "Ngày DV";
+                if (dgvAuditLog.Columns.Contains("OLD_KETQUA")) dgvAuditLog.Columns["OLD_KETQUA"].HeaderText = "Kết quả cũ";
+                if (dgvAuditLog.Columns.Contains("NEW_KETQUA")) dgvAuditLog.Columns["NEW_KETQUA"].HeaderText = "Kết quả mới";
+                if (dgvAuditLog.Columns.Contains("NGAY_GHI")) dgvAuditLog.Columns["NGAY_GHI"].HeaderText = "Ngày sửa";
+
+                // Thêm các cột cho FGA Audit (DBA_AUDIT_TRAIL) phòng trường hợp DB chưa update SP
+                if (dgvAuditLog.Columns.Contains("DB_USER")) dgvAuditLog.Columns["DB_USER"].HeaderText = "Người dùng DB";
+                if (dgvAuditLog.Columns.Contains("POLICY_NAME")) dgvAuditLog.Columns["POLICY_NAME"].HeaderText = "Tên Policy";
+                if (dgvAuditLog.Columns.Contains("STATEMENT_TYPE")) dgvAuditLog.Columns["STATEMENT_TYPE"].HeaderText = "Loại thao tác";
+                if (dgvAuditLog.Columns.Contains("TIMESTAMP")) dgvAuditLog.Columns["TIMESTAMP"].HeaderText = "Thời gian";
+                if (dgvAuditLog.Columns.Contains("OBJECT_NAME")) dgvAuditLog.Columns["OBJECT_NAME"].HeaderText = "Bảng";
+                if (dgvAuditLog.Columns.Contains("SQL_TEXT")) dgvAuditLog.Columns["SQL_TEXT"].HeaderText = "Lệnh SQL";
+            };
 
             tabAuditLog.Controls.Add(pnlTopAudit);
             tabAuditLog.Controls.Add(dgvAuditLog);
+        }
+
+        private void InitializeThongBaoTab()
+        {
+            tabThongBao.Padding = new Padding(15);
+            tabThongBao.BackColor = Color.White;
+            btnRefresh = new Button { Text = "REFRESH", Size = new Size(150, 40), BackColor = Color.SeaGreen, ForeColor = Color.White, FlatStyle = FlatStyle.Flat, Location = new Point(15, 15) };
+            btnRefresh.FlatAppearance.BorderSize = 0;
+            btnRefresh.Click += (s, e) => LoadThongBao();
+            tabThongBao.Controls.Add(btnRefresh);
+            dgvThongBao = new DataGridView
+            {
+                Location = new Point(15, 65),
+                Size = new Size(800, 360),
+                Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right,
+                AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill,
+                BackgroundColor = Color.White,
+                AllowUserToAddRows = false,
+                ReadOnly = true,
+                SelectionMode = DataGridViewSelectionMode.FullRowSelect
+            };
+            tabThongBao.Controls.Add(dgvThongBao);
         }
 
         private void LoadServicesData()
@@ -222,7 +279,7 @@ namespace ATBM_Hospital_Management.Views.Components
                 };
                 dgvServices.DataSource = DbConnection.Instance.ExecuteQuery("BEGIN sp_KTV_Select_HSBADV(:p_cursor); END;", new[] { pOut }, CommandType.Text);
             }
-            catch (Exception ex) { MessageBox.Show("Error loading services: " + ex.Message); }
+            catch (Exception ex) { MessageBox.Show("Lỗi tải danh sách dịch vụ: " + ex.Message); }
         }
 
         private void LoadAuditLogData()
@@ -235,35 +292,74 @@ namespace ATBM_Hospital_Management.Views.Components
                 };
                 dgvAuditLog.DataSource = DbConnection.Instance.ExecuteQuery("BEGIN sp_KTV_Select_AuditLog(:p_cursor); END;", new[] { pOut }, CommandType.Text);
             }
-            catch (Exception ex) { MessageBox.Show("Error loading audit log: " + ex.Message); }
+            catch (Exception ex) { MessageBox.Show("Lỗi tải lịch sử chỉnh sửa: " + ex.Message); }
+        }
+
+        private void LoadThongBao()
+        {
+            try
+            {
+                var pOut = new Oracle.ManagedDataAccess.Client.OracleParameter(
+                    "p_cursor",
+                    Oracle.ManagedDataAccess.Client.OracleDbType.RefCursor)
+                {
+                    Direction = ParameterDirection.Output
+                };
+
+                DataTable dt = DbConnection.Instance.ExecuteQuery(
+                    "BEGIN SP_GET_THONGBAO(:p_cursor); END;",
+                    new[] { pOut },
+                    CommandType.Text
+                );
+
+                if (dt != null)
+                {
+                    dgvThongBao.DataSource = dt;
+
+                    // Kiểm tra nếu cột MA_NV tồn tại thì ẩn nó đi
+                    if (dgvThongBao.Columns["MA_NV"] != null)
+                    {
+                        dgvThongBao.Columns["MA_NV"].Visible = false;
+                    }
+
+                    // Tiện tay chỉnh lại Header cho đẹp luôn bạn nhé
+                    if (dgvThongBao.Columns["MA_TB"] != null) dgvThongBao.Columns["MA_TB"].HeaderText = "Mã TB";
+                    if (dgvThongBao.Columns["NOI_DUNG"] != null) dgvThongBao.Columns["NOI_DUNG"].HeaderText = "Nội Dung";
+                    if (dgvThongBao.Columns["NGAY_GIO"] != null) dgvThongBao.Columns["NGAY_GIO"].HeaderText = "Thời Gian";
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error loading notifications: " + ex.Message);
+            }
         }
 
         private void BtnUpdateResult_Click(object sender, EventArgs e)
         {
             if (dgvServices.SelectedRows.Count == 0) 
             { 
-                MessageBox.Show("Please select a service record to update."); 
+                MessageBox.Show("Vui lòng chọn một dịch vụ để cập nhật."); 
                 return; 
             }
             var row = dgvServices.SelectedRows[0];
             string currentKetQua = row.Cells["KET_QUA"].Value?.ToString() ?? "";
 
-            using (Form f = new Form() { Text = "Update Result", Size = new Size(400, 300), StartPosition = FormStartPosition.CenterParent })
+            using (Form f = new Form() { Text = "Cập nhật kết quả", Size = new Size(400, 300), StartPosition = FormStartPosition.CenterParent })
             {
                 int y = 20;
                 
-                Label lblMaHSBA = new Label { Text = "Record ID:", Location = new Point(20, y + 3), AutoSize = true };
+                Label lblMaHSBA = new Label { Text = "Mã HSBA:", Location = new Point(20, y + 3), AutoSize = true };
                 TextBox txtMaHSBA = new TextBox { Text = row.Cells["MA_HSBA"].Value?.ToString(), Location = new Point(140, y), Size = new Size(210, 25), ReadOnly = true };
                 f.Controls.Add(lblMaHSBA); f.Controls.Add(txtMaHSBA); y += 40;
 
-                Label lblLoaiDV = new Label { Text = "Service Type:", Location = new Point(20, y + 3), AutoSize = true };
+                Label lblLoaiDV = new Label { Text = "Loại DV:", Location = new Point(20, y + 3), AutoSize = true };
                 TextBox txtLoaiDV = new TextBox { Text = row.Cells["LOAI_DV"].Value?.ToString(), Location = new Point(140, y), Size = new Size(210, 25), ReadOnly = true };
                 f.Controls.Add(lblLoaiDV); f.Controls.Add(txtLoaiDV); y += 40;
                 
                 DateTime dtNgayDV = row.Cells["NGAY_DV"].Value is DateTime dt 
                     ? dt 
                     : (DateTime.TryParse(row.Cells["NGAY_DV"].Value?.ToString(), out DateTime parsed) ? parsed : DateTime.Now);
-                Label lblKetQua = new Label { Text = "Result:", Location = new Point(20, y + 3), AutoSize = true };
+                Label lblKetQua = new Label { Text = "Kết quả:", Location = new Point(20, y + 3), AutoSize = true };
                 TextBox txtKetQua = new TextBox { Text = currentKetQua, Location = new Point(140, y), Size = new Size(210, 25) };
                 f.Controls.Add(lblKetQua); f.Controls.Add(txtKetQua); y += 40;
 
@@ -282,11 +378,11 @@ namespace ATBM_Hospital_Management.Views.Components
 
                         DbConnection.Instance.ExecuteNonQuery("BEGIN sp_KTV_Update_KETQUA(:p_MAHSBA, :p_LOAIDV, :p_NGAYDV, :p_KETQUA); END;", updateParams, CommandType.Text);
 
-                        MessageBox.Show("Result updated and audited successfully!");
+                        MessageBox.Show("Cập nhật kết quả thành công!");
                         f.DialogResult = DialogResult.OK;
                         f.Close();
                     }
-                    catch (Exception ex) { MessageBox.Show("Error: " + ex.Message); }
+                    catch (Exception ex) { MessageBox.Show("Lỗi: " + ex.Message); }
                 };
                 f.Controls.Add(btnSave);
                 if (f.ShowDialog() == DialogResult.OK) 

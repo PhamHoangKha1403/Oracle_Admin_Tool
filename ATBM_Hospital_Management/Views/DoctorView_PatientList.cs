@@ -244,7 +244,7 @@ namespace ATBM_Hospital_Management.Views.Components
         private void SetActiveNav(Button active)
         {
             if (active == null || btnBenhNhan == null || btnHoSoBenhAn == null) return;
-            Button[] navButtons = { btnBenhNhan, btnHoSoBenhAn };
+            Button[] navButtons = { btnBenhNhan, btnHoSoBenhAn, btn_thongBao, btn_Toi };
 
             foreach (Button btn in navButtons)
             {
@@ -316,12 +316,18 @@ namespace ATBM_Hospital_Management.Views.Components
 
         private void button1_Click(object sender, EventArgs e)
         {
-
+            SetActiveNav(btn_thongBao);
+            // Truyền trang hiện tại làm parent
+            var notiPage = new DoctorView_Notification(this);
+            ShowPage(notiPage);
         }
 
         private void button2_Click(object sender, EventArgs e)
         {
-
+            SetActiveNav(btn_Toi);
+            // Truyền trang hiện tại làm parent
+            var infoPage = new DoctorView_MyInformation(this);
+            ShowPage(infoPage);
         }
     }
 }

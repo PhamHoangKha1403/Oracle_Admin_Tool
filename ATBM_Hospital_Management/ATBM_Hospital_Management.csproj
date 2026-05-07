@@ -103,6 +103,18 @@
     <Compile Include="Database\DbConnection.cs" />
     <Compile Include="Database\DbaService.cs" />
     <Compile Include="Database\AccountService.cs" />
+    <Compile Include="Views\DoctorView_MyInformation.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Views\DoctorView_MyInformation.Designer.cs">
+      <DependentUpon>DoctorView_MyInformation.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Views\DoctorView_Notification.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Views\DoctorView_Notification.Designer.cs">
+      <DependentUpon>DoctorView_Notification.cs</DependentUpon>
+    </Compile>
     <Compile Include="Views\KTV\ServiceRecordView.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -246,11 +258,17 @@
     <EmbeddedResource Include="Views\DoctorView_HealthRecordList.resx">
       <DependentUpon>DoctorView_HealthRecordList.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Views\DoctorView_Notification.resx">
+      <DependentUpon>DoctorView_Notification.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Views\DoctorView_PatientList.resx">
       <DependentUpon>DoctorView_PatientList.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Views\DoctorView_PatientDetail.resx">
       <DependentUpon>DoctorView_PatientDetail.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Views\DoctorView_MyInformation.resx">
+      <DependentUpon>DoctorView_MyInformation.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Views\RevokeView.resx">
       <DependentUpon>RevokeView.cs</DependentUpon>
