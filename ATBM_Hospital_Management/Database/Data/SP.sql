@@ -139,7 +139,9 @@ BEGIN
         NGAY_SINH,
         CCCD,
         QUE_QUAN,
-        SDT
+        SDT, 
+        VAI_TRO, 
+        CHUYEN_KHOA
     FROM NHAN_VIEN
     WHERE MA_NV = v_user;
     
@@ -336,38 +338,40 @@ END;
 /
 
 --BÁC SĨ CẬP NHẬT CÁC TRƯỜNG (CHẨNĐOÁN, ĐIỀUTRỊ, KẾTLUẬN) TRÊN HSBA MÀ MÌNH ĐIỀU TRỊ
-CREATE OR REPLACE PROCEDURE sp_BS_Update_HSBA (
-    p_ma_hsba   IN VARCHAR2,
-    p_chan_doan IN VARCHAR2,
-    p_dieu_tri  IN VARCHAR2,
-    p_ket_luan  IN VARCHAR2
-)
+CREATE OR REPLACE PROCEDURE sp_BS_Update_HSBA(
+    p_ma_hsba IN VARCHAR2,
+    p_chan_doan IN NVARCHAR2,
+    p_dieu_tri IN NVARCHAR2,
+    p_ket_luan IN NVARCHAR2
+) AUTHID CURRENT_USER
 AS
+    v_user VARCHAR2(100);
 BEGIN
-    UPDATE ADMIN_PH2.HSBA
+    v_user := SYS_CONTEXT('USERENV', 'SESSION_USER');
+    UPDATE HSBA
     SET CHAN_DOAN = p_chan_doan,
-        DIEU_TRI  = p_dieu_tri,
-        KET_LUAN  = p_ket_luan
-    WHERE MA_HSBA = p_ma_hsba;
-    
+        DIEU_TRI = p_dieu_tri,
+        KET_LUAN = p_ket_luan
+    WHERE MA_HSBA = p_ma_hsba
+      AND MA_BS = v_user;
     COMMIT;
-END;
+END sp_BS_Update_HSBA;
 /
 
 --BÁC SĨ THÊM DÒNG TRÊN HSBA_DV
-CREATE OR REPLACE PROCEDURE sp_BS_Insert_HSBADV (
+CREATE OR REPLACE PROCEDURE sp_BS_Insert_HSBADV(
     p_ma_hsba IN VARCHAR2,
     p_loai_dv IN VARCHAR2,
     p_ngay_dv IN DATE,
-    p_ma_ktv  IN VARCHAR2
+    p_ma_ktv IN VARCHAR2,
+    p_ket_qua IN NVARCHAR2 DEFAULT NULL
 ) AUTHID CURRENT_USER
 AS
 BEGIN
-    INSERT INTO ADMIN_PH2.HSBA_DV (MA_HSBA, LOAI_DV, NGAY_DV, MA_KTV, KET_QUA)
-    VALUES (p_ma_hsba, p_loai_dv, p_ngay_dv, p_ma_ktv, NULL);
-    
+    INSERT INTO HSBA_DV (MA_HSBA, LOAI_DV, NGAY_DV, MA_KTV, KET_QUA)
+    VALUES (p_ma_hsba, p_loai_dv, p_ngay_dv, p_ma_ktv, p_ket_qua);
     COMMIT;
-END;
+END sp_BS_Insert_HSBADV;
 /
 
 --BÁC SĨ XÓA DÒNG TRÊN HSBA_DV
@@ -402,6 +406,56 @@ BEGIN
 END;
 /
 
+CREATE OR REPLACE PROCEDURE sp_BS_Get_BENHNHAN_Detail (
+    p_ma_bn   IN VARCHAR2,
+    p_cursor  OUT SYS_REFCURSOR
+)
+AS
+BEGIN
+    OPEN p_cursor FOR
+        SELECT 
+            bn.MA_BN,
+            nv.HO_TEN,       
+            nv.PHAI,        
+            nv.NGAY_SINH,    
+            nv.CCCD,        
+            bn.SO_NHA,
+            bn.TEN_DUONG,
+            bn.QUAN_HUYEN,
+            bn.TINH_TP,
+            bn.TIEN_SU_BENH,
+            bn.TIEN_SU_BENH_GD, 
+            bn.DI_UNG_THUOC
+        FROM ADMIN_PH2.BENH_NHAN bn
+        JOIN ADMIN_PH2.NHAN_VIEN nv ON bn.MA_BN = nv.MA_NV
+        WHERE bn.MA_BN = p_ma_bn;
+END sp_BS_Get_BENHNHAN_Detail;
+/
+
+CREATE OR REPLACE PROCEDURE sp_BS_Select_HSBADV(
+    p_ma_hsba IN VARCHAR2 ,
+    p_cursor  OUT SYS_REFCURSOR
+)AUTHID CURRENT_USER
+    AS
+    BEGIN
+        OPEN p_cursor FOR
+            SELECT *
+            FROM ADMIN_PH2.HSBA_DV
+            WHERE MA_HSBA = p_ma_hsba;
+END;
+/
+
+CREATE OR REPLACE PROCEDURE sp_BS_Select_DONTHUOC( 
+    p_ma_hsba IN VARCHAR2,
+    p_cursor OUT SYS_REFCURSOR
+)
+AS
+BEGIN
+    OPEN p_cursor FOR
+        SELECT MA_HSBA, NGAY_DT, TEN_THUOC, LIEU_DUNG FROM DON_THUOC
+        WHERE MA_HSBA = p_ma_hsba;
+END;
+/
 --DPV SELECT HSBA
 CREATE OR REPLACE PROCEDURE sp_DPV_Select_HSBA
 (
@@ -465,161 +519,97 @@ END;
 
 --DPV UPDATE MAKTV TRONG HSBA_DV
 CREATE OR REPLACE PROCEDURE sp_DPV_Update_HSBADV(
-    p_MAHSBA VARCHAR2,
-    p_LOAIDV VARCHAR2,
-    p_NGAYDV DATE,
-    p_MAKTV VARCHAR2
+    p_MAHSBA IN VARCHAR2,
+    p_LOAIDV IN VARCHAR2,
+    p_NGAYDV IN DATE,
+    p_MAKTV IN VARCHAR2
 )
-AUTHID CURRENT_USER
 AS
 BEGIN
-    UPDATE ADMIN_PH2.HSBA_DV
+    UPDATE HSBA_DV
     SET MA_KTV = p_MAKTV
     WHERE MA_HSBA = p_MAHSBA
-    AND LOAI_DV = p_LOAIDV
-    AND TRUNC(NGAY_DV) = TRUNC(p_NGAYDV);
+      AND LOAI_DV = p_LOAIDV
+      AND TRUNC(NGAY_DV) = TRUNC(p_NGAYDV);
     COMMIT;
-END;
+END sp_DPV_Update_HSBADV;
 /
 
-CREATE OR REPLACE PROCEDURE sp_DPV_Select_BENHNHAN (
-    p_cursor OUT SYS_REFCURSOR
-)
-IS
+CREATE OR REPLACE PROCEDURE sp_DPV_Select_BENHNHAN(p_cursor OUT SYS_REFCURSOR)
+AS
 BEGIN
-    OPEN p_cursor FOR SELECT * FROM ADMIN_PH2.BENH_NHAN;
-END;
+    OPEN p_cursor FOR
+        SELECT b.MA_BN, n.HO_TEN, n.PHAI, n.NGAY_SINH, n.CCCD, n.SDT, n.CHUYEN_KHOA, b.SO_NHA, b.TEN_DUONG, b.QUAN_HUYEN, b.TINH_TP, b.TIEN_SU_BENH, b.TIEN_SU_BENH_GD, b.DI_UNG_THUOC
+        FROM BENH_NHAN b
+        JOIN NHAN_VIEN n ON b.MA_BN = n.MA_NV;
+END sp_DPV_Select_BENHNHAN;
 /
 
-CREATE OR REPLACE PROCEDURE sp_DPV_Insert_BENHNHAN (
-    p_ma_bn           IN VARCHAR2,
-    p_ho_ten          IN VARCHAR2,
-    p_phai            IN VARCHAR2 DEFAULT NULL,
-    p_ngay_sinh       IN DATE DEFAULT NULL,
-    p_cccd            IN VARCHAR2 DEFAULT NULL,
-    p_que_quan        IN VARCHAR2 DEFAULT NULL,
-    p_sdt             IN VARCHAR2 DEFAULT NULL,
-    p_chuyen_khoa     IN VARCHAR2 DEFAULT NULL,
-    p_so_nha          IN VARCHAR2 DEFAULT NULL,
-    p_ten_duong       IN VARCHAR2 DEFAULT NULL,
-    p_quan_huyen      IN VARCHAR2 DEFAULT NULL,
-    p_tinh_tp         IN VARCHAR2 DEFAULT NULL,
-    p_tien_su_benh    IN VARCHAR2 DEFAULT NULL,
-    p_tien_su_benh_gd IN VARCHAR2 DEFAULT NULL,
-    p_di_ung_thuoc    IN VARCHAR2 DEFAULT NULL
+CREATE OR REPLACE PROCEDURE sp_DPV_Insert_BENHNHAN(
+    p_MABN IN VARCHAR2,
+    p_HOTEN IN NVARCHAR2,
+    p_PHAI IN NVARCHAR2,
+    p_NGAYSINH IN DATE,
+    p_CCCD IN VARCHAR2,
+    p_SDT IN VARCHAR2,
+    p_SONHA IN NVARCHAR2,
+    p_TENDUONG IN NVARCHAR2,
+    p_QUANHUYEN IN NVARCHAR2,
+    p_TINHTP IN NVARCHAR2,
+    p_TIENSUBENH IN NVARCHAR2,
+    p_TIENSUBENHGD IN NVARCHAR2,
+    p_DIUNGTHUOC IN NVARCHAR2,
+    p_CHUYENKHOA IN VARCHAR2
 )
-IS
-    v_count NUMBER;
+AS
 BEGIN
-    IF p_ma_bn IS NULL OR TRIM(p_ma_bn) = '' THEN
-        RAISE_APPLICATION_ERROR(-20001, 'MA_BN khong duoc de trong.');
-    END IF;
+    INSERT INTO NHAN_VIEN (MA_NV, HO_TEN, PHAI, NGAY_SINH, CCCD, SDT, VAI_TRO, CHUYEN_KHOA)
+    VALUES (p_MABN, p_HOTEN, p_PHAI, p_NGAYSINH, p_CCCD, p_SDT, 'Bệnh nhân', p_CHUYENKHOA);
 
-    IF p_ho_ten IS NULL OR TRIM(p_ho_ten) = '' THEN
-        RAISE_APPLICATION_ERROR(-20002, 'HO_TEN khong duoc de trong.');
-    END IF;
-
-    SELECT COUNT(*) INTO v_count
-    FROM ADMIN_PH2.NHAN_VIEN
-    WHERE MA_NV = p_ma_bn;
-
-    IF v_count > 0 THEN
-        RAISE_APPLICATION_ERROR(-20003, 'MA_BN da ton tai trong NHAN_VIEN.');
-    END IF;
-
-    SELECT COUNT(*) INTO v_count
-    FROM ADMIN_PH2.BENH_NHAN
-    WHERE MA_BN = p_ma_bn;
-
-    IF v_count > 0 THEN
-        RAISE_APPLICATION_ERROR(-20004, 'Bệnh nhân đã tồn tại trong hệ thống.');
-    END IF;
-
-    INSERT INTO ADMIN_PH2.NHAN_VIEN (
-        MA_NV, HO_TEN, PHAI, NGAY_SINH, CCCD, QUE_QUAN, SDT, VAI_TRO, CHUYEN_KHOA
-    )
-    VALUES (
-        p_ma_bn,
-        p_ho_ten,
-        p_phai,
-        p_ngay_sinh,
-        p_cccd,
-        p_que_quan,
-        p_sdt,
-        'Bệnh nhân',
-        p_chuyen_khoa
-    );
-
-    INSERT INTO ADMIN_PH2.BENH_NHAN (
-        MA_BN, SO_NHA, TEN_DUONG, QUAN_HUYEN, TINH_TP,
-        TIEN_SU_BENH, TIEN_SU_BENH_GD, DI_UNG_THUOC
-    )
-    VALUES (
-        p_ma_bn,
-        p_so_nha,
-        p_ten_duong,
-        p_quan_huyen,
-        p_tinh_tp,
-        p_tien_su_benh,
-        p_tien_su_benh_gd,
-        p_di_ung_thuoc
-    );
-
+    INSERT INTO BENH_NHAN (MA_BN, SO_NHA, TEN_DUONG, QUAN_HUYEN, TINH_TP, TIEN_SU_BENH, TIEN_SU_BENH_GD, DI_UNG_THUOC)
+    VALUES (p_MABN, p_SONHA, p_TENDUONG, p_QUANHUYEN, p_TINHTP, p_TIENSUBENH, p_TIENSUBENHGD, p_DIUNGTHUOC);
     COMMIT;
-END;
+END sp_DPV_Insert_BENHNHAN;
 /
 
-CREATE OR REPLACE PROCEDURE sp_DPV_Update_BENHNHAN (
-    p_ma_bn           IN VARCHAR2,
-    p_so_nha          IN VARCHAR2,
-    p_ten_duong       IN VARCHAR2,
-    p_quan_huyen      IN VARCHAR2,
-    p_tinh_tp         IN VARCHAR2,
-    p_tien_su_benh    IN VARCHAR2,
-    p_tien_su_benh_gd IN VARCHAR2,
-    p_di_ung_thuoc    IN VARCHAR2,
-    p_ho_ten          IN VARCHAR2 DEFAULT NULL,
-    p_phai            IN VARCHAR2 DEFAULT NULL,
-    p_ngay_sinh       IN DATE DEFAULT NULL,
-    p_cccd            IN VARCHAR2 DEFAULT NULL,
-    p_que_quan        IN VARCHAR2 DEFAULT NULL,
-    p_sdt             IN VARCHAR2 DEFAULT NULL,
-    p_chuyen_khoa     IN VARCHAR2 DEFAULT NULL
+CREATE OR REPLACE PROCEDURE sp_DPV_Update_BENHNHAN(
+    p_MABN IN VARCHAR2,
+    p_HOTEN IN NVARCHAR2,
+    p_PHAI IN NVARCHAR2,
+    p_NGAYSINH IN DATE,
+    p_CCCD IN VARCHAR2,
+    p_SDT IN VARCHAR2,
+    p_SONHA IN NVARCHAR2,
+    p_TENDUONG IN NVARCHAR2,
+    p_QUANHUYEN IN NVARCHAR2,
+    p_TINHTP IN NVARCHAR2,
+    p_TIENSUBENH IN NVARCHAR2,
+    p_TIENSUBENHGD IN NVARCHAR2,
+    p_DIUNGTHUOC IN NVARCHAR2,
+    p_CHUYENKHOA IN VARCHAR2
 )
-IS
-    v_nv_rows NUMBER := 0;
-    v_bn_rows NUMBER := 0;
+AS
 BEGIN
-    UPDATE ADMIN_PH2.NHAN_VIEN
-    SET HO_TEN = NVL(p_ho_ten, HO_TEN),
-        PHAI = NVL(p_phai, PHAI),
-        NGAY_SINH = NVL(p_ngay_sinh, NGAY_SINH),
-        CCCD = NVL(p_cccd, CCCD),
-        QUE_QUAN = NVL(p_que_quan, QUE_QUAN),
-        SDT = NVL(p_sdt, SDT),
-        CHUYEN_KHOA = NVL(p_chuyen_khoa, CHUYEN_KHOA)
-    WHERE MA_NV = p_ma_bn;
+    UPDATE NHAN_VIEN
+    SET HO_TEN = p_HOTEN,
+        PHAI = p_PHAI,
+        NGAY_SINH = p_NGAYSINH,
+        CCCD = p_CCCD,
+        SDT = p_SDT,
+        CHUYEN_KHOA = p_CHUYENKHOA
+    WHERE MA_NV = p_MABN;
 
-    v_nv_rows := SQL%ROWCOUNT;
-
-    UPDATE ADMIN_PH2.BENH_NHAN
-    SET SO_NHA = p_so_nha,
-        TEN_DUONG = p_ten_duong,
-        QUAN_HUYEN = p_quan_huyen,
-        TINH_TP = p_tinh_tp,
-        TIEN_SU_BENH = p_tien_su_benh,
-        TIEN_SU_BENH_GD = p_tien_su_benh_gd,
-        DI_UNG_THUOC = p_di_ung_thuoc
-    WHERE MA_BN = p_ma_bn;
-    
-    v_bn_rows := SQL%ROWCOUNT;
-    
-    IF v_nv_rows = 0 OR v_bn_rows = 0 THEN
-        RAISE_APPLICATION_ERROR(-20002, 'Không tìm thấy bệnh nhân hoặc bạn không có quyền cập nhật bệnh nhân này.');
-    ELSE
-        COMMIT;
-    END IF;
-END;
+    UPDATE BENH_NHAN
+    SET SO_NHA = p_SONHA,
+        TEN_DUONG = p_TENDUONG,
+        QUAN_HUYEN = p_QUANHUYEN,
+        TINH_TP = p_TINHTP,
+        TIEN_SU_BENH = p_TIENSUBENH,
+        TIEN_SU_BENH_GD = p_TIENSUBENHGD,
+        DI_UNG_THUOC = p_DIUNGTHUOC
+    WHERE MA_BN = p_MABN;
+    COMMIT;
+END sp_DPV_Update_BENHNHAN;
 /
 
 -- KTV chỉ xem được các dịch vụ mà mình thực hiện trên HSBA_DV
@@ -670,6 +660,42 @@ BEGIN
 END;
 /
 
+-- sp_KTV_Update_KETQUA
+CREATE OR REPLACE PROCEDURE sp_KTV_Update_KETQUA(
+    p_MAHSBA IN VARCHAR2,
+    p_LOAIDV IN VARCHAR2,
+    p_NGAYDV IN DATE,
+    p_KETQUA IN NVARCHAR2
+)
+AS
+    v_user VARCHAR2(100);
+    v_old_ketqua VARCHAR2(500);
+BEGIN
+    v_user := SYS_CONTEXT('USERENV', 'SESSION_USER');
+    
+    -- Lấy kết quả cũ để ghi audit log
+    SELECT KET_QUA INTO v_old_ketqua
+    FROM HSBA_DV
+    WHERE MA_HSBA = p_MAHSBA
+      AND LOAI_DV = p_LOAIDV
+      AND NGAY_DV = p_NGAYDV
+      AND MA_KTV = v_user;
+      
+    -- Cập nhật kết quả mới
+    UPDATE HSBA_DV
+    SET KET_QUA = p_KETQUA
+    WHERE MA_HSBA = p_MAHSBA
+      AND LOAI_DV = p_LOAIDV
+      AND NGAY_DV = p_NGAYDV
+      AND MA_KTV = v_user;
+      
+    -- Ghi Audit Log trực tiếp trong SP
+    INSERT INTO AUDIT_HSBADV_LOG (MAHSBA, LOAIDV, NGAYDV, MAKTV, OLD_KETQUA, NEW_KETQUA)
+    VALUES (p_MAHSBA, p_LOAIDV, p_NGAYDV, v_user, v_old_ketqua, p_KETQUA);
+      
+    COMMIT;
+END sp_KTV_Update_KETQUA;
+/
 
 -- sp_KTV_Select_AuditLog
 CREATE OR REPLACE PROCEDURE sp_KTV_Select_AuditLog(p_cursor OUT SYS_REFCURSOR)
@@ -685,7 +711,7 @@ BEGIN
 END sp_KTV_Select_AuditLog;
 /
 
---=====================
+
 -- sp đưa bảng audit lên UI
 CREATE OR REPLACE PROCEDURE SP_GET_AUDIT_FGA (
     p_cursor OUT SYS_REFCURSOR
@@ -693,7 +719,6 @@ CREATE OR REPLACE PROCEDURE SP_GET_AUDIT_FGA (
 AS
 BEGIN
     OPEN p_cursor FOR
-
         SELECT *
         FROM (
 
@@ -810,6 +835,7 @@ CREATE OR REPLACE PUBLIC SYNONYM sp_BS_Update_HSBA FOR ADMIN_PH2.sp_BS_Update_HS
 CREATE OR REPLACE PUBLIC SYNONYM sp_BS_Insert_HSBADV FOR ADMIN_PH2.sp_BS_Insert_HSBADV;
 CREATE OR REPLACE PUBLIC SYNONYM sp_BS_Delete_HSBADV FOR ADMIN_PH2.sp_BS_Delete_HSBADV;
 
+
 -- KTV
 CREATE OR REPLACE PUBLIC SYNONYM sp_KTV_Select_HSBADV FOR ADMIN_PH2.sp_KTV_Select_HSBADV;
 CREATE OR REPLACE PUBLIC SYNONYM sp_KTV_Update_HSBADV FOR ADMIN_PH2.sp_KTV_Update_HSBADV;
@@ -826,6 +852,8 @@ CREATE OR REPLACE PUBLIC SYNONYM SP_ENABLE_ALL_AUDIT FOR ADMIN_PH2.SP_ENABLE_ALL
 --THÔNG BÁO
 CREATE OR REPLACE PUBLIC SYNONYM SP_GET_THONGBAO FOR ADMIN_PH2.SP_GET_THONGBAO;
 
+--AUDIT
+CREATE OR REPLACE PUBLIC SYNONYM SP_GET_AUDIT_FGA FOR ADMIN_PH2.SP_GET_AUDIT_FGA;
 -- GRANT EXECUTE PROCEDURE
 
 -- NHÂN VIÊN (BS + DPV + KTV)
@@ -860,11 +888,17 @@ GRANT EXECUTE ON ADMIN_PH2.sp_BS_Update_HSBA TO RL_BACSI;
 GRANT EXECUTE ON ADMIN_PH2.sp_BS_Insert_HSBADV TO RL_BACSI;
 GRANT EXECUTE ON ADMIN_PH2.sp_BS_Delete_HSBADV TO RL_BACSI;
 GRANT EXECUTE ON ADMIN_PH2.sp_BS_Select_HSBA_Theo_BN to RL_BACSI;
+GRANT EXECUTE ON ADMIN_PH2.sp_BS_Get_BENHNHAN_Detail to RL_BACSI;
+GRANT EXECUTE ON ADMIN_PH2.sp_BS_Select_DONTHUOC to RL_BACSI;
+GRANT EXECUTE ON ADMIN_PH2.sp_BS_Select_HSBADV to RL_BACSI;
+GRANT EXECUTE ON sp_BS_Update_HSBA TO RL_BACSI;
+GRANT EXECUTE ON sp_BS_Insert_HSBADV TO RL_BACSI;
 
 -- KỸ THUẬT VIÊN
 GRANT EXECUTE ON ADMIN_PH2.sp_KTV_Select_HSBADV TO RL_KYTHUATVIEN;
 GRANT EXECUTE ON ADMIN_PH2.sp_KTV_Update_HSBADV TO RL_KYTHUATVIEN;
 GRANT EXECUTE ON ADMIN_PH2.sp_KTV_Select_AuditLog TO RL_KYTHUATVIEN;
+GRANT EXECUTE ON ADMIN_PH2.sp_KTV_Update_KETQUA TO RL_KYTHUATVIEN;
 GRANT SELECT, INSERT ON AUDIT_HSBADV_LOG TO RL_KYTHUATVIEN;
 GRANT SELECT, UPDATE ON ADMIN_PH2.HSBA_DV TO RL_KYTHUATVIEN;
 
@@ -875,3 +909,9 @@ GRANT EXECUTE ON ADMIN_PH2.sp_dba_createall_user TO RL_DIEUPHOIVIEN;
 --THÔNG BÁO
 GRANT EXECUTE ON ADMIN_PH2.SP_GET_THONGBAO TO RL_BACSI, RL_KYTHUATVIEN, RL_DIEUPHOIVIEN;
 
+-- KHOA GRANTS & SYNONYM
+GRANT SELECT ON ADMIN_PH2.KHOA TO RL_DIEUPHOIVIEN;
+GRANT SELECT ON ADMIN_PH2.KHOA TO RL_BACSI;
+CREATE OR REPLACE PUBLIC SYNONYM KHOA FOR ADMIN_PH2.KHOA;
+
+COMMIT;

@@ -248,8 +248,8 @@ namespace ATBM_Hospital_Management.Views.Components
                 if (dgvHSBA.Columns.Contains("MA_KHOA")) dgvHSBA.Columns["MA_KHOA"].HeaderText = "Mã khoa";
                 if (dgvHSBA.Columns.Contains("KET_LUAN")) dgvHSBA.Columns["KET_LUAN"].HeaderText = "Kết luận";
             };
-            splitContainer.Panel1.Controls.Add(dgvHSBA);
             splitContainer.Panel1.Controls.Add(lbl1);
+            splitContainer.Panel1.Controls.Add(dgvHSBA);
 
             Label lbl2 = new Label { Text = "Dịch vụ của Hồ sơ bệnh án", Font = new Font("Segoe UI Semibold", 12F), Dock = DockStyle.Top, Padding = new Padding(0, 0, 0, 10) };
             dgvHSBADV = new DataGridView
@@ -270,8 +270,8 @@ namespace ATBM_Hospital_Management.Views.Components
                 if (dgvHSBADV.Columns.Contains("KET_QUA")) dgvHSBADV.Columns["KET_QUA"].HeaderText = "Kết quả";
                 if (dgvHSBADV.Columns.Contains("LOAI_DV")) dgvHSBADV.Columns["LOAI_DV"].HeaderText = "Loại DV";
             };
-            splitContainer.Panel2.Controls.Add(dgvHSBADV);
             splitContainer.Panel2.Controls.Add(lbl2);
+            splitContainer.Panel2.Controls.Add(dgvHSBADV);
 
             tabHSBA.Controls.Add(splitContainer);
         }
@@ -498,7 +498,7 @@ namespace ATBM_Hospital_Management.Views.Components
         private TextBox AddField(Form form, string label, string defaultValue, ref int y, bool isReadOnly = false)
         {
             Label lbl = new Label { Text = label, Location = new Point(20, y + 3), AutoSize = true };
-            TextBox txt = new TextBox { Text = defaultValue, Location = new Point(140, y), Size = new Size(210, 25), ReadOnly = isReadOnly };
+            TextBox txt = new TextBox { Text = defaultValue, Location = new Point(160, y), Size = new Size(230, 25), ReadOnly = isReadOnly };
             form.Controls.Add(lbl);
             form.Controls.Add(txt);
             y += 40;
@@ -510,8 +510,8 @@ namespace ATBM_Hospital_Management.Views.Components
             Label lbl = new Label { Text = label, Location = new Point(20, y + 3), AutoSize = true };
             ComboBox cmb = new ComboBox 
             { 
-                Location = new Point(140, y), 
-                Size = new Size(210, 25),
+                Location = new Point(160, y), 
+                Size = new Size(230, 25),
                 DropDownStyle = ComboBoxStyle.DropDownList,
                 DataSource = dtSource,
                 ValueMember = valueMember,
@@ -520,6 +520,30 @@ namespace ATBM_Hospital_Management.Views.Components
             if (!string.IsNullOrEmpty(selectedValue))
             {
                 cmb.SelectedValue = selectedValue;
+            }
+            form.Controls.Add(lbl);
+            form.Controls.Add(cmb);
+            y += 40;
+            return cmb;
+        }
+
+        private ComboBox AddSimpleComboBoxField(Form form, string label, string selectedValue, string[] items, ref int y)
+        {
+            Label lbl = new Label { Text = label, Location = new Point(20, y + 3), AutoSize = true };
+            ComboBox cmb = new ComboBox 
+            { 
+                Location = new Point(160, y), 
+                Size = new Size(230, 25),
+                DropDownStyle = ComboBoxStyle.DropDownList
+            };
+            cmb.Items.AddRange(items);
+            if (!string.IsNullOrEmpty(selectedValue))
+            {
+                cmb.SelectedItem = selectedValue;
+            }
+            else if (items.Length > 0)
+            {
+                cmb.SelectedIndex = 0;
             }
             form.Controls.Add(lbl);
             form.Controls.Add(cmb);
@@ -572,75 +596,12 @@ namespace ATBM_Hospital_Management.Views.Components
 
         private void BtnAddPatient_Click(object sender, EventArgs e)
         {
-            using (Form f = new Form() { Text = "Thêm bệnh nhân", Size = new Size(400, 750), StartPosition = FormStartPosition.CenterParent })
+            using (var form = new DPV_AddPatientForm(dgvPatient.DataSource as DataTable))
             {
-                int y = 20;
-                string newMaBN = GenerateNextId(dgvPatient.DataSource as DataTable, "MA_BN", "BN", "D6");
-
-                TextBox txtMaBN = AddField(f, "Mã BN:", newMaBN, ref y, true);
-                TextBox txtHoTen = AddField(f, "Họ tên:", "", ref y);
-                TextBox txtPhai = AddField(f, "Phái:", "", ref y);
-                
-                Label lblNgaySinh = new Label { Text = "Ngày sinh:", Location = new Point(20, y + 3), AutoSize = true };
-                DateTimePicker dtpNgaySinh = new DateTimePicker { Location = new Point(140, y), Size = new Size(210, 25), Format = DateTimePickerFormat.Short };
-                f.Controls.Add(lblNgaySinh); f.Controls.Add(dtpNgaySinh); y += 40;
-                
-                TextBox txtCCCD = AddField(f, "CCCD:", "", ref y);
-                TextBox txtSDT = AddField(f, "SĐT:", "", ref y);
-                
-                TextBox txtSoNha = AddField(f, "Số nhà:", "", ref y);
-                TextBox txtTenDuong = AddField(f, "Tên đường:", "", ref y);
-                TextBox txtQuanHuyen = AddField(f, "Quận/Huyện:", "", ref y);
-                TextBox txtTinhTp = AddField(f, "Tỉnh/TP:", "", ref y);
-                TextBox txtTienSu = AddField(f, "Tiền sử bệnh:", "", ref y);
-                TextBox txtTienSuGD = AddField(f, "TS bệnh GĐ:", "", ref y);
-                TextBox txtDiUng = AddField(f, "Dị ứng thuốc:", "", ref y);
-                
-                DataTable dtKhoa = null;
-                try { dtKhoa = DbConnection.Instance.ExecuteQuery("SELECT MA_KHOA, TEN_KHOA FROM KHOA", null, CommandType.Text); } catch { }
-                ComboBox cmbChuyenKhoa = null;
-                TextBox txtChuyenKhoa = null;
-                if (dtKhoa != null && dtKhoa.Rows.Count > 0)
+                if (form.ShowDialog() == DialogResult.OK)
                 {
-                    cmbChuyenKhoa = AddComboBoxField(f, "Chuyên khoa:", "", dtKhoa, "MA_KHOA", "TEN_KHOA", ref y);
+                    LoadPatientData();
                 }
-                else
-                {
-                    txtChuyenKhoa = AddField(f, "Mã chuyên khoa:", "", ref y);
-                }
-
-                Button btnSave = new Button { Text = "Save", Location = new Point(140, y + 10), Size = new Size(100, 35) };
-                btnSave.Click += (s, args) =>
-                {
-                    try
-                    {
-                        var parameters = new Oracle.ManagedDataAccess.Client.OracleParameter[]
-                        {
-                            new Oracle.ManagedDataAccess.Client.OracleParameter("p_MABN", txtMaBN.Text),
-                            new Oracle.ManagedDataAccess.Client.OracleParameter("p_HOTEN", txtHoTen.Text),
-                            new Oracle.ManagedDataAccess.Client.OracleParameter("p_PHAI", txtPhai.Text),
-                            new Oracle.ManagedDataAccess.Client.OracleParameter("p_NGAYSINH", dtpNgaySinh.Value),
-                            new Oracle.ManagedDataAccess.Client.OracleParameter("p_CCCD", txtCCCD.Text),
-                            new Oracle.ManagedDataAccess.Client.OracleParameter("p_SDT", txtSDT.Text),
-                            new Oracle.ManagedDataAccess.Client.OracleParameter("p_SONHA", txtSoNha.Text),
-                            new Oracle.ManagedDataAccess.Client.OracleParameter("p_TENDUONG", txtTenDuong.Text),
-                            new Oracle.ManagedDataAccess.Client.OracleParameter("p_QUANHUYEN", txtQuanHuyen.Text),
-                            new Oracle.ManagedDataAccess.Client.OracleParameter("p_TINHTP", txtTinhTp.Text),
-                            new Oracle.ManagedDataAccess.Client.OracleParameter("p_TIENSUBENH", txtTienSu.Text),
-                            new Oracle.ManagedDataAccess.Client.OracleParameter("p_TIENSUBENHGD", txtTienSuGD.Text),
-                            new Oracle.ManagedDataAccess.Client.OracleParameter("p_DIUNGTHUOC", txtDiUng.Text),
-                            new Oracle.ManagedDataAccess.Client.OracleParameter("p_CHUYENKHOA", cmbChuyenKhoa != null ? cmbChuyenKhoa.SelectedValue?.ToString() : (string.IsNullOrEmpty(txtChuyenKhoa.Text) ? (object)DBNull.Value : txtChuyenKhoa.Text))
-                        };
-
-                        DbConnection.Instance.ExecuteNonQuery("BEGIN sp_DPV_Insert_BENHNHAN(:p_MABN, :p_HOTEN, :p_PHAI, :p_NGAYSINH, :p_CCCD, :p_SDT, :p_SONHA, :p_TENDUONG, :p_QUANHUYEN, :p_TINHTP, :p_TIENSUBENH, :p_TIENSUBENHGD, :p_DIUNGTHUOC, :p_CHUYENKHOA); END;", parameters, CommandType.Text);
-                        MessageBox.Show("Thêm thành công!");
-                        f.DialogResult = DialogResult.OK;
-                        f.Close();
-                    }
-                    catch (Exception ex) { MessageBox.Show("Lỗi: " + ex.Message); }
-                };
-                f.Controls.Add(btnSave);
-                if (f.ShowDialog() == DialogResult.OK) LoadPatientData();
             }
         }
 
@@ -648,152 +609,30 @@ namespace ATBM_Hospital_Management.Views.Components
         {
             if (dgvPatient.SelectedRows.Count == 0) { MessageBox.Show("Vui lòng chọn bệnh nhân."); return; }
             var row = dgvPatient.SelectedRows[0];
-            DataRowView drv = row.DataBoundItem as DataRowView;
 
-            using (Form f = new Form() { Text = "Cập nhật bệnh nhân", Size = new Size(400, 750), StartPosition = FormStartPosition.CenterParent })
+            using (var form = new DPV_EditPatientForm(row))
             {
-                int y = 20;
-                TextBox txtMaBN = AddField(f, "Mã BN:", row.Cells["MA_BN"].Value?.ToString(), ref y, true);
-                
-                string hoTen = drv != null ? drv["HO_TEN"]?.ToString() : row.Cells["HO_TEN"].Value?.ToString();
-                TextBox txtHoTen = AddField(f, "Họ tên:", hoTen, ref y);
-                
-                string phai = drv != null ? drv["PHAI"]?.ToString() : row.Cells["PHAI"].Value?.ToString();
-                TextBox txtPhai = AddField(f, "Phái:", phai, ref y);
-                
-                DateTime dtNgaySinh;
-                string nsStr = drv != null ? drv["NGAY_SINH"]?.ToString() : row.Cells["NGAY_SINH"].Value?.ToString();
-                DateTime.TryParse(nsStr, out dtNgaySinh);
-                Label lblNgaySinh = new Label { Text = "Ngày sinh:", Location = new Point(20, y + 3), AutoSize = true };
-                DateTimePicker dtpNgaySinh = new DateTimePicker { Location = new Point(140, y), Size = new Size(210, 25), Format = DateTimePickerFormat.Short, Value = dtNgaySinh > DateTime.MinValue ? dtNgaySinh : DateTime.Now };
-                f.Controls.Add(lblNgaySinh); f.Controls.Add(dtpNgaySinh); y += 40;
-                
-                string cccd = drv != null ? drv["CCCD"]?.ToString() : row.Cells["CCCD"].Value?.ToString();
-                TextBox txtCCCD = AddField(f, "CCCD:", cccd, ref y);
-                
-                string sdt = drv != null ? drv["SDT"]?.ToString() : row.Cells["SDT"].Value?.ToString();
-                TextBox txtSDT = AddField(f, "SĐT:", sdt, ref y);
-                
-                TextBox txtSoNha = AddField(f, "Số nhà:", row.Cells["SO_NHA"].Value?.ToString(), ref y);
-                TextBox txtTenDuong = AddField(f, "Tên đường:", row.Cells["TEN_DUONG"].Value?.ToString(), ref y);
-                TextBox txtQuanHuyen = AddField(f, "Quận/Huyện:", row.Cells["QUAN_HUYEN"].Value?.ToString(), ref y);
-                TextBox txtTinhTp = AddField(f, "Tỉnh/TP:", row.Cells["TINH_TP"].Value?.ToString(), ref y);
-                TextBox txtTienSu = AddField(f, "Tiền sử bệnh:", row.Cells["TIEN_SU_BENH"].Value?.ToString(), ref y);
-                TextBox txtTienSuGD = AddField(f, "TS bệnh GĐ:", row.Cells["TIEN_SU_BENH_GD"].Value?.ToString(), ref y);
-                TextBox txtDiUng = AddField(f, "Dị ứng thuốc:", row.Cells["DI_UNG_THUOC"].Value?.ToString(), ref y);
-                
-                string chuyenKhoa = drv != null ? drv["CHUYEN_KHOA"]?.ToString() : "";
-                DataTable dtKhoa = null;
-                try { dtKhoa = DbConnection.Instance.ExecuteQuery("SELECT MA_KHOA, TEN_KHOA FROM KHOA", null, CommandType.Text); } catch { }
-                ComboBox cmbChuyenKhoa = null;
-                TextBox txtChuyenKhoa = null;
-                if (dtKhoa != null && dtKhoa.Rows.Count > 0)
+                if (form.ShowDialog() == DialogResult.OK)
                 {
-                    cmbChuyenKhoa = AddComboBoxField(f, "Chuyên khoa:", chuyenKhoa, dtKhoa, "MA_KHOA", "TEN_KHOA", ref y);
+                    LoadPatientData();
                 }
-                else
-                {
-                    txtChuyenKhoa = AddField(f, "Mã chuyên khoa:", chuyenKhoa, ref y);
-                }
-
-                Button btnSave = new Button { Text = "Update", Location = new Point(140, y + 10), Size = new Size(100, 35) };
-                btnSave.Click += (s, args) =>
-                {
-                    try
-                    {
-                        var parameters = new Oracle.ManagedDataAccess.Client.OracleParameter[]
-                        {
-                            new Oracle.ManagedDataAccess.Client.OracleParameter("p_MABN", txtMaBN.Text),
-                            new Oracle.ManagedDataAccess.Client.OracleParameter("p_HOTEN", txtHoTen.Text),
-                            new Oracle.ManagedDataAccess.Client.OracleParameter("p_PHAI", txtPhai.Text),
-                            new Oracle.ManagedDataAccess.Client.OracleParameter("p_NGAYSINH", dtpNgaySinh.Value),
-                            new Oracle.ManagedDataAccess.Client.OracleParameter("p_CCCD", txtCCCD.Text),
-                            new Oracle.ManagedDataAccess.Client.OracleParameter("p_SDT", txtSDT.Text),
-                            new Oracle.ManagedDataAccess.Client.OracleParameter("p_SONHA", txtSoNha.Text),
-                            new Oracle.ManagedDataAccess.Client.OracleParameter("p_TENDUONG", txtTenDuong.Text),
-                            new Oracle.ManagedDataAccess.Client.OracleParameter("p_QUANHUYEN", txtQuanHuyen.Text),
-                            new Oracle.ManagedDataAccess.Client.OracleParameter("p_TINHTP", txtTinhTp.Text),
-                            new Oracle.ManagedDataAccess.Client.OracleParameter("p_TIENSUBENH", txtTienSu.Text),
-                            new Oracle.ManagedDataAccess.Client.OracleParameter("p_TIENSUBENHGD", txtTienSuGD.Text),
-                            new Oracle.ManagedDataAccess.Client.OracleParameter("p_DIUNGTHUOC", txtDiUng.Text),
-                            new Oracle.ManagedDataAccess.Client.OracleParameter("p_CHUYENKHOA", cmbChuyenKhoa != null ? cmbChuyenKhoa.SelectedValue?.ToString() : (string.IsNullOrEmpty(txtChuyenKhoa.Text) ? (object)DBNull.Value : txtChuyenKhoa.Text))
-                        };
-
-                        DbConnection.Instance.ExecuteNonQuery("BEGIN sp_DPV_Update_BENHNHAN(:p_MABN, :p_HOTEN, :p_PHAI, :p_NGAYSINH, :p_CCCD, :p_SDT, :p_SONHA, :p_TENDUONG, :p_QUANHUYEN, :p_TINHTP, :p_TIENSUBENH, :p_TIENSUBENHGD, :p_DIUNGTHUOC, :p_CHUYENKHOA); END;", parameters, CommandType.Text);
-                        MessageBox.Show("Cập nhật thành công!");
-                        f.DialogResult = DialogResult.OK;
-                        f.Close();
-                    }
-                    catch (Exception ex) { MessageBox.Show("Lỗi: " + ex.Message); }
-                };
-                f.Controls.Add(btnSave);
-                if (f.ShowDialog() == DialogResult.OK) LoadPatientData();
             }
         }
 
         private void BtnAddHSBA_Click(object sender, EventArgs e)
         {
-            using (Form f = new Form() { Text = "Thêm Hồ sơ bệnh án", Size = new Size(400, 520), StartPosition = FormStartPosition.CenterParent })
+            string defaultMaBN = "";
+            if (dgvPatient != null && dgvPatient.SelectedRows.Count > 0)
             {
-                int y = 20;
-                string newMaHSBA = GenerateNextId(dgvHSBA.DataSource as DataTable, "MA_HSBA", "HS", "D6");
+                defaultMaBN = dgvPatient.SelectedRows[0].Cells["MA_BN"].Value?.ToString() ?? "";
+            }
 
-                string defaultMaBN = "";
-                if (dgvPatient != null && dgvPatient.SelectedRows.Count > 0) {
-                    defaultMaBN = dgvPatient.SelectedRows[0].Cells["MA_BN"].Value?.ToString() ?? "";
-                }
-
-                TextBox txtMaHSBA = AddField(f, "Mã HSBA:", newMaHSBA, ref y, true);
-                TextBox txtMaBN = AddField(f, "Mã BN:", defaultMaBN, ref y);
-                
-                Label lblNgay = new Label { Text = "Ngày khám:", Location = new Point(20, y + 3), AutoSize = true };
-                DateTimePicker dtpNgay = new DateTimePicker { Location = new Point(140, y), Size = new Size(210, 25), Format = DateTimePickerFormat.Short };
-                f.Controls.Add(lblNgay); f.Controls.Add(dtpNgay); y += 40;
-
-                TextBox txtChanDoan = AddField(f, "Chẩn đoán:", "", ref y);
-                TextBox txtDieuTri = AddField(f, "Điều trị:", "", ref y);
-                TextBox txtMaBS = AddField(f, "Mã BS:", "", ref y);
-                
-                DataTable dtKhoa = null;
-                try { dtKhoa = DbConnection.Instance.ExecuteQuery("SELECT MA_KHOA, TEN_KHOA FROM KHOA", null, CommandType.Text); } catch { }
-                ComboBox cmbMaKhoa = null;
-                TextBox txtMaKhoa = null;
-                if (dtKhoa != null && dtKhoa.Rows.Count > 0)
+            using (var form = new DPV_AddHSBAForm(dgvHSBA.DataSource as DataTable, defaultMaBN))
+            {
+                if (form.ShowDialog() == DialogResult.OK)
                 {
-                    cmbMaKhoa = AddComboBoxField(f, "Khoa khám:", "", dtKhoa, "MA_KHOA", "TEN_KHOA", ref y);
+                    LoadHSBAData();
                 }
-                else
-                {
-                    txtMaKhoa = AddField(f, "Mã khoa:", "", ref y);
-                }
-                
-                TextBox txtKetLuan = AddField(f, "Kết luận:", "", ref y);
-
-                Button btnSave = new Button { Text = "Save", Location = new Point(140, y + 10), Size = new Size(100, 35) };
-                btnSave.Click += (s, args) =>
-                {
-                    try
-                    {
-                        var parameters = new Oracle.ManagedDataAccess.Client.OracleParameter[]
-                        {
-                            new Oracle.ManagedDataAccess.Client.OracleParameter("p_MAHSBA", txtMaHSBA.Text),
-                            new Oracle.ManagedDataAccess.Client.OracleParameter("p_MABN", txtMaBN.Text),
-                            new Oracle.ManagedDataAccess.Client.OracleParameter("p_NGAY", dtpNgay.Value),
-                            new Oracle.ManagedDataAccess.Client.OracleParameter("p_CHANDOAN", txtChanDoan.Text),
-                            new Oracle.ManagedDataAccess.Client.OracleParameter("p_DIEUTRI", txtDieuTri.Text),
-                            new Oracle.ManagedDataAccess.Client.OracleParameter("p_MABS", txtMaBS.Text),
-                            new Oracle.ManagedDataAccess.Client.OracleParameter("p_MAKHOA", cmbMaKhoa != null ? cmbMaKhoa.SelectedValue?.ToString() : txtMaKhoa.Text),
-                            new Oracle.ManagedDataAccess.Client.OracleParameter("p_KETLUAN", txtKetLuan.Text)
-                        };
-                        DbConnection.Instance.ExecuteNonQuery("BEGIN sp_DPV_Insert_HSBA(:p_MAHSBA, :p_MABN, :p_NGAY, :p_CHANDOAN, :p_DIEUTRI, :p_MABS, :p_MAKHOA, :p_KETLUAN); END;", parameters, CommandType.Text);
-                        MessageBox.Show("Thêm thành công!");
-                        f.DialogResult = DialogResult.OK;
-                        f.Close();
-                    }
-                    catch (Exception ex) { MessageBox.Show("Lỗi: " + ex.Message); }
-                };
-                f.Controls.Add(btnSave);
-                if (f.ShowDialog() == DialogResult.OK) LoadHSBAData();
             }
         }
 
@@ -802,47 +641,12 @@ namespace ATBM_Hospital_Management.Views.Components
             if (dgvHSBA.SelectedRows.Count == 0) { MessageBox.Show("Vui lòng chọn hồ sơ."); return; }
             var row = dgvHSBA.SelectedRows[0];
 
-            using (Form f = new Form() { Text = "Cập nhật HSBA", Size = new Size(400, 300), StartPosition = FormStartPosition.CenterParent })
+            using (var form = new DPV_EditHSBAForm(row))
             {
-                int y = 20;
-                TextBox txtMaHSBA = AddField(f, "Mã HSBA:", row.Cells["MA_HSBA"].Value?.ToString(), ref y, true);
-                
-                string currentKhoa = row.Cells["MA_KHOA"].Value?.ToString();
-                DataTable dtKhoa = null;
-                try { dtKhoa = DbConnection.Instance.ExecuteQuery("SELECT MA_KHOA, TEN_KHOA FROM KHOA", null, CommandType.Text); } catch { }
-                ComboBox cmbMaKhoa = null;
-                TextBox txtMaKhoa = null;
-                if (dtKhoa != null && dtKhoa.Rows.Count > 0)
+                if (form.ShowDialog() == DialogResult.OK)
                 {
-                    cmbMaKhoa = AddComboBoxField(f, "Khoa khám:", currentKhoa, dtKhoa, "MA_KHOA", "TEN_KHOA", ref y);
+                    LoadHSBAData();
                 }
-                else
-                {
-                    txtMaKhoa = AddField(f, "Mã khoa:", currentKhoa, ref y);
-                }
-                
-                TextBox txtMaBS = AddField(f, "Mã BS:", row.Cells["MA_BS"].Value?.ToString(), ref y);
-
-                Button btnSave = new Button { Text = "Update", Location = new Point(140, y + 10), Size = new Size(100, 35) };
-                btnSave.Click += (s, args) =>
-                {
-                    try
-                    {
-                        var parameters = new Oracle.ManagedDataAccess.Client.OracleParameter[]
-                        {
-                            new Oracle.ManagedDataAccess.Client.OracleParameter("p_MAHSBA", txtMaHSBA.Text),
-                            new Oracle.ManagedDataAccess.Client.OracleParameter("p_MAKHOA", cmbMaKhoa != null ? cmbMaKhoa.SelectedValue?.ToString() : txtMaKhoa.Text),
-                            new Oracle.ManagedDataAccess.Client.OracleParameter("p_MABS", txtMaBS.Text)
-                        };
-                        DbConnection.Instance.ExecuteNonQuery("BEGIN sp_DPV_Update_HSBA(:p_MAHSBA, :p_MAKHOA, :p_MABS); END;", parameters, CommandType.Text);
-                        MessageBox.Show("Cập nhật thành công!");
-                        f.DialogResult = DialogResult.OK;
-                        f.Close();
-                    }
-                    catch (Exception ex) { MessageBox.Show("Lỗi: " + ex.Message); }
-                };
-                f.Controls.Add(btnSave);
-                if (f.ShowDialog() == DialogResult.OK) LoadHSBAData();
             }
         }
 
@@ -851,42 +655,12 @@ namespace ATBM_Hospital_Management.Views.Components
             if (dgvHSBADV.SelectedRows.Count == 0) { MessageBox.Show("Vui lòng chọn dịch vụ."); return; }
             var row = dgvHSBADV.SelectedRows[0];
 
-            using (Form f = new Form() { Text = "Cập nhật dịch vụ", Size = new Size(400, 320), StartPosition = FormStartPosition.CenterParent })
+            using (var form = new DPV_EditHSBADVForm(row))
             {
-                int y = 20;
-                TextBox txtMaHSBA = AddField(f, "Mã HSBA:", row.Cells["MA_HSBA"].Value?.ToString(), ref y, true);
-                TextBox txtLoaiDV = AddField(f, "Loại DV:", row.Cells["LOAI_DV"].Value?.ToString(), ref y, true);
-                
-                DateTime dtNgayDV;
-                DateTime.TryParse(row.Cells["NGAY_DV"].Value?.ToString(), out dtNgayDV);
-                
-                Label lblNgay = new Label { Text = "Ngày DV:", Location = new Point(20, y + 3), AutoSize = true };
-                DateTimePicker dtpNgay = new DateTimePicker { Location = new Point(140, y), Size = new Size(210, 25), Format = DateTimePickerFormat.Custom, CustomFormat="dd/MM/yyyy", Value = dtNgayDV > DateTime.MinValue ? dtNgayDV : DateTime.Now, Enabled = false };
-                f.Controls.Add(lblNgay); f.Controls.Add(dtpNgay); y += 40;
-
-                TextBox txtMaKTV = AddField(f, "Mã KTV mới:", row.Cells["MA_KTV"].Value?.ToString(), ref y);
-
-                Button btnSave = new Button { Text = "Update", Location = new Point(140, y + 10), Size = new Size(100, 35) };
-                btnSave.Click += (s, args) =>
+                if (form.ShowDialog() == DialogResult.OK)
                 {
-                    try
-                    {
-                        var parameters = new Oracle.ManagedDataAccess.Client.OracleParameter[]
-                        {
-                            new Oracle.ManagedDataAccess.Client.OracleParameter("p_MAHSBA", txtMaHSBA.Text),
-                            new Oracle.ManagedDataAccess.Client.OracleParameter("p_LOAIDV", txtLoaiDV.Text),
-                            new Oracle.ManagedDataAccess.Client.OracleParameter("p_NGAYDV", dtpNgay.Value),
-                            new Oracle.ManagedDataAccess.Client.OracleParameter("p_MAKTV", txtMaKTV.Text)
-                        };
-                        DbConnection.Instance.ExecuteNonQuery("BEGIN sp_DPV_Update_HSBADV(:p_MAHSBA, :p_LOAIDV, :p_NGAYDV, :p_MAKTV); END;", parameters, CommandType.Text);
-                        MessageBox.Show("Cập nhật thành công!");
-                        f.DialogResult = DialogResult.OK;
-                        f.Close();
-                    }
-                    catch (Exception ex) { MessageBox.Show("Lỗi: " + ex.Message); }
-                };
-                f.Controls.Add(btnSave);
-                if (f.ShowDialog() == DialogResult.OK) LoadHSBAData();
+                    LoadHSBAData();
+                }
             }
         }
 
@@ -895,10 +669,11 @@ namespace ATBM_Hospital_Management.Views.Components
             using (Form f = new Form()
             {
                 Text = "Cập nhật thông tin cá nhân",
-                Size = new Size(400, 260),
+                Size = new Size(440, 290),
                 StartPosition = FormStartPosition.CenterParent,
                 FormBorderStyle = FormBorderStyle.FixedDialog,
-                MaximizeBox = false
+                MaximizeBox = false,
+                AutoScroll = true
             })
             {
                 int y = 20;
@@ -936,7 +711,7 @@ namespace ATBM_Hospital_Management.Views.Components
                     BackColor = Color.DodgerBlue,
                     ForeColor = Color.White,
                     FlatStyle = FlatStyle.Flat,
-                    Location = new Point(140, y + 15)
+                    Location = new Point(160, y + 15)
                 };
 
                 btnSave.FlatAppearance.BorderSize = 0;
