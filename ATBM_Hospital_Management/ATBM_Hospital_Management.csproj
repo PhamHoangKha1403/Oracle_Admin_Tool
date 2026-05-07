@@ -249,6 +249,9 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <EmbeddedResource Include="Views\AuditView.resx">
+      <DependentUpon>AuditView.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Views\DoctorView_HealthRecord.resx">
       <DependentUpon>DoctorView_HealthRecord.cs</DependentUpon>
     </EmbeddedResource>

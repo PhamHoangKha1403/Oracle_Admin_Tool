@@ -12,6 +12,19 @@ namespace ATBM_Hospital_Management.Database
     {
         private readonly DbConnection _db;
 
+        // --- Enable/Disable all audit policies ---
+        public void EnableAllAudit()
+        {
+            string spName = "SP_ENABLE_ALL_AUDIT";
+            _db.ExecuteNonQuery(spName, null, CommandType.StoredProcedure);
+        }
+
+        public void DisableAllAudit()
+        {
+            string spName = "SP_DISABLE_ALL_AUDIT";
+            _db.ExecuteNonQuery(spName, null, CommandType.StoredProcedure);
+        }
+
         public DbaService()
         {
             _db = DbConnection.Instance;
@@ -334,72 +347,6 @@ namespace ATBM_Hospital_Management.Database
             }
             sql += " ORDER BY OBJECT_NAME, POLICY_NAME";
             return _db.ExecuteQuery(sql);
-        }
-
-        public void EnablePoliciesForObject(string objectName = null)
-        {
-            DataTable policies = GetFgaPolicies(objectName);
-            if (policies == null) return;
-            foreach (DataRow r in policies.Rows)
-            {
-                string obj = r["OBJECT_NAME"]?.ToString();
-                string policy = r["POLICY_NAME"]?.ToString();
-                if (!string.IsNullOrWhiteSpace(obj) && !string.IsNullOrWhiteSpace(policy))
-                    EnablePolicy(obj, policy);
-            }
-        }
-
-        public void DisablePoliciesForObject(string objectName = null)
-        {
-            DataTable policies = GetFgaPolicies(objectName);
-            if (policies == null) return;
-            foreach (DataRow r in policies.Rows)
-            {
-                string obj = r["OBJECT_NAME"]?.ToString();
-                string policy = r["POLICY_NAME"]?.ToString();
-                if (!string.IsNullOrWhiteSpace(obj) && !string.IsNullOrWhiteSpace(policy))
-                    DisablePolicy(obj, policy);
-            }
-        }
-
-        private void EnablePolicy(string objectName, string policyName)
-        {
-            OracleConnection conn = _db.GetConnection();
-            using (OracleCommand cmd = new OracleCommand("BEGIN DBMS_FGA.ENABLE_POLICY(object_schema => 'ADMIN_PH2', object_name => :obj, policy_name => :pol); END;", conn))
-            {
-                cmd.CommandType = CommandType.Text;
-                cmd.Parameters.Add("obj", OracleDbType.Varchar2).Value = objectName;
-                cmd.Parameters.Add("pol", OracleDbType.Varchar2).Value = policyName;
-                try
-                {
-                    if (cmd.Connection.State != ConnectionState.Open) cmd.Connection.Open();
-                    cmd.ExecuteNonQuery();
-                }
-                catch (OracleException ex)
-                {
-                    throw new Exception("Error enabling policy: " + ex.Message);
-                }
-            }
-        }
-
-        private void DisablePolicy(string objectName, string policyName)
-        {
-            OracleConnection conn = _db.GetConnection();
-            using (OracleCommand cmd = new OracleCommand("BEGIN DBMS_FGA.DISABLE_POLICY(object_schema => 'ADMIN_PH2', object_name => :obj, policy_name => :pol); END;", conn))
-            {
-                cmd.CommandType = CommandType.Text;
-                cmd.Parameters.Add("obj", OracleDbType.Varchar2).Value = objectName;
-                cmd.Parameters.Add("pol", OracleDbType.Varchar2).Value = policyName;
-                try
-                {
-                    if (cmd.Connection.State != ConnectionState.Open) cmd.Connection.Open();
-                    cmd.ExecuteNonQuery();
-                }
-                catch (OracleException ex)
-                {
-                    throw new Exception("Error disabling policy: " + ex.Message);
-                }
-            }
         }
 
         public DataTable GetPrivilegesByObject(string grantee, string owner, string tableName)
