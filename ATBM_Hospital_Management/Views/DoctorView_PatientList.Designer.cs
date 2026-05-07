@@ -35,6 +35,8 @@
             this.lblUserName = new System.Windows.Forms.Label();
             this.panelContent = new System.Windows.Forms.Panel();
             this.lblTitle = new System.Windows.Forms.Label();
+            this.btn_thongBao = new System.Windows.Forms.Button();
+            this.btnToi = new System.Windows.Forms.Button();
             this.pnlMainList.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
             this.panelTop.SuspendLayout();
@@ -46,9 +48,9 @@
             // 
             this.pnlMainList.Controls.Add(this.dataGridView1);
             this.pnlMainList.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.pnlMainList.Location = new System.Drawing.Point(20, 20);
+            this.pnlMainList.Location = new System.Drawing.Point(20, 5);
             this.pnlMainList.Name = "pnlMainList";
-            this.pnlMainList.Size = new System.Drawing.Size(1240, 623);
+            this.pnlMainList.Size = new System.Drawing.Size(1240, 675);
             this.pnlMainList.TabIndex = 0;
             // 
             // dataGridView1
@@ -63,14 +65,14 @@
             this.dataGridView1.RowHeadersVisible = false;
             this.dataGridView1.RowHeadersWidth = 62;
             this.dataGridView1.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.dataGridView1.Size = new System.Drawing.Size(1240, 623);
+            this.dataGridView1.Size = new System.Drawing.Size(1240, 675);
             this.dataGridView1.TabIndex = 0;
             this.dataGridView1.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dataGridView1_CellContentClick);
             // 
             // lblRecordCount
             // 
             this.lblRecordCount.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.lblRecordCount.Location = new System.Drawing.Point(20, 613);
+            this.lblRecordCount.Location = new System.Drawing.Point(20, 650);
             this.lblRecordCount.Name = "lblRecordCount";
             this.lblRecordCount.Size = new System.Drawing.Size(1240, 30);
             this.lblRecordCount.TabIndex = 1;
@@ -79,6 +81,8 @@
             // panelTop
             // 
             this.panelTop.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(38)))), ((int)(((byte)(198)))), ((int)(((byte)(218)))));
+            this.panelTop.Controls.Add(this.btnToi);
+            this.panelTop.Controls.Add(this.btn_thongBao);
             this.panelTop.Controls.Add(this.btnBenhNhan);
             this.panelTop.Controls.Add(this.btnHoSoBenhAn);
             this.panelTop.Controls.Add(this.pnlUser);
@@ -93,7 +97,7 @@
             this.btnBenhNhan.FlatAppearance.BorderSize = 0;
             this.btnBenhNhan.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnBenhNhan.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnBenhNhan.Location = new System.Drawing.Point(805, 10);
+            this.btnBenhNhan.Location = new System.Drawing.Point(493, 9);
             this.btnBenhNhan.Name = "btnBenhNhan";
             this.btnBenhNhan.Size = new System.Drawing.Size(174, 42);
             this.btnBenhNhan.TabIndex = 0;
@@ -105,7 +109,7 @@
             this.btnHoSoBenhAn.FlatAppearance.BorderSize = 0;
             this.btnHoSoBenhAn.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnHoSoBenhAn.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnHoSoBenhAn.Location = new System.Drawing.Point(996, 10);
+            this.btnHoSoBenhAn.Location = new System.Drawing.Point(684, 9);
             this.btnHoSoBenhAn.Name = "btnHoSoBenhAn";
             this.btnHoSoBenhAn.Size = new System.Drawing.Size(275, 42);
             this.btnHoSoBenhAn.TabIndex = 1;
@@ -142,12 +146,11 @@
             this.panelContent.Controls.Add(this.lblRecordCount);
             this.panelContent.Controls.Add(this.pnlMainList);
             this.panelContent.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.panelContent.Location = new System.Drawing.Point(0, 137);
+            this.panelContent.Location = new System.Drawing.Point(0, 100);
             this.panelContent.Name = "panelContent";
-            this.panelContent.Size = new System.Drawing.Size(1280, 663);
-            this.panelContent.TabIndex = 0;
             this.panelContent.Padding = new System.Windows.Forms.Padding(20, 5, 20, 20);
-
+            this.panelContent.Size = new System.Drawing.Size(1280, 700);
+            this.panelContent.TabIndex = 0;
             // 
             // lblTitle
             // 
@@ -159,6 +162,30 @@
             this.lblTitle.TabIndex = 2;
             this.lblTitle.Text = "DANH SÁCH BỆNH NHÂN";
             this.lblTitle.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // btn_thongBao
+            // 
+            this.btn_thongBao.FlatAppearance.BorderSize = 0;
+            this.btn_thongBao.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btn_thongBao.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btn_thongBao.Location = new System.Drawing.Point(930, 9);
+            this.btn_thongBao.Name = "btn_thongBao";
+            this.btn_thongBao.Size = new System.Drawing.Size(203, 42);
+            this.btn_thongBao.TabIndex = 3;
+            this.btn_thongBao.Text = "THÔNG BÁO";
+            this.btn_thongBao.Click += new System.EventHandler(this.button1_Click);
+            // 
+            // btnToi
+            // 
+            this.btnToi.FlatAppearance.BorderSize = 0;
+            this.btnToi.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnToi.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnToi.Location = new System.Drawing.Point(1119, 9);
+            this.btnToi.Name = "btnToi";
+            this.btnToi.Size = new System.Drawing.Size(141, 42);
+            this.btnToi.TabIndex = 4;
+            this.btnToi.Text = "TÔI";
+            this.btnToi.Click += new System.EventHandler(this.button2_Click);
             // 
             // DoctorView_PatientList
             // 
@@ -176,5 +203,8 @@
             this.ResumeLayout(false);
 
         }
+
+        private System.Windows.Forms.Button btn_thongBao;
+        private System.Windows.Forms.Button btnToi;
     }
 }
