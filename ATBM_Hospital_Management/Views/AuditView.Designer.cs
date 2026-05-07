@@ -144,9 +144,8 @@ namespace ATBM_Hospital_Management.Views
             this.pnlCard.Dock = System.Windows.Forms.DockStyle.Fill;
             this.pnlCard.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
 
-            this.pnlCard.Controls.Add(this.pnlToolbar);
             this.pnlCard.Controls.Add(this.dgvAudit);
-            this.pnlToolbar.BringToFront();
+            this.pnlCard.Controls.Add(this.pnlToolbar);
 
             // ================= BODY =================
             this.pnlBody.Dock = DockStyle.Fill;
