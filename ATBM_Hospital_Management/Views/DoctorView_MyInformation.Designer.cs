@@ -45,6 +45,7 @@
             this.textBox7 = new System.Windows.Forms.TextBox();
             this.textBox8 = new System.Windows.Forms.TextBox();
             this.label9 = new System.Windows.Forms.Label();
+            this.button1 = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // label1
@@ -144,6 +145,8 @@
             this.textBox2.Name = "textBox2";
             this.textBox2.Size = new System.Drawing.Size(332, 35);
             this.textBox2.TabIndex = 9;
+            this.textBox2.ReadOnly = true;
+
             // 
             // textBox3
             // 
@@ -152,6 +155,8 @@
             this.textBox3.Name = "textBox3";
             this.textBox3.Size = new System.Drawing.Size(134, 35);
             this.textBox3.TabIndex = 10;
+            this.textBox3.ReadOnly = true;
+
             // 
             // textBox4
             // 
@@ -160,6 +165,8 @@
             this.textBox4.Name = "textBox4";
             this.textBox4.Size = new System.Drawing.Size(212, 35);
             this.textBox4.TabIndex = 11;
+            this.textBox4.ReadOnly = true;
+
             // 
             // textBox5
             // 
@@ -168,6 +175,8 @@
             this.textBox5.Name = "textBox5";
             this.textBox5.Size = new System.Drawing.Size(217, 35);
             this.textBox5.TabIndex = 12;
+            this.textBox5.ReadOnly = true;
+
             // 
             // textBox6
             // 
@@ -176,6 +185,7 @@
             this.textBox6.Name = "textBox6";
             this.textBox6.Size = new System.Drawing.Size(217, 35);
             this.textBox6.TabIndex = 13;
+
             // 
             // textBox7
             // 
@@ -192,6 +202,8 @@
             this.textBox8.Name = "textBox8";
             this.textBox8.Size = new System.Drawing.Size(177, 35);
             this.textBox8.TabIndex = 15;
+            this.textBox8.ReadOnly = true;
+
             // 
             // label9
             // 
@@ -203,10 +215,24 @@
             this.label9.TabIndex = 16;
             this.label9.Text = "THÔNG TIN CÁ NHÂN";
             // 
+            // button1
+            // 
+            this.button1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(62)))), ((int)(((byte)(126)))));
+            this.button1.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.button1.ForeColor = System.Drawing.SystemColors.ButtonHighlight;
+            this.button1.Location = new System.Drawing.Point(931, 346);
+            this.button1.Name = "button1";
+            this.button1.Size = new System.Drawing.Size(158, 56);
+            this.button1.TabIndex = 17;
+            this.button1.Text = "Cập nhật";
+            this.button1.UseVisualStyleBackColor = false;
+            this.button1.Click += new System.EventHandler(this.button1_Click);
+            // 
             // DoctorView_MyInformation
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 20F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.Controls.Add(this.button1);
             this.Controls.Add(this.label9);
             this.Controls.Add(this.textBox8);
             this.Controls.Add(this.textBox7);
@@ -250,5 +276,6 @@
         private System.Windows.Forms.TextBox textBox7;
         private System.Windows.Forms.TextBox textBox8;
         private System.Windows.Forms.Label label9;
+        private System.Windows.Forms.Button button1;
     }
 }
