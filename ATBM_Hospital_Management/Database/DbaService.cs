@@ -327,14 +327,14 @@ namespace ATBM_Hospital_Management.Database
         // --- Lấy bảng Audit ---
         public DataTable GetAudit()
         {
-            string spName = "ADMIN_PH2.SP_GET_AUDIT_FGA";
+            string spName = "SP_GET_AUDIT_FGA";
             OracleParameter[] p = {
                 new OracleParameter("p_cursor", OracleDbType.RefCursor, ParameterDirection.Output)
             };
-            return _db.ExecuteRefCursorQuery(spName, p);
+            return _db.ExecuteQuery(spName, p, CommandType.StoredProcedure);
         }
 
-        // --- Các method hỗ trợ bật/tắt policies, lấy policies để hiển thị trên UI ---
+        // --- Các method hỗ trợ bật/tắt policies, lấy policies để hiển thị trên UI --- 
 
         public DataTable GetFgaPolicies(string objectName = null)
         {

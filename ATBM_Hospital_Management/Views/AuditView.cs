@@ -258,7 +258,7 @@ namespace ATBM_Hospital_Management.Views
                 r["OBJECT_NAME"]?.ToString() ?? string.Empty,
                 r["POLICY_NAME"]?.ToString() ?? string.Empty,
                 r["STATEMENT_TYPE"]?.ToString() ?? string.Empty,
-                r["TIMESTAMP"]?.ToString() ?? string.Empty,
+                r["TIME_FULL"]?.ToString() ?? string.Empty,
                 dt.Rows.Count.ToString());
         }
 
@@ -325,14 +325,10 @@ namespace ATBM_Hospital_Management.Views
                 }
 
                 string tsText = string.Empty;
-                object tsValue = row["TIMESTAMP"];
+                object tsValue = row["TIME_FULL"];
                 if (tsValue != null && tsValue != DBNull.Value)
                 {
-                    DateTime ts;
-                    if (DateTime.TryParse(tsValue.ToString(), out ts))
-                        tsText = ts.ToString("yyyy-MM-dd HH:mm:ss");
-                    else
-                        tsText = tsValue.ToString();
+                    tsText = tsValue.ToString();
                 }
 
                 dgvAudit.Rows.Add(dbUser, policyName, statementType, tsText);
