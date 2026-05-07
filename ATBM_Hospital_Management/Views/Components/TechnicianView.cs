@@ -127,6 +127,15 @@ namespace ATBM_Hospital_Management.Views.Components
                 ReadOnly = true,
                 SelectionMode = DataGridViewSelectionMode.FullRowSelect
             };
+            dgvServices.DataBindingComplete += (s, e) =>
+            {
+                if (dgvServices.Columns.Contains("MA_HSBA")) dgvServices.Columns["MA_HSBA"].HeaderText = "Mã HSBA";
+                if (dgvServices.Columns.Contains("MA_DV")) dgvServices.Columns["MA_DV"].HeaderText = "Mã DV";
+                if (dgvServices.Columns.Contains("NGAY_DV")) dgvServices.Columns["NGAY_DV"].HeaderText = "Ngày DV";
+                if (dgvServices.Columns.Contains("MA_KTV")) dgvServices.Columns["MA_KTV"].HeaderText = "Mã KTV";
+                if (dgvServices.Columns.Contains("KET_QUA")) dgvServices.Columns["KET_QUA"].HeaderText = "Kết quả";
+                if (dgvServices.Columns.Contains("LOAI_DV")) dgvServices.Columns["LOAI_DV"].HeaderText = "Loại DV";
+            };
 
             tabServices.Controls.Add(pnlTopServices);
             tabServices.Controls.Add(dgvServices);
@@ -206,6 +215,15 @@ namespace ATBM_Hospital_Management.Views.Components
                 AllowUserToAddRows = false,
                 ReadOnly = true,
                 SelectionMode = DataGridViewSelectionMode.FullRowSelect
+            };
+            dgvAuditLog.DataBindingComplete += (s, e) =>
+            {
+                if (dgvAuditLog.Columns.Contains("DB_USER")) dgvAuditLog.Columns["DB_USER"].HeaderText = "Người dùng DB";
+                if (dgvAuditLog.Columns.Contains("POLICY_NAME")) dgvAuditLog.Columns["POLICY_NAME"].HeaderText = "Tên Policy";
+                if (dgvAuditLog.Columns.Contains("STATEMENT_TYPE")) dgvAuditLog.Columns["STATEMENT_TYPE"].HeaderText = "Loại thao tác";
+                if (dgvAuditLog.Columns.Contains("TIMESTAMP")) dgvAuditLog.Columns["TIMESTAMP"].HeaderText = "Thời gian";
+                if (dgvAuditLog.Columns.Contains("OBJECT_NAME")) dgvAuditLog.Columns["OBJECT_NAME"].HeaderText = "Bảng";
+                if (dgvAuditLog.Columns.Contains("SQL_TEXT")) dgvAuditLog.Columns["SQL_TEXT"].HeaderText = "Lệnh SQL";
             };
 
             tabAuditLog.Controls.Add(pnlTopAudit);

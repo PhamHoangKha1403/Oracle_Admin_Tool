@@ -39,7 +39,7 @@ namespace ATBM_Hospital_Management.Views.Components
 
             lblTitle = new Label
             {
-                Text = "Patient Diagnostic Information",
+                Text = "Thông tin bệnh nhân",
                 Font = new Font("Segoe UI Semibold", 16F),
                 AutoSize = true,
                 Location = new Point(20, 20)
@@ -48,7 +48,7 @@ namespace ATBM_Hospital_Management.Views.Components
 
             btnEdit = new Button
             {
-                Text = "Edit Information",
+                Text = "Sửa thông tin",
                 Font = new Font("Segoe UI", 10F, FontStyle.Bold),
                 Location = new Point(20, 60),
                 Size = new Size(180, 40),
@@ -72,18 +72,18 @@ namespace ATBM_Hospital_Management.Views.Components
 
             int y = 20;
 
-            txtHoTen = AddInfoField(infoPanel, "Name:", ref y);
-            txtPhai = AddInfoField(infoPanel, "Gender:", ref y);
-            txtNgaySinh = AddInfoField(infoPanel, "DOB:", ref y);
-            txtCCCD = AddInfoField(infoPanel, "ID Card:", ref y);
-            txtSDT = AddInfoField(infoPanel, "Phone:", ref y);
-            txtSoNha = AddInfoField(infoPanel, "House No:", ref y);
-            txtTenDuong = AddInfoField(infoPanel, "Street:", ref y);
-            txtQuanHuyen = AddInfoField(infoPanel, "District:", ref y);
-            txtTinhTp = AddInfoField(infoPanel, "City/Prov:", ref y);
-            txtTienSu = AddInfoField(infoPanel, "Medical History:", ref y);
-            txtTienSuGD = AddInfoField(infoPanel, "Family History:", ref y);
-            txtDiUng = AddInfoField(infoPanel, "Allergies:", ref y);
+            txtHoTen = AddInfoField(infoPanel, "Họ tên:", ref y);
+            txtPhai = AddInfoField(infoPanel, "Phái:", ref y);
+            txtNgaySinh = AddInfoField(infoPanel, "Ngày sinh:", ref y);
+            txtCCCD = AddInfoField(infoPanel, "CCCD:", ref y);
+            txtSDT = AddInfoField(infoPanel, "SĐT:", ref y);
+            txtSoNha = AddInfoField(infoPanel, "Số nhà:", ref y);
+            txtTenDuong = AddInfoField(infoPanel, "Tên đường:", ref y);
+            txtQuanHuyen = AddInfoField(infoPanel, "Quận/Huyện:", ref y);
+            txtTinhTp = AddInfoField(infoPanel, "Tỉnh/TP:", ref y);
+            txtTienSu = AddInfoField(infoPanel, "Tiền sử bệnh:", ref y);
+            txtTienSuGD = AddInfoField(infoPanel, "TS bệnh gia đình:", ref y);
+            txtDiUng = AddInfoField(infoPanel, "Dị ứng thuốc:", ref y);
 
             this.Controls.Add(infoPanel);
         }
@@ -169,7 +169,7 @@ namespace ATBM_Hospital_Management.Views.Components
         {
             using (Form editForm = new Form())
             {
-                editForm.Text = "Edit Patient Information";
+                editForm.Text = "Cập nhật thông tin bệnh nhân";
                 editForm.Size = new Size(420, 500);
                 editForm.StartPosition = FormStartPosition.CenterParent;
                 editForm.FormBorderStyle = FormBorderStyle.FixedDialog;
@@ -178,17 +178,17 @@ namespace ATBM_Hospital_Management.Views.Components
 
                 int y = 20;
 
-                TextBox editSoNha = AddEditField(editForm, "House No:", txtSoNha.Text, ref y);
-                TextBox editTenDuong = AddEditField(editForm, "Street:", txtTenDuong.Text, ref y);
-                TextBox editQuanHuyen = AddEditField(editForm, "District:", txtQuanHuyen.Text, ref y);
-                TextBox editTinhTp = AddEditField(editForm, "City/Prov:", txtTinhTp.Text, ref y);
-                TextBox editTienSu = AddEditField(editForm, "Medical History:", txtTienSu.Text, ref y);
-                TextBox editTienSuGD = AddEditField(editForm, "Family History:", txtTienSuGD.Text, ref y);
-                TextBox editDiUng = AddEditField(editForm, "Allergies:", txtDiUng.Text, ref y);
+                TextBox editSoNha = AddEditField(editForm, "Số nhà:", txtSoNha.Text, ref y);
+                TextBox editTenDuong = AddEditField(editForm, "Tên đường:", txtTenDuong.Text, ref y);
+                TextBox editQuanHuyen = AddEditField(editForm, "Quận/Huyện:", txtQuanHuyen.Text, ref y);
+                TextBox editTinhTp = AddEditField(editForm, "Tỉnh/TP:", txtTinhTp.Text, ref y);
+                TextBox editTienSu = AddEditField(editForm, "Tiền sử bệnh:", txtTienSu.Text, ref y);
+                TextBox editTienSuGD = AddEditField(editForm, "TS bệnh GĐ:", txtTienSuGD.Text, ref y);
+                TextBox editDiUng = AddEditField(editForm, "Dị ứng thuốc:", txtDiUng.Text, ref y);
 
                 Button btnSave = new Button
                 {
-                    Text = "Save Changes",
+                    Text = "Lưu thay đổi",
                     Location = new Point(140, y + 20),
                     Size = new Size(130, 40),
                     BackColor = Color.SeaGreen,
