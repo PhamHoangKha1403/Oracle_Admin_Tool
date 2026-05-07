@@ -117,13 +117,14 @@ namespace ATBM_Hospital_Management.Views
 
             // ================= HEADER =================
             this.pnlHeader.Dock = System.Windows.Forms.DockStyle.Top;
-            this.pnlHeader.Height = 80;
+            this.pnlHeader.Height = 56;
             this.pnlHeader.BackColor = System.Drawing.Color.White;
             this.pnlHeader.Padding = new System.Windows.Forms.Padding(20, 0, 16, 0);
 
             this.lblPageTitle.Text = "Audit";
             this.lblPageTitle.Font = new System.Drawing.Font("Segoe UI", 13F, System.Drawing.FontStyle.Bold);
-            this.lblPageTitle.Location = new System.Drawing.Point(20, 28);
+            this.lblPageTitle.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.lblPageTitle.Location = new System.Drawing.Point(20, 16);
             this.lblPageTitle.AutoSize = true;
 
             this.pnlHeader.Controls.Add(this.lblPageTitle);
@@ -143,8 +144,9 @@ namespace ATBM_Hospital_Management.Views
             this.pnlCard.Dock = System.Windows.Forms.DockStyle.Fill;
             this.pnlCard.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
 
-            this.pnlCard.Controls.Add(this.dgvAudit);
             this.pnlCard.Controls.Add(this.pnlToolbar);
+            this.pnlCard.Controls.Add(this.dgvAudit);
+            this.pnlToolbar.BringToFront();
 
             // ================= BODY =================
             this.pnlBody.Dock = DockStyle.Fill;
@@ -156,7 +158,6 @@ namespace ATBM_Hospital_Management.Views
             // ================= MAIN =================
             this.Controls.Add(this.pnlBody);
             this.Controls.Add(this.pnlHeader);
-            this.pnlHeader.BringToFront();
 
             this.Name = "AuditView";
             this.Size = new System.Drawing.Size(1000, 500);

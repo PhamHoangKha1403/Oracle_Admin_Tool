@@ -314,20 +314,17 @@ namespace ATBM_Hospital_Management.Database
         // --- Lấy bảng Audit ---
         public DataTable GetAudit()
         {
-            // Use the FGA-specific stored procedure that returns the FGA audit ref cursor
-            string spName = "SP_GET_AUDIT_FGA";
-            OracleParameter[] p = {
-                new OracleParameter("p_cursor", OracleDbType.RefCursor, ParameterDirection.Output)
-            };
-            return _db.ExecuteQuery(spName, p, CommandType.StoredProcedure);
+            // Query directly from DBA_FGA_AUDIT_TRAIL since SP_GET_AUDIT_FGA does not exist
+            string sql = "SELECT DB_USER, OBJECT_NAME, POLICY_NAME, STATEMENT_TYPE, TIMESTAMP, SQL_TEXT FROM DBA_FGA_AUDIT_TRAIL ORDER BY TIMESTAMP DESC";
+            return _db.ExecuteQuery(sql, null, CommandType.Text);
         }
 
         // --- Các method hỗ trợ bật/tắt policies, lấy policies để hiển thị trên UI ---
 
         public DataTable GetFgaPolicies(string objectName = null)
         {
-            // ALL_FGA_POLICIES is safer for non-DBA users than DBA_FGA_POLICIES
-            string sql = "SELECT POLICY_NAME, OBJECT_SCHEMA, OBJECT_NAME, ENABLED FROM ALL_FGA_POLICIES WHERE OBJECT_SCHEMA = 'ADMIN_PH2'";
+            // Use DBA_AUDIT_POLICIES for FGA policies since ALL_FGA_POLICIES does not exist in Oracle
+            string sql = "SELECT POLICY_NAME, OBJECT_SCHEMA, OBJECT_NAME, ENABLED FROM DBA_AUDIT_POLICIES WHERE OBJECT_SCHEMA = 'ADMIN_PH2'";
             if (!string.IsNullOrEmpty(objectName))
             {
                 sql += " AND OBJECT_NAME = :objectName";
@@ -368,11 +365,11 @@ namespace ATBM_Hospital_Management.Database
         private void EnablePolicy(string objectName, string policyName)
         {
             OracleConnection conn = _db.GetConnection();
-            using (OracleCommand cmd = new OracleCommand("ENABLE_POLICY", conn))
+            using (OracleCommand cmd = new OracleCommand("BEGIN DBMS_FGA.ENABLE_POLICY(object_schema => 'ADMIN_PH2', object_name => :obj, policy_name => :pol); END;", conn))
             {
-                cmd.CommandType = CommandType.StoredProcedure;
-                cmd.Parameters.Add("p_object_name", OracleDbType.Varchar2).Value = objectName;
-                cmd.Parameters.Add("p_policy_name", OracleDbType.Varchar2).Value = policyName;
+                cmd.CommandType = CommandType.Text;
+                cmd.Parameters.Add("obj", OracleDbType.Varchar2).Value = objectName;
+                cmd.Parameters.Add("pol", OracleDbType.Varchar2).Value = policyName;
                 try
                 {
                     if (cmd.Connection.State != ConnectionState.Open) cmd.Connection.Open();
@@ -388,11 +385,11 @@ namespace ATBM_Hospital_Management.Database
         private void DisablePolicy(string objectName, string policyName)
         {
             OracleConnection conn = _db.GetConnection();
-            using (OracleCommand cmd = new OracleCommand("DISABLE_POLICY", conn))
+            using (OracleCommand cmd = new OracleCommand("BEGIN DBMS_FGA.DISABLE_POLICY(object_schema => 'ADMIN_PH2', object_name => :obj, policy_name => :pol); END;", conn))
             {
-                cmd.CommandType = CommandType.StoredProcedure;
-                cmd.Parameters.Add("p_object_name", OracleDbType.Varchar2).Value = objectName;
-                cmd.Parameters.Add("p_policy_name", OracleDbType.Varchar2).Value = policyName;
+                cmd.CommandType = CommandType.Text;
+                cmd.Parameters.Add("obj", OracleDbType.Varchar2).Value = objectName;
+                cmd.Parameters.Add("pol", OracleDbType.Varchar2).Value = policyName;
                 try
                 {
                     if (cmd.Connection.State != ConnectionState.Open) cmd.Connection.Open();
