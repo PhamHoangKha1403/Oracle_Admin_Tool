@@ -103,7 +103,7 @@
     <Compile Include="Database\DbConnection.cs" />
     <Compile Include="Database\DbaService.cs" />
     <Compile Include="Database\AccountService.cs" />
-<Compile Include="Views\KTV\ServiceRecordView.cs">
+    <Compile Include="Views\KTV\ServiceRecordView.cs">
       <SubType>UserControl</SubType>
     </Compile>
     <Compile Include="Views\KTV\ServiceRecordView.Designer.cs">
@@ -237,6 +237,9 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <EmbeddedResource Include="Views\AuditView.resx">
+      <DependentUpon>AuditView.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Views\DoctorView_HealthRecord.resx">
       <DependentUpon>DoctorView_HealthRecord.cs</DependentUpon>
     </EmbeddedResource>
