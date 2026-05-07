@@ -29,12 +29,27 @@ namespace ATBM_Hospital_Management.Views.Components
         private DataGridView dgvThongBao;
         private Button btnRefresh;
 
+        private TabPage tabProfile;
+
+        private Panel profilePanel;
+
+        private Button btnEditProfile;
+
+        private Label lblMaNVValue;
+        private Label lblHoTenValue;
+        private Label lblPhaiValue;
+        private Label lblNgaySinhValue;
+        private Label lblQueQuanValue;
+        private Label lblSDTValue;
+        private Label lblChuyenKhoaValue;
+
         public CoordinatorView()
         {
             InitializeUI();
             LoadPatientData();
             LoadHSBAData();
             LoadThongBao();
+            LoadProfile();
         }
 
         private void InitializeUI()
@@ -53,13 +68,16 @@ namespace ATBM_Hospital_Management.Views.Components
             tabPatient = new TabPage("PATIENTS");
             tabHSBA = new TabPage("MEDICAL RECORDS");
             tabThongBao = new TabPage("NOTIFICATIONS");
+            tabProfile = new TabPage("MY PROFILE");
             tabControl.TabPages.Add(tabPatient);
             tabControl.TabPages.Add(tabHSBA);
             tabControl.TabPages.Add(tabThongBao);
+            tabControl.TabPages.Add(tabProfile);
 
             InitializePatientTab();
             InitializeHSBATab();
             InitializeThongBaoTab();
+            InitializeProfileTab();
         }
 
         private void InitializePatientTab()
@@ -285,9 +303,131 @@ namespace ATBM_Hospital_Management.Views.Components
                 if (dgvThongBao.Columns.Contains("DIA_DIEM")) dgvThongBao.Columns["DIA_DIEM"].HeaderText = "Địa điểm";
                 if (dgvThongBao.Columns.Contains("NGUOI_TAO")) dgvThongBao.Columns["NGUOI_TAO"].HeaderText = "Người tạo";
                 if (dgvThongBao.Columns.Contains("NGAY_TAO")) dgvThongBao.Columns["NGAY_TAO"].HeaderText = "Ngày tạo";
-                if (dgvThongBao.Columns.Contains("VAI_TRO")) dgvThongBao.Columns["VAI_TRO"].HeaderText = "Vai trò";
             };
             tabThongBao.Controls.Add(dgvThongBao);
+        }
+
+        private void InitializeProfileTab()
+        {
+            tabProfile.Padding = new Padding(20);
+            tabProfile.BackColor = Color.White;
+
+            btnEditProfile = new Button
+            {
+                Text = "UPDATE PROFILE",
+                Size = new Size(180, 42),
+                BackColor = Color.DarkOrange,
+                ForeColor = Color.White,
+                FlatStyle = FlatStyle.Flat,
+                Font = new Font("Segoe UI", 10F, FontStyle.Bold),
+                Location = new Point(20, 20)
+            };
+
+            btnEditProfile.FlatAppearance.BorderSize = 0;
+            btnEditProfile.Click += BtnEditProfile_Click;
+
+            tabProfile.Controls.Add(btnEditProfile);
+
+            profilePanel = new Panel
+            {
+                Location = new Point(20, 80),
+                Size = new Size(760, 450),
+                BackColor = Color.WhiteSmoke,
+                BorderStyle = BorderStyle.FixedSingle,
+                Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right
+            };
+
+            Label lblTitle = new Label
+            {
+                Text = "PERSONAL INFORMATION",
+                Font = new Font("Segoe UI", 18F, FontStyle.Bold),
+                ForeColor = Color.DodgerBlue,
+                AutoSize = true,
+                Location = new Point(25, 25)
+            };
+
+            profilePanel.Controls.Add(lblTitle);
+
+            int y = 90;
+
+            lblMaNVValue = AddProfileRow("Mã nhân viên:", ref y);
+            lblHoTenValue = AddProfileRow("Họ tên:", ref y);
+            lblPhaiValue = AddProfileRow("Phái:", ref y);
+            lblNgaySinhValue = AddProfileRow("Ngày sinh:", ref y);
+            lblQueQuanValue = AddProfileRow("Quê quán:", ref y);
+            lblSDTValue = AddProfileRow("SĐT:", ref y);
+            lblChuyenKhoaValue = AddProfileRow("Chuyên khoa:", ref y);
+
+            tabProfile.Controls.Add(profilePanel);
+        }
+
+        private Label AddProfileRow(string title, ref int y)
+        {
+            Label lblTitle = new Label
+            {
+                Text = title,
+                Font = new Font("Segoe UI", 11F, FontStyle.Bold),
+                AutoSize = true,
+                Location = new Point(40, y)
+            };
+
+            Label lblValue = new Label
+            {
+                Text = "",
+                Font = new Font("Segoe UI", 11F),
+                AutoSize = true,
+                ForeColor = Color.DimGray,
+                Location = new Point(240, y)
+            };
+
+            profilePanel.Controls.Add(lblTitle);
+            profilePanel.Controls.Add(lblValue);
+
+            y += 45;
+
+            return lblValue;
+        }
+
+        private void LoadProfile()
+        {
+            try
+            {
+                var pOut = new Oracle.ManagedDataAccess.Client.OracleParameter(
+                    "p_cursor",
+                    Oracle.ManagedDataAccess.Client.OracleDbType.RefCursor)
+                {
+                    Direction = ParameterDirection.Output
+                };
+
+                DataTable dt = DbConnection.Instance.ExecuteQuery(
+                    "BEGIN sp_NV_Select_NHANVIEN(:p_cursor); END;",
+                    new[] { pOut },
+                    CommandType.Text
+                );
+
+                if (dt != null && dt.Rows.Count > 0)
+                {
+                    DataRow row = dt.Rows[0];
+
+                    lblMaNVValue.Text = row["MA_NV"]?.ToString();
+                    lblHoTenValue.Text = row["HO_TEN"]?.ToString();
+                    lblPhaiValue.Text = row["PHAI"]?.ToString();
+
+                    DateTime ns;
+                    if (DateTime.TryParse(row["NGAY_SINH"]?.ToString(), out ns))
+                    {
+                        lblNgaySinhValue.Text = ns.ToString("dd/MM/yyyy");
+                    }
+
+                    lblQueQuanValue.Text = row["QUE_QUAN"]?.ToString();
+                    lblSDTValue.Text = row["SDT"]?.ToString();
+                    lblChuyenKhoaValue.Text = row["TEN_KHOA"]?.ToString();
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Lỗi tải thông tin nhân viên: " + ex.Message);
+            }
         }
 
         private void LoadPatientData()
@@ -747,6 +887,93 @@ namespace ATBM_Hospital_Management.Views.Components
                 };
                 f.Controls.Add(btnSave);
                 if (f.ShowDialog() == DialogResult.OK) LoadHSBAData();
+            }
+        }
+
+        private void BtnEditProfile_Click(object sender, EventArgs e)
+        {
+            using (Form f = new Form()
+            {
+                Text = "Cập nhật thông tin cá nhân",
+                Size = new Size(400, 260),
+                StartPosition = FormStartPosition.CenterParent,
+                FormBorderStyle = FormBorderStyle.FixedDialog,
+                MaximizeBox = false
+            })
+            {
+                int y = 20;
+
+                string maNV = lblMaNVValue.Text;
+                string queQuan = lblQueQuanValue.Text;
+                string sdt = lblSDTValue.Text;
+
+                TextBox txtMaNV = AddField(
+                    f,
+                    "Mã NV:",
+                    maNV,
+                    ref y,
+                    true
+                );
+
+                TextBox txtQueQuan = AddField(
+                    f,
+                    "Quê quán:",
+                    queQuan,
+                    ref y
+                );
+
+                TextBox txtSDT = AddField(
+                    f,
+                    "SĐT:",
+                    sdt,
+                    ref y
+                );
+
+                Button btnSave = new Button
+                {
+                    Text = "UPDATE",
+                    Size = new Size(120, 38),
+                    BackColor = Color.DodgerBlue,
+                    ForeColor = Color.White,
+                    FlatStyle = FlatStyle.Flat,
+                    Location = new Point(140, y + 15)
+                };
+
+                btnSave.FlatAppearance.BorderSize = 0;
+
+                btnSave.Click += (s, args) =>
+                {
+                    try
+                    {
+                        var parameters = new Oracle.ManagedDataAccess.Client.OracleParameter[]
+                        {
+                            new Oracle.ManagedDataAccess.Client.OracleParameter("p_QUEQUAN", txtQueQuan.Text),
+                            new Oracle.ManagedDataAccess.Client.OracleParameter("p_SODT", txtSDT.Text)
+                        };
+
+                        DbConnection.Instance.ExecuteNonQuery(
+                            "BEGIN sp_NV_Update_NHANVIEN(:p_QUEQUAN, :p_SODT); END;",
+                            parameters,
+                            CommandType.Text
+                        );
+
+                        MessageBox.Show("Cập nhật thành công!");
+
+                        f.DialogResult = DialogResult.OK;
+                        f.Close();
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show("Lỗi: " + ex.Message);
+                    }
+                };
+
+                f.Controls.Add(btnSave);
+
+                if (f.ShowDialog() == DialogResult.OK)
+                {
+                    LoadProfile();
+                }
             }
         }
     }
