@@ -29,7 +29,7 @@ namespace ATBM_Hospital_Management.Database
     {
         // ====== CẤU HÌNH - SỬA CHO ĐÚNG SERVER CỦA NHÓM ======
         public const string DB_HOST = "localhost";
-        public const string DB_PORT = "1522";
+        public const string DB_PORT = "1521";
         public const string DB_SID  = "XEPDB1";    // PDB name của Oracle XE
         // =======================================================
 
@@ -193,6 +193,35 @@ namespace ATBM_Hospital_Management.Database
                     cmd.Parameters.AddRange(parameters);
                 return cmd.ExecuteScalar();
             }
+        }
+
+        /// <summary>
+        /// Chạy Stored Procedure có RefCursor output (cho các query trả về cursor).
+        /// </summary>
+        public DataTable ExecuteRefCursorQuery(string spName, OracleParameter[] parameters = null)
+        {
+            DataTable dt = new DataTable();
+            using (OracleCommand cmd = new OracleCommand(spName, _connection))
+            {
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.BindByName = true;
+
+                if (parameters != null)
+                    cmd.Parameters.AddRange(parameters);
+
+                try
+                {
+                    using (OracleDataReader reader = cmd.ExecuteReader())
+                    {
+                        dt.Load(reader);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    throw new Exception($"Error executing stored procedure '{spName}': {ex.Message}", ex);
+                }
+            }
+            return dt;
         }
 
         /// <summary>

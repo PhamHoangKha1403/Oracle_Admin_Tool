@@ -327,9 +327,11 @@ namespace ATBM_Hospital_Management.Database
         // --- Lấy bảng Audit ---
         public DataTable GetAudit()
         {
-            // Query directly from DBA_FGA_AUDIT_TRAIL since SP_GET_AUDIT_FGA does not exist
-            string sql = "SELECT DB_USER, OBJECT_NAME, POLICY_NAME, STATEMENT_TYPE, TIMESTAMP, SQL_TEXT FROM DBA_FGA_AUDIT_TRAIL ORDER BY TIMESTAMP DESC";
-            return _db.ExecuteQuery(sql, null, CommandType.Text);
+            string spName = "ADMIN_PH2.SP_GET_AUDIT_FGA";
+            OracleParameter[] p = {
+                new OracleParameter("p_cursor", OracleDbType.RefCursor, ParameterDirection.Output)
+            };
+            return _db.ExecuteRefCursorQuery(spName, p);
         }
 
         // --- Các method hỗ trợ bật/tắt policies, lấy policies để hiển thị trên UI ---

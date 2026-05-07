@@ -389,6 +389,69 @@ BEGIN
 END sp_DPV_Update_HSBADV;
 /
 
+-- sp đưa bảng audit lên UI
+CREATE OR REPLACE PROCEDURE SP_GET_AUDIT_FGA (
+    p_cursor OUT SYS_REFCURSOR
+)
+AS
+BEGIN
+    OPEN p_cursor FOR
+        SELECT 
+            DB_USER,
+            OBJECT_NAME,
+            POLICY_NAME,
+            STATEMENT_TYPE,
+            DBMS_LOB.SUBSTR(SQL_TEXT, 1000, 1) AS SQL_TEXT,
+            TO_CHAR(TIMESTAMP, 'DD/MM/YYYY HH24:MI:SS') AS TIME_FULL
+        FROM DBA_FGA_AUDIT_TRAIL
+        ORDER BY TIMESTAMP DESC;
+END;
+/
+--VARIABLE rc REFCURSOR;
+--
+--EXEC SP_GET_AUDIT_FGA(:rc);
+--
+--PRINT rc;
+
+-- TẮT TẤT CẢ AUDIT
+CREATE OR REPLACE PROCEDURE SP_DISABLE_ALL_AUDIT AS
+BEGIN
+    FOR r IN (
+        SELECT OBJECT_SCHEMA, OBJECT_NAME, POLICY_NAME
+        FROM ALL_AUDIT_POLICIES
+        WHERE OBJECT_SCHEMA = 'ADMIN_PH2'
+    ) LOOP
+        BEGIN
+            DBMS_FGA.DISABLE_POLICY(
+                object_schema => r.OBJECT_SCHEMA,
+                object_name   => r.OBJECT_NAME,
+                policy_name   => r.POLICY_NAME
+            );
+        EXCEPTION WHEN OTHERS THEN NULL;
+        END;
+    END LOOP;
+END;
+/
+-- BẬT LẠI TẤT CẢ AUDIT 
+CREATE OR REPLACE PROCEDURE SP_ENABLE_ALL_AUDIT AS
+BEGIN
+    FOR r IN (
+        SELECT OBJECT_SCHEMA, OBJECT_NAME, POLICY_NAME
+        FROM ALL_AUDIT_POLICIES
+        WHERE OBJECT_SCHEMA = 'ADMIN_PH2'
+    ) LOOP
+        BEGIN
+            DBMS_FGA.ENABLE_POLICY(
+                object_schema => r.OBJECT_SCHEMA,
+                object_name   => r.OBJECT_NAME,
+                policy_name   => r.POLICY_NAME
+            );
+        EXCEPTION WHEN OTHERS THEN NULL;
+        END;
+    END LOOP;
+END;
+/
+
 -- ============================================================
 -- 8. CẤP QUYỀN VÀ TẠO SYNONYM CHO STORED PROCEDURES
 -- ============================================================
