@@ -177,10 +177,10 @@ BEGIN
     v_user := SYS_CONTEXT('USERENV', 'SESSION_USER');
     
     OPEN p_cursor FOR
-        SELECT n.HO_TEN, n.PHAI, n.NGAY_SINH, n.CCCD, n.SDT, b.SO_NHA, b.TEN_DUONG, b.QUAN_HUYEN, b.TINH_TP, b.TIEN_SU_BENH, b.TIEN_SU_BENH_GD, b.DI_UNG_THUOC
-        FROM BENH_NHAN b
-        JOIN NHAN_VIEN n ON b.MA_BN = n.MA_NV
-        WHERE b.MA_BN = v_user;
+        SELECT MA_NV, HO_TEN, PHAI, NGAY_SINH, CCCD, QUE_QUAN, SDT, VAI_TRO, CHUYEN_KHOA, SO_NHA, TEN_DUONG, QUAN_HUYEN, TINH_TP, TIEN_SU_BENH, TIEN_SU_BENH_GD, DI_UNG_THUOC
+        FROM ADMIN_PH2.VW_BN_BENH_NHAN bn
+        JOIN ADMIN_PH2.NHAN_VIEN nv ON bn.MA_BN = nv.MA_NV
+        WHERE bn.MA_BN = v_user;
 END sp_BN_Select_BENHNHAN;
 /
 
@@ -456,7 +456,6 @@ BEGIN
         WHERE MA_HSBA = p_ma_hsba;
 END;
 /
-
 --DPV SELECT HSBA
 CREATE OR REPLACE PROCEDURE sp_DPV_Select_HSBA
 (
@@ -531,7 +530,7 @@ BEGIN
     SET MA_KTV = p_MAKTV
     WHERE MA_HSBA = p_MAHSBA
       AND LOAI_DV = p_LOAIDV
-      AND NGAY_DV = p_NGAYDV;
+      AND TRUNC(NGAY_DV) = TRUNC(p_NGAYDV);
     COMMIT;
 END sp_DPV_Update_HSBADV;
 /
@@ -614,13 +613,13 @@ END sp_DPV_Update_BENHNHAN;
 /
 
 -- KTV chỉ xem được các dịch vụ mà mình thực hiện trên HSBA_DV
-CREATE OR REPLACE PROCEDURE sp_KTV_Select_HSBADV(p_cursor OUT SYS_REFCURSOR)
-AS
+CREATE OR REPLACE PROCEDURE sp_KTV_Select_HSBADV(
+    p_cursor OUT SYS_REFCURSOR
+)
+IS
 BEGIN
-    OPEN p_cursor FOR
-        SELECT MA_HSBA, LOAI_DV, NGAY_DV, MA_KTV, KET_QUA
-        FROM HSBA_DV;
-END sp_KTV_Select_HSBADV;
+    OPEN p_cursor FOR SELECT * FROM ADMIN_PH2.VW_KTV_HSBA_DV;
+END;
 /
 
 -- KTV chỉ được cập nhật KET_QUA trên các dịch vụ mà mình thực hiện 
@@ -712,6 +711,7 @@ BEGIN
 END sp_KTV_Select_AuditLog;
 /
 
+
 -- sp đưa bảng audit lên UI
 CREATE OR REPLACE PROCEDURE SP_GET_AUDIT_FGA (
     p_cursor OUT SYS_REFCURSOR
@@ -719,15 +719,90 @@ CREATE OR REPLACE PROCEDURE SP_GET_AUDIT_FGA (
 AS
 BEGIN
     OPEN p_cursor FOR
-        SELECT 
-            DB_USER,
-            OBJECT_NAME,
-            POLICY_NAME,
-            STATEMENT_TYPE,
-            DBMS_LOB.SUBSTR(SQL_TEXT, 1000, 1) AS SQL_TEXT,
-            TO_CHAR(TIMESTAMP, 'DD/MM/YYYY HH24:MI:SS') AS TIME_FULL
-        FROM DBA_FGA_AUDIT_TRAIL
-        ORDER BY TIMESTAMP DESC;
+        SELECT *
+        FROM (
+
+            -- FGA Audit
+            SELECT 
+                DB_USER AS USERNAME,
+                OBJECT_NAME AS OBJECT_NAME,
+                POLICY_NAME AS POLICY_NAME,
+                TO_CHAR(TIMESTAMP, 'DD/MM/YYYY HH24:MI:SS') AS TIME_FULL,
+                STATEMENT_TYPE AS ACTION_TYPE,
+                NULL AS OBJECT_TYPE,
+                NULL AS RETURN_CODE
+            FROM DBA_FGA_AUDIT_TRAIL
+
+            UNION ALL
+
+            -- Standard Audit
+            SELECT
+                USERNAME AS USERNAME,
+                OBJ_NAME AS OBJECT_NAME,
+                NULL AS POLICY_NAME,
+                TO_CHAR(TIMESTAMP, 'DD/MM/YYYY HH24:MI:SS') AS TIME_FULL,
+                ACTION_NAME AS ACTION_TYPE,
+                NULL AS OBJECT_TYPE,
+
+                -- ✔ FIX RETURN CODE
+                CASE 
+                    WHEN RETURNCODE = 0 THEN 'Thành công'
+                    ELSE 'Thất bại'
+                END AS RETURN_CODE
+
+            FROM DBA_AUDIT_TRAIL
+            WHERE OBJ_NAME IN (
+                'HSBA', 'HSBA_DV', 'BENH_NHAN', 'NHAN_VIEN',
+                'DON_THUOC', 'KHOA', 'THONG_BAO', 'NHAN_VIEN_CHITIET'
+            )
+        )
+        ORDER BY TO_DATE(TIME_FULL, 'DD/MM/YYYY HH24:MI:SS') DESC;
+
+END;
+/
+-- VARIABLE rc REFCURSOR;
+-- BEGIN
+--     SP_GET_ALL_AUDIT_POLICIES(:rc);
+-- END;
+-- /
+-- PRINT rc;
+
+-- TẮT TẤT CẢ AUDIT
+CREATE OR REPLACE PROCEDURE SP_DISABLE_ALL_AUDIT AS
+BEGIN
+    FOR r IN (
+        SELECT OBJECT_SCHEMA, OBJECT_NAME, POLICY_NAME
+        FROM ALL_AUDIT_POLICIES
+        WHERE OBJECT_SCHEMA = 'ADMIN_PH2'
+    ) LOOP
+        BEGIN
+            DBMS_FGA.DISABLE_POLICY(
+                object_schema => r.OBJECT_SCHEMA,
+                object_name   => r.OBJECT_NAME,
+                policy_name   => r.POLICY_NAME
+            );
+        EXCEPTION WHEN OTHERS THEN NULL;
+        END;
+    END LOOP;
+END;
+/
+-- BẬT LẠI TẤT CẢ AUDIT 
+CREATE OR REPLACE PROCEDURE SP_ENABLE_ALL_AUDIT AS
+BEGIN
+    FOR r IN (
+        SELECT OBJECT_SCHEMA, OBJECT_NAME, POLICY_NAME
+        FROM ALL_AUDIT_POLICIES
+        WHERE OBJECT_SCHEMA = 'ADMIN_PH2'
+    ) LOOP
+        BEGIN
+            DBMS_FGA.ENABLE_POLICY(
+                object_schema => r.OBJECT_SCHEMA,
+                object_name   => r.OBJECT_NAME,
+                policy_name   => r.POLICY_NAME
+            );
+        EXCEPTION WHEN OTHERS THEN NULL;
+        END;
+    END LOOP;
 END;
 /
 
@@ -770,13 +845,15 @@ CREATE OR REPLACE PUBLIC SYNONYM sp_KTV_Select_AuditLog FOR ADMIN_PH2.sp_KTV_Sel
 -- DBA (nếu demo)
 CREATE OR REPLACE PUBLIC SYNONYM sp_dba_create_user FOR ADMIN_PH2.sp_dba_create_user;
 CREATE OR REPLACE PUBLIC SYNONYM sp_dba_createall_user FOR ADMIN_PH2.sp_dba_createall_user;
+CREATE OR REPLACE PUBLIC SYNONYM SP_GET_AUDIT_FG FOR ADMIN_PH2.SP_GET_AUDIT_FG;
+CREATE OR REPLACE PUBLIC SYNONYM SP_DISABLE_ALL_AUDIT FOR ADMIN_PH2.SP_DISABLE_ALL_AUDIT;
+CREATE OR REPLACE PUBLIC SYNONYM SP_ENABLE_ALL_AUDIT FOR ADMIN_PH2.SP_ENABLE_ALL_AUDIT;
 
 --THÔNG BÁO
 CREATE OR REPLACE PUBLIC SYNONYM SP_GET_THONGBAO FOR ADMIN_PH2.SP_GET_THONGBAO;
 
 --AUDIT
 CREATE OR REPLACE PUBLIC SYNONYM SP_GET_AUDIT_FGA FOR ADMIN_PH2.SP_GET_AUDIT_FGA;
-
 -- GRANT EXECUTE PROCEDURE
 
 -- NHÂN VIÊN (BS + DPV + KTV)
