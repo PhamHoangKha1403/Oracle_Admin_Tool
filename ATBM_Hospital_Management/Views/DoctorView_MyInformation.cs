@@ -51,7 +51,6 @@ namespace ATBM_Hospital_Management.Views
                     textBox5.Text = row["CCCD"].ToString();
                     textBox6.Text = row["QUE_QUAN"].ToString();
                     textBox7.Text = row["SDT"].ToString();
-                    // Nếu bảng NHAN_VIEN không có chuyên khoa, bạn có thể để trống hoặc join thêm bảng
                     textBox8.Text = row["TEN_KHOA"].ToString();
                 }
             }
@@ -59,6 +58,51 @@ namespace ATBM_Hospital_Management.Views
             {
                 MessageBox.Show("Lỗi tải thông tin cá nhân: " + ex.Message);
             }
+        }
+        private void button1_Click(object sender, EventArgs e)
+        {
+            // 1. Lấy dữ liệu từ giao diện (giả sử bạn có 2 TextBox này)
+            string queQuan = textBox6.Text.Trim();
+            string soDT = textBox7.Text.Trim();
+
+            // Kiểm tra dữ liệu đầu vào cơ bản
+            if (string.IsNullOrEmpty(queQuan) || string.IsNullOrEmpty(soDT))
+            {
+                MessageBox.Show("Vui lòng nhập đầy đủ thông tin!");
+                return;
+            }
+
+            try
+            {
+                // 2. Thiết lập các tham số cho Stored Procedure
+                var parameters = new Oracle.ManagedDataAccess.Client.OracleParameter[]
+                {
+            new Oracle.ManagedDataAccess.Client.OracleParameter("p_QUEQUAN", Oracle.ManagedDataAccess.Client.OracleDbType.NVarchar2) { Value = queQuan },
+            new Oracle.ManagedDataAccess.Client.OracleParameter("p_SODT", Oracle.ManagedDataAccess.Client.OracleDbType.Varchar2) { Value = soDT }
+                };
+
+                // 3. Thực thi Procedure thông qua lớp DbConnection
+                // Lưu ý: Vì SP này chỉ thực hiện UPDATE nên dùng ExecuteNonQuery
+                int result = DbConnection.Instance.ExecuteNonQuery(
+                    "BEGIN sp_NV_Update_NHANVIEN(:p_QUEQUAN, :p_SODT); END;",
+                    parameters,
+                    CommandType.Text
+                );
+
+                MessageBox.Show("Cập nhật thông tin cá nhân thành công!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
+
+                // (Tùy chọn) Load lại dữ liệu để hiển thị thông tin mới nhất
+                // LoadPersonalInformation(); 
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Lỗi khi cập nhật: " + ex.Message, "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        private void label8_Click(object sender, EventArgs e)
+        {
+
         }
     }
 }

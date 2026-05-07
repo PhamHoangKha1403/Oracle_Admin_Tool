@@ -29,6 +29,8 @@ namespace ATBM_Hospital_Management.Views
 
             SetupUi();
             RefreshAudit(forceRebind: true);
+            // After initial refresh, ensure toggle reflects DB state
+            try { UpdateToggleState(); } catch { }
 
             _refreshTimer = new Timer();
             _refreshTimer.Interval = 1500;
@@ -52,46 +54,47 @@ namespace ATBM_Hospital_Management.Views
             string action = cbAuditToggle.SelectedItem?.ToString();
             if (string.IsNullOrWhiteSpace(action)) return;
 
-            string selectedObject = cbAuditTable.SelectedItem?.ToString() ?? "Tất cả bảng";
-            string objectArg = null;
-            if (!"Tất cả bảng".Equals(selectedObject, StringComparison.OrdinalIgnoreCase))
-                objectArg = selectedObject;
+            System.Diagnostics.Debug.WriteLine($"[AuditToggle_Changed] User selected: {action}");
 
             try
             {
+                // Toggle applies to ALL tables only
                 if (action.Equals("Bật", StringComparison.OrdinalIgnoreCase))
                 {
-                    _dbaService.EnablePoliciesForObject(objectArg);
+                    System.Diagnostics.Debug.WriteLine($"[AuditToggle_Changed] Calling EnableAllAudit()");
+                    _dbaService.EnableAllAudit();
                 }
                 else if (action.Equals("Tắt", StringComparison.OrdinalIgnoreCase))
                 {
-                    _dbaService.DisablePoliciesForObject(objectArg);
+                    System.Diagnostics.Debug.WriteLine($"[AuditToggle_Changed] Calling DisableAllAudit()");
+                    _dbaService.DisableAllAudit();
                 }
             }
             catch (Exception ex)
             {
+                System.Diagnostics.Debug.WriteLine($"[AuditToggle_Changed] Error: {ex.Message}");
                 MessageBox.Show("Lỗi khi thay đổi trạng thái policy: " + ex.Message, "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
 
             // refresh UI after action
+            System.Diagnostics.Debug.WriteLine($"[AuditToggle_Changed] Refreshing audit and updating toggle state");
             RefreshAudit(forceRebind: true);
+            // Ensure toggle reflects DB state after the change
             UpdateToggleState();
         }
 
         private void UpdateToggleState()
         {
-            string selectedObject = cbAuditTable.SelectedItem?.ToString() ?? "Tất cả bảng";
-            string objectArg = null;
-            if (!"Tất cả bảng".Equals(selectedObject, StringComparison.OrdinalIgnoreCase))
-                objectArg = selectedObject;
-
+            // Always check DB-wide policies (toggle controls all tables only)
             DataTable policies = null;
             try
             {
-                policies = _dbaService.GetFgaPolicies(objectArg);
+                policies = _dbaService.GetFgaPolicies(null);
+                System.Diagnostics.Debug.WriteLine($"[UpdateToggleState] GetFgaPolicies returned {policies?.Rows.Count ?? 0} rows");
             }
-            catch
+            catch (Exception ex)
             {
+                System.Diagnostics.Debug.WriteLine($"[UpdateToggleState] Error fetching policies: {ex.Message}");
                 policies = null;
             }
 
@@ -100,24 +103,32 @@ namespace ATBM_Hospital_Management.Views
             {
                 foreach (DataRow r in policies.Rows)
                 {
-                    var val = r.Table.Columns.Contains("ENABLED") ? (r["ENABLED"]?.ToString() ?? string.Empty) : string.Empty;
-                    if (!string.IsNullOrEmpty(val))
+                    var enabledVal = r.Table.Columns.Contains("ENABLED") ? (r["ENABLED"]?.ToString() ?? string.Empty) : string.Empty;
+                    var policyName = r.Table.Columns.Contains("POLICY_NAME") ? (r["POLICY_NAME"]?.ToString() ?? string.Empty) : string.Empty;
+                    System.Diagnostics.Debug.WriteLine($"[UpdateToggleState] Policy: {policyName}, ENABLED: {enabledVal}");
+                    
+                    if (!string.IsNullOrEmpty(enabledVal))
                     {
-                        if (val.Equals("YES", StringComparison.OrdinalIgnoreCase) || val.Equals("Y", StringComparison.OrdinalIgnoreCase) || val.Equals("1"))
+                        if (enabledVal.Equals("YES", StringComparison.OrdinalIgnoreCase) || enabledVal.Equals("Y", StringComparison.OrdinalIgnoreCase) || enabledVal.Equals("1"))
                         {
                             anyEnabled = true;
+                            System.Diagnostics.Debug.WriteLine($"[UpdateToggleState] Found enabled policy: {policyName}");
                             break;
                         }
                     }
                 }
             }
+            else
+            {
+                System.Diagnostics.Debug.WriteLine($"[UpdateToggleState] No policies returned from DB");
+            }
 
             _suppressToggleAction = true;
-            // set toggle to show current state: if any policy enabled -> show Bật, else Tắt
-            if (anyEnabled)
-                cbAuditToggle.SelectedItem = "Bật";
-            else
-                cbAuditToggle.SelectedItem = "Tắt";
+            string newState = anyEnabled ? "Bật" : "Tắt";
+            string oldState = cbAuditToggle.SelectedItem?.ToString() ?? "???";
+            System.Diagnostics.Debug.WriteLine($"[UpdateToggleState] Changing toggle from '{oldState}' to '{newState}'");
+            
+            cbAuditToggle.SelectedItem = newState;
             _suppressToggleAction = false;
         }
 
@@ -141,7 +152,8 @@ namespace ATBM_Hospital_Management.Views
             // Toggle control for enabling/disabling audit (UI only)
             cbAuditToggle.Items.Add("Bật");
             cbAuditToggle.Items.Add("Tắt");
-            cbAuditToggle.SelectedIndex = 0;
+            // Do not pre-select; query DB at startup will set correct state
+            cbAuditToggle.SelectedIndex = -1;
 
             // Make grid style consistent with other pages: fill columns, white background, subtle grid
             dgvAudit.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
@@ -185,7 +197,10 @@ namespace ATBM_Hospital_Management.Views
 
         private void RefreshTimer_Tick(object sender, EventArgs e)
         {
+            System.Diagnostics.Debug.WriteLine($"[RefreshTimer_Tick] Timer tick - updating toggle state");
             RefreshAudit(forceRebind: false);
+            // Always update toggle state to reflect current DB policy state
+            UpdateToggleState();
         }
 
         private void AuditView_Disposed(object sender, EventArgs e)
@@ -219,6 +234,8 @@ namespace ATBM_Hospital_Management.Views
 
                 RebuildObjectFilterItems();
                 ApplyFilters();
+                // Keep the toggle in sync with DB state after refreshing audit data
+                UpdateToggleState();
             }
             catch
             {
@@ -348,6 +365,21 @@ namespace ATBM_Hospital_Management.Views
                 txtAuditSearch.Text = SearchPlaceholder;
                 txtAuditSearch.ForeColor = Color.FromArgb(120, 120, 120);
             }
+        }
+
+        private void pnlFilterRow_Paint(object sender, PaintEventArgs e)
+        {
+
+        }
+
+        private void lblAuditToggle_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void dgvAudit_CellContentClick(object sender, DataGridViewCellEventArgs e)
+        {
+
         }
     }
 }
