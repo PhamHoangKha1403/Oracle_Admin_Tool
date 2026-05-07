@@ -76,13 +76,12 @@ namespace ATBM_Hospital_Management.Views.Components
                 WrapContents = false
             };
 
-            btnAddPatient = new Button { Text = "ADD PATIENT", Size = new Size(150, 40), BackColor = Color.SeaGreen, ForeColor = Color.White, FlatStyle = FlatStyle.Flat, Margin = new Padding(0, 0, 10, 0) };
-            btnEditPatient = new Button { Text = "EDIT PATIENT", Size = new Size(150, 40), BackColor = Color.DodgerBlue, ForeColor = Color.White, FlatStyle = FlatStyle.Flat, Margin = new Padding(0, 0, 15, 0) };
-
+            btnAddPatient = new Button { Text = "ADD PATIENT", Size = new Size(150, 40), BackColor = Color.DodgerBlue, ForeColor = Color.White, FlatStyle = FlatStyle.Flat, Margin = new Padding(0, 0, 10, 0) };
             btnAddPatient.FlatAppearance.BorderSize = 0;
-            btnEditPatient.FlatAppearance.BorderSize = 0;
-
             btnAddPatient.Click += BtnAddPatient_Click;
+
+            btnEditPatient = new Button { Text = "EDIT PATIENT", Size = new Size(150, 40), BackColor = Color.DarkOrange, ForeColor = Color.White, FlatStyle = FlatStyle.Flat, Margin = new Padding(0, 0, 15, 0) };
+            btnEditPatient.FlatAppearance.BorderSize = 0;
             btnEditPatient.Click += BtnEditPatient_Click;
 
             Button btnSearchPatient = new Button { Text = "SEARCH", Size = new Size(120, 40), BackColor = Color.SeaGreen, ForeColor = Color.White, FlatStyle = FlatStyle.Flat, Margin = new Padding(0) };
@@ -159,17 +158,16 @@ namespace ATBM_Hospital_Management.Views.Components
                 WrapContents = false
             };
 
-            btnAddHSBA = new Button { Text = "ADD RECORD", Size = new Size(130, 40), BackColor = Color.SeaGreen, ForeColor = Color.White, FlatStyle = FlatStyle.Flat, Margin = new Padding(0, 0, 10, 0) };
-            btnEditHSBA = new Button { Text = "EDIT RECORD", Size = new Size(130, 40), BackColor = Color.DodgerBlue, ForeColor = Color.White, FlatStyle = FlatStyle.Flat, Margin = new Padding(0, 0, 10, 0) };
+            btnAddHSBA = new Button { Text = "ADD RECORD", Size = new Size(130, 40), BackColor = Color.DodgerBlue, ForeColor = Color.White, FlatStyle = FlatStyle.Flat, Margin = new Padding(0, 0, 10, 0) };
+            btnAddHSBA.FlatAppearance.BorderSize = 0;
+            btnAddHSBA.Click += BtnAddHSBA_Click;
+
+            btnEditHSBA = new Button { Text = "EDIT RECORD", Size = new Size(130, 40), BackColor = Color.DarkOrange, ForeColor = Color.White, FlatStyle = FlatStyle.Flat, Margin = new Padding(0, 0, 10, 0) };
+            btnEditHSBA.FlatAppearance.BorderSize = 0;
+            btnEditHSBA.Click += BtnEditHSBA_Click;
         
             btnEditHSBADV = new Button { Text = "EDIT SERVICE", Size = new Size(130, 40), BackColor = Color.Orange, ForeColor = Color.White, FlatStyle = FlatStyle.Flat, Margin = new Padding(0, 0, 15, 0) };
-
-            btnAddHSBA.FlatAppearance.BorderSize = 0;
-            btnEditHSBA.FlatAppearance.BorderSize = 0;
             btnEditHSBADV.FlatAppearance.BorderSize = 0;
-
-            btnAddHSBA.Click += BtnAddHSBA_Click;
-            btnEditHSBA.Click += BtnEditHSBA_Click;
             btnEditHSBADV.Click += BtnEditHSBADV_Click;
 
             Button btnSearchHSBA = new Button { Text = "SEARCH", Size = new Size(100, 40), BackColor = Color.SeaGreen, ForeColor = Color.White, FlatStyle = FlatStyle.Flat, Margin = new Padding(0) };
@@ -211,7 +209,7 @@ namespace ATBM_Hospital_Management.Views.Components
                 SplitterDistance = 250
             };
 
-            Label lbl1 = new Label { Text = "Medical Records List", Dock = DockStyle.Top, AutoSize = true, Font = new Font("Segoe UI", 10F, FontStyle.Bold), Padding = new Padding(0, 0, 0, 5) };
+            Label lbl1 = new Label { Text = "Danh sách Hồ sơ bệnh án", Font = new Font("Segoe UI Semibold", 12F), Dock = DockStyle.Top, Padding = new Padding(0, 0, 0, 10) };
             dgvHSBA = new DataGridView
             {
                 Dock = DockStyle.Fill,
@@ -235,7 +233,7 @@ namespace ATBM_Hospital_Management.Views.Components
             splitContainer.Panel1.Controls.Add(dgvHSBA);
             splitContainer.Panel1.Controls.Add(lbl1);
 
-            Label lbl2 = new Label { Text = "Medical Services List", Dock = DockStyle.Top, AutoSize = true, Font = new Font("Segoe UI", 10F, FontStyle.Bold), Padding = new Padding(0, 5, 0, 5) };
+            Label lbl2 = new Label { Text = "Dịch vụ của Hồ sơ bệnh án", Font = new Font("Segoe UI Semibold", 12F), Dock = DockStyle.Top, Padding = new Padding(0, 0, 0, 10) };
             dgvHSBADV = new DataGridView
             {
                 Dock = DockStyle.Fill,
@@ -284,6 +282,7 @@ namespace ATBM_Hospital_Management.Views.Components
                 if (dgvThongBao.Columns.Contains("MA_TB")) dgvThongBao.Columns["MA_TB"].HeaderText = "Mã TB";
                 if (dgvThongBao.Columns.Contains("NOI_DUNG")) dgvThongBao.Columns["NOI_DUNG"].HeaderText = "Nội dung";
                 if (dgvThongBao.Columns.Contains("NGAY_GIO")) dgvThongBao.Columns["NGAY_GIO"].HeaderText = "Ngày giờ";
+                if (dgvThongBao.Columns.Contains("DIA_DIEM")) dgvThongBao.Columns["DIA_DIEM"].HeaderText = "Địa điểm";
                 if (dgvThongBao.Columns.Contains("NGUOI_TAO")) dgvThongBao.Columns["NGUOI_TAO"].HeaderText = "Người tạo";
                 if (dgvThongBao.Columns.Contains("NGAY_TAO")) dgvThongBao.Columns["NGAY_TAO"].HeaderText = "Ngày tạo";
                 if (dgvThongBao.Columns.Contains("VAI_TRO")) dgvThongBao.Columns["VAI_TRO"].HeaderText = "Vai trò";
@@ -336,7 +335,7 @@ namespace ATBM_Hospital_Management.Views.Components
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Error loading notifications: " + ex.Message);
+                MessageBox.Show("Lỗi tải thông báo: " + ex.Message);
             }
         }
 
@@ -417,7 +416,7 @@ namespace ATBM_Hospital_Management.Views.Components
 
         private void BtnAddPatient_Click(object sender, EventArgs e)
         {
-            using (Form f = new Form() { Text = "Add Patient", Size = new Size(400, 750), StartPosition = FormStartPosition.CenterParent })
+            using (Form f = new Form() { Text = "Thêm bệnh nhân", Size = new Size(400, 750), StartPosition = FormStartPosition.CenterParent })
             {
                 int y = 20;
                 string newMaBN = GenerateNextId(dgvPatient.DataSource as DataTable, "MA_BN", "BN", "D6");
@@ -454,7 +453,7 @@ namespace ATBM_Hospital_Management.Views.Components
                     txtChuyenKhoa = AddField(f, "Mã chuyên khoa:", "", ref y);
                 }
 
-                Button btnSave = new Button { Text = "Lưu", Location = new Point(140, y + 10), Size = new Size(100, 35) };
+                Button btnSave = new Button { Text = "Save", Location = new Point(140, y + 10), Size = new Size(100, 35) };
                 btnSave.Click += (s, args) =>
                 {
                     try
@@ -478,11 +477,11 @@ namespace ATBM_Hospital_Management.Views.Components
                         };
 
                         DbConnection.Instance.ExecuteNonQuery("BEGIN sp_DPV_Insert_BENHNHAN(:p_MABN, :p_HOTEN, :p_PHAI, :p_NGAYSINH, :p_CCCD, :p_SDT, :p_SONHA, :p_TENDUONG, :p_QUANHUYEN, :p_TINHTP, :p_TIENSUBENH, :p_TIENSUBENHGD, :p_DIUNGTHUOC, :p_CHUYENKHOA); END;", parameters, CommandType.Text);
-                        MessageBox.Show("Added successfully!");
+                        MessageBox.Show("Thêm thành công!");
                         f.DialogResult = DialogResult.OK;
                         f.Close();
                     }
-                    catch (Exception ex) { MessageBox.Show("Error: " + ex.Message); }
+                    catch (Exception ex) { MessageBox.Show("Lỗi: " + ex.Message); }
                 };
                 f.Controls.Add(btnSave);
                 if (f.ShowDialog() == DialogResult.OK) LoadPatientData();
@@ -491,11 +490,11 @@ namespace ATBM_Hospital_Management.Views.Components
 
         private void BtnEditPatient_Click(object sender, EventArgs e)
         {
-            if (dgvPatient.SelectedRows.Count == 0) { MessageBox.Show("Select a patient."); return; }
+            if (dgvPatient.SelectedRows.Count == 0) { MessageBox.Show("Vui lòng chọn bệnh nhân."); return; }
             var row = dgvPatient.SelectedRows[0];
             DataRowView drv = row.DataBoundItem as DataRowView;
 
-            using (Form f = new Form() { Text = "Edit Patient", Size = new Size(400, 750), StartPosition = FormStartPosition.CenterParent })
+            using (Form f = new Form() { Text = "Cập nhật bệnh nhân", Size = new Size(400, 750), StartPosition = FormStartPosition.CenterParent })
             {
                 int y = 20;
                 TextBox txtMaBN = AddField(f, "Mã BN:", row.Cells["MA_BN"].Value?.ToString(), ref y, true);
@@ -541,7 +540,7 @@ namespace ATBM_Hospital_Management.Views.Components
                     txtChuyenKhoa = AddField(f, "Mã chuyên khoa:", chuyenKhoa, ref y);
                 }
 
-                Button btnSave = new Button { Text = "Cập nhật", Location = new Point(140, y + 10), Size = new Size(100, 35) };
+                Button btnSave = new Button { Text = "Update", Location = new Point(140, y + 10), Size = new Size(100, 35) };
                 btnSave.Click += (s, args) =>
                 {
                     try
@@ -565,11 +564,11 @@ namespace ATBM_Hospital_Management.Views.Components
                         };
 
                         DbConnection.Instance.ExecuteNonQuery("BEGIN sp_DPV_Update_BENHNHAN(:p_MABN, :p_HOTEN, :p_PHAI, :p_NGAYSINH, :p_CCCD, :p_SDT, :p_SONHA, :p_TENDUONG, :p_QUANHUYEN, :p_TINHTP, :p_TIENSUBENH, :p_TIENSUBENHGD, :p_DIUNGTHUOC, :p_CHUYENKHOA); END;", parameters, CommandType.Text);
-                        MessageBox.Show("Updated successfully!");
+                        MessageBox.Show("Cập nhật thành công!");
                         f.DialogResult = DialogResult.OK;
                         f.Close();
                     }
-                    catch (Exception ex) { MessageBox.Show("Error: " + ex.Message); }
+                    catch (Exception ex) { MessageBox.Show("Lỗi: " + ex.Message); }
                 };
                 f.Controls.Add(btnSave);
                 if (f.ShowDialog() == DialogResult.OK) LoadPatientData();
@@ -578,7 +577,7 @@ namespace ATBM_Hospital_Management.Views.Components
 
         private void BtnAddHSBA_Click(object sender, EventArgs e)
         {
-            using (Form f = new Form() { Text = "Add Record", Size = new Size(400, 520), StartPosition = FormStartPosition.CenterParent })
+            using (Form f = new Form() { Text = "Thêm Hồ sơ bệnh án", Size = new Size(400, 520), StartPosition = FormStartPosition.CenterParent })
             {
                 int y = 20;
                 string newMaHSBA = GenerateNextId(dgvHSBA.DataSource as DataTable, "MA_HSBA", "HS", "D6");
@@ -614,7 +613,7 @@ namespace ATBM_Hospital_Management.Views.Components
                 
                 TextBox txtKetLuan = AddField(f, "Kết luận:", "", ref y);
 
-                Button btnSave = new Button { Text = "Lưu", Location = new Point(140, y + 10), Size = new Size(100, 35) };
+                Button btnSave = new Button { Text = "Save", Location = new Point(140, y + 10), Size = new Size(100, 35) };
                 btnSave.Click += (s, args) =>
                 {
                     try
@@ -631,11 +630,11 @@ namespace ATBM_Hospital_Management.Views.Components
                             new Oracle.ManagedDataAccess.Client.OracleParameter("p_KETLUAN", txtKetLuan.Text)
                         };
                         DbConnection.Instance.ExecuteNonQuery("BEGIN sp_DPV_Insert_HSBA(:p_MAHSBA, :p_MABN, :p_NGAY, :p_CHANDOAN, :p_DIEUTRI, :p_MABS, :p_MAKHOA, :p_KETLUAN); END;", parameters, CommandType.Text);
-                        MessageBox.Show("Record added successfully!");
+                        MessageBox.Show("Thêm thành công!");
                         f.DialogResult = DialogResult.OK;
                         f.Close();
                     }
-                    catch (Exception ex) { MessageBox.Show("Error: " + ex.Message); }
+                    catch (Exception ex) { MessageBox.Show("Lỗi: " + ex.Message); }
                 };
                 f.Controls.Add(btnSave);
                 if (f.ShowDialog() == DialogResult.OK) LoadHSBAData();
@@ -644,7 +643,7 @@ namespace ATBM_Hospital_Management.Views.Components
 
         private void BtnEditHSBA_Click(object sender, EventArgs e)
         {
-            if (dgvHSBA.SelectedRows.Count == 0) { MessageBox.Show("Select a record."); return; }
+            if (dgvHSBA.SelectedRows.Count == 0) { MessageBox.Show("Vui lòng chọn hồ sơ."); return; }
             var row = dgvHSBA.SelectedRows[0];
 
             using (Form f = new Form() { Text = "Cập nhật HSBA", Size = new Size(400, 300), StartPosition = FormStartPosition.CenterParent })
@@ -668,7 +667,7 @@ namespace ATBM_Hospital_Management.Views.Components
                 
                 TextBox txtMaBS = AddField(f, "Mã BS:", row.Cells["MA_BS"].Value?.ToString(), ref y);
 
-                Button btnSave = new Button { Text = "Cập nhật", Location = new Point(140, y + 10), Size = new Size(100, 35) };
+                Button btnSave = new Button { Text = "Update", Location = new Point(140, y + 10), Size = new Size(100, 35) };
                 btnSave.Click += (s, args) =>
                 {
                     try
@@ -680,11 +679,11 @@ namespace ATBM_Hospital_Management.Views.Components
                             new Oracle.ManagedDataAccess.Client.OracleParameter("p_MABS", txtMaBS.Text)
                         };
                         DbConnection.Instance.ExecuteNonQuery("BEGIN sp_DPV_Update_HSBA(:p_MAHSBA, :p_MAKHOA, :p_MABS); END;", parameters, CommandType.Text);
-                        MessageBox.Show("Updated successfully!");
+                        MessageBox.Show("Cập nhật thành công!");
                         f.DialogResult = DialogResult.OK;
                         f.Close();
                     }
-                    catch (Exception ex) { MessageBox.Show("Error: " + ex.Message); }
+                    catch (Exception ex) { MessageBox.Show("Lỗi: " + ex.Message); }
                 };
                 f.Controls.Add(btnSave);
                 if (f.ShowDialog() == DialogResult.OK) LoadHSBAData();
@@ -693,10 +692,10 @@ namespace ATBM_Hospital_Management.Views.Components
 
         private void BtnEditHSBADV_Click(object sender, EventArgs e)
         {
-            if (dgvHSBADV.SelectedRows.Count == 0) { MessageBox.Show("Select a service record."); return; }
+            if (dgvHSBADV.SelectedRows.Count == 0) { MessageBox.Show("Vui lòng chọn dịch vụ."); return; }
             var row = dgvHSBADV.SelectedRows[0];
 
-            using (Form f = new Form() { Text = "Update Technician Service", Size = new Size(400, 320), StartPosition = FormStartPosition.CenterParent })
+            using (Form f = new Form() { Text = "Cập nhật dịch vụ", Size = new Size(400, 320), StartPosition = FormStartPosition.CenterParent })
             {
                 int y = 20;
                 TextBox txtMaHSBA = AddField(f, "Mã HSBA:", row.Cells["MA_HSBA"].Value?.ToString(), ref y, true);
@@ -711,7 +710,7 @@ namespace ATBM_Hospital_Management.Views.Components
 
                 TextBox txtMaKTV = AddField(f, "Mã KTV mới:", row.Cells["MA_KTV"].Value?.ToString(), ref y);
 
-                Button btnSave = new Button { Text = "Cập nhật", Location = new Point(140, y + 10), Size = new Size(100, 35) };
+                Button btnSave = new Button { Text = "Update", Location = new Point(140, y + 10), Size = new Size(100, 35) };
                 btnSave.Click += (s, args) =>
                 {
                     try
@@ -724,11 +723,11 @@ namespace ATBM_Hospital_Management.Views.Components
                             new Oracle.ManagedDataAccess.Client.OracleParameter("p_MAKTV", txtMaKTV.Text)
                         };
                         DbConnection.Instance.ExecuteNonQuery("BEGIN sp_DPV_Update_HSBADV(:p_MAHSBA, :p_LOAIDV, :p_NGAYDV, :p_MAKTV); END;", parameters, CommandType.Text);
-                        MessageBox.Show("Updated successfully!");
+                        MessageBox.Show("Cập nhật thành công!");
                         f.DialogResult = DialogResult.OK;
                         f.Close();
                     }
-                    catch (Exception ex) { MessageBox.Show("Error: " + ex.Message); }
+                    catch (Exception ex) { MessageBox.Show("Lỗi: " + ex.Message); }
                 };
                 f.Controls.Add(btnSave);
                 if (f.ShowDialog() == DialogResult.OK) LoadHSBAData();

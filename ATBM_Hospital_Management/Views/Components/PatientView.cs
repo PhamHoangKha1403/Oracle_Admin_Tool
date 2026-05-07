@@ -48,10 +48,10 @@ namespace ATBM_Hospital_Management.Views.Components
 
             btnEdit = new Button
             {
-                Text = "Sửa thông tin",
+                Text = "Edit Information",
                 Font = new Font("Segoe UI", 10F, FontStyle.Bold),
                 Location = new Point(20, 60),
-                Size = new Size(180, 40),
+                Size = new Size(150, 40),
                 BackColor = Color.FromArgb(0, 120, 215),
                 ForeColor = Color.White,
                 FlatStyle = FlatStyle.Flat
@@ -158,8 +158,8 @@ namespace ATBM_Hospital_Management.Views.Components
             catch (Exception ex)
             {
                 MessageBox.Show(
-                    "Error loading patient data: " + ex.Message,
-                    "Error",
+                    "Lỗi tải dữ liệu bệnh nhân: " + ex.Message,
+                    "Lỗi",
                     MessageBoxButtons.OK,
                     MessageBoxIcon.Error);
             }
@@ -188,9 +188,9 @@ namespace ATBM_Hospital_Management.Views.Components
 
                 Button btnSave = new Button
                 {
-                    Text = "Lưu thay đổi",
+                    Text = "Save Changes",
                     Location = new Point(140, y + 20),
-                    Size = new Size(130, 40),
+                    Size = new Size(120, 40),
                     BackColor = Color.SeaGreen,
                     ForeColor = Color.White,
                     FlatStyle = FlatStyle.Flat
@@ -219,8 +219,8 @@ namespace ATBM_Hospital_Management.Views.Components
                             CommandType.Text);
 
                         MessageBox.Show(
-                            "Updated successfully!",
-                            "Information",
+                            "Cập nhật thông tin bệnh nhân thành công!",
+                            "Thành công",
                             MessageBoxButtons.OK,
                             MessageBoxIcon.Information);
 
@@ -230,8 +230,8 @@ namespace ATBM_Hospital_Management.Views.Components
                     catch (Exception ex)
                     {
                         MessageBox.Show(
-                            "Update error: " + ex.Message,
-                            "Error",
+                            "Lỗi khi cập nhật thông tin bệnh nhân: " + ex.Message,
+                            "Lỗi",
                             MessageBoxButtons.OK,
                             MessageBoxIcon.Error);
                     }

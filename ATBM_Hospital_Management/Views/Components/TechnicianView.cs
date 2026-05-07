@@ -157,7 +157,7 @@ namespace ATBM_Hospital_Management.Views.Components
 
             Label lblTitle = new Label 
             { 
-                Text = "Edit History (Audit Log)", 
+                Text = "Lịch sử chỉnh sửa", 
                 AutoSize = true, 
                 Font = new Font("Segoe UI", 12F, FontStyle.Bold),
                 Margin = new Padding(0, 10, 15, 0) // Padding top to align with 40px buttons
@@ -218,12 +218,12 @@ namespace ATBM_Hospital_Management.Views.Components
             };
             dgvAuditLog.DataBindingComplete += (s, e) =>
             {
-                if (dgvAuditLog.Columns.Contains("DB_USER")) dgvAuditLog.Columns["DB_USER"].HeaderText = "Người dùng DB";
-                if (dgvAuditLog.Columns.Contains("POLICY_NAME")) dgvAuditLog.Columns["POLICY_NAME"].HeaderText = "Tên Policy";
-                if (dgvAuditLog.Columns.Contains("STATEMENT_TYPE")) dgvAuditLog.Columns["STATEMENT_TYPE"].HeaderText = "Loại thao tác";
-                if (dgvAuditLog.Columns.Contains("TIMESTAMP")) dgvAuditLog.Columns["TIMESTAMP"].HeaderText = "Thời gian";
-                if (dgvAuditLog.Columns.Contains("OBJECT_NAME")) dgvAuditLog.Columns["OBJECT_NAME"].HeaderText = "Bảng";
-                if (dgvAuditLog.Columns.Contains("SQL_TEXT")) dgvAuditLog.Columns["SQL_TEXT"].HeaderText = "Lệnh SQL";
+                if (dgvAuditLog.Columns.Contains("MAHSBA")) dgvAuditLog.Columns["MAHSBA"].HeaderText = "Mã HSBA";
+                if (dgvAuditLog.Columns.Contains("LOAIDV")) dgvAuditLog.Columns["LOAIDV"].HeaderText = "Loại DV";
+                if (dgvAuditLog.Columns.Contains("NGAYDV")) dgvAuditLog.Columns["NGAYDV"].HeaderText = "Ngày DV";
+                if (dgvAuditLog.Columns.Contains("OLD_KETQUA")) dgvAuditLog.Columns["OLD_KETQUA"].HeaderText = "Kết quả cũ";
+                if (dgvAuditLog.Columns.Contains("NEW_KETQUA")) dgvAuditLog.Columns["NEW_KETQUA"].HeaderText = "Kết quả mới";
+                if (dgvAuditLog.Columns.Contains("NGAY_GHI")) dgvAuditLog.Columns["NGAY_GHI"].HeaderText = "Ngày sửa";
             };
 
             tabAuditLog.Controls.Add(pnlTopAudit);
@@ -240,7 +240,7 @@ namespace ATBM_Hospital_Management.Views.Components
                 };
                 dgvServices.DataSource = DbConnection.Instance.ExecuteQuery("BEGIN sp_KTV_Select_HSBADV(:p_cursor); END;", new[] { pOut }, CommandType.Text);
             }
-            catch (Exception ex) { MessageBox.Show("Error loading services: " + ex.Message); }
+            catch (Exception ex) { MessageBox.Show("Lỗi tải danh sách dịch vụ: " + ex.Message); }
         }
 
         private void LoadAuditLogData()
@@ -253,35 +253,35 @@ namespace ATBM_Hospital_Management.Views.Components
                 };
                 dgvAuditLog.DataSource = DbConnection.Instance.ExecuteQuery("BEGIN sp_KTV_Select_AuditLog(:p_cursor); END;", new[] { pOut }, CommandType.Text);
             }
-            catch (Exception ex) { MessageBox.Show("Error loading audit log: " + ex.Message); }
+            catch (Exception ex) { MessageBox.Show("Lỗi tải lịch sử chỉnh sửa: " + ex.Message); }
         }
 
         private void BtnUpdateResult_Click(object sender, EventArgs e)
         {
             if (dgvServices.SelectedRows.Count == 0) 
             { 
-                MessageBox.Show("Please select a service record to update."); 
+                MessageBox.Show("Vui lòng chọn một dịch vụ để cập nhật."); 
                 return; 
             }
             var row = dgvServices.SelectedRows[0];
             string currentKetQua = row.Cells["KET_QUA"].Value?.ToString() ?? "";
 
-            using (Form f = new Form() { Text = "Update Result", Size = new Size(400, 300), StartPosition = FormStartPosition.CenterParent })
+            using (Form f = new Form() { Text = "Cập nhật kết quả", Size = new Size(400, 300), StartPosition = FormStartPosition.CenterParent })
             {
                 int y = 20;
                 
-                Label lblMaHSBA = new Label { Text = "Record ID:", Location = new Point(20, y + 3), AutoSize = true };
+                Label lblMaHSBA = new Label { Text = "Mã HSBA:", Location = new Point(20, y + 3), AutoSize = true };
                 TextBox txtMaHSBA = new TextBox { Text = row.Cells["MA_HSBA"].Value?.ToString(), Location = new Point(140, y), Size = new Size(210, 25), ReadOnly = true };
                 f.Controls.Add(lblMaHSBA); f.Controls.Add(txtMaHSBA); y += 40;
 
-                Label lblLoaiDV = new Label { Text = "Service Type:", Location = new Point(20, y + 3), AutoSize = true };
+                Label lblLoaiDV = new Label { Text = "Loại DV:", Location = new Point(20, y + 3), AutoSize = true };
                 TextBox txtLoaiDV = new TextBox { Text = row.Cells["LOAI_DV"].Value?.ToString(), Location = new Point(140, y), Size = new Size(210, 25), ReadOnly = true };
                 f.Controls.Add(lblLoaiDV); f.Controls.Add(txtLoaiDV); y += 40;
                 
                 DateTime dtNgayDV = row.Cells["NGAY_DV"].Value is DateTime dt 
                     ? dt 
                     : (DateTime.TryParse(row.Cells["NGAY_DV"].Value?.ToString(), out DateTime parsed) ? parsed : DateTime.Now);
-                Label lblKetQua = new Label { Text = "Result:", Location = new Point(20, y + 3), AutoSize = true };
+                Label lblKetQua = new Label { Text = "Kết quả:", Location = new Point(20, y + 3), AutoSize = true };
                 TextBox txtKetQua = new TextBox { Text = currentKetQua, Location = new Point(140, y), Size = new Size(210, 25) };
                 f.Controls.Add(lblKetQua); f.Controls.Add(txtKetQua); y += 40;
 
@@ -300,11 +300,11 @@ namespace ATBM_Hospital_Management.Views.Components
 
                         DbConnection.Instance.ExecuteNonQuery("BEGIN sp_KTV_Update_KETQUA(:p_MAHSBA, :p_LOAIDV, :p_NGAYDV, :p_KETQUA); END;", updateParams, CommandType.Text);
 
-                        MessageBox.Show("Result updated and audited successfully!");
+                        MessageBox.Show("Cập nhật kết quả thành công!");
                         f.DialogResult = DialogResult.OK;
                         f.Close();
                     }
-                    catch (Exception ex) { MessageBox.Show("Error: " + ex.Message); }
+                    catch (Exception ex) { MessageBox.Show("Lỗi: " + ex.Message); }
                 };
                 f.Controls.Add(btnSave);
                 if (f.ShowDialog() == DialogResult.OK) 
