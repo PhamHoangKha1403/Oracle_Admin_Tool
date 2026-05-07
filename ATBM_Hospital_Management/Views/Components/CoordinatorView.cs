@@ -282,11 +282,27 @@ namespace ATBM_Hospital_Management.Views.Components
                     Direction = ParameterDirection.Output
                 };
 
-                dgvThongBao.DataSource = DbConnection.Instance.ExecuteQuery(
+                DataTable dt = DbConnection.Instance.ExecuteQuery(
                     "BEGIN SP_GET_THONGBAO(:p_cursor); END;",
                     new[] { pOut },
                     CommandType.Text
                 );
+
+                if (dt != null)
+                {
+                    dgvThongBao.DataSource = dt;
+
+                    // Kiểm tra nếu cột MA_NV tồn tại thì ẩn nó đi
+                    if (dgvThongBao.Columns["MA_NV"] != null)
+                    {
+                        dgvThongBao.Columns["MA_NV"].Visible = false;
+                    }
+
+                    // Tiện tay chỉnh lại Header cho đẹp luôn bạn nhé
+                    if (dgvThongBao.Columns["MA_TB"] != null) dgvThongBao.Columns["MA_TB"].HeaderText = "Mã TB";
+                    if (dgvThongBao.Columns["NOI_DUNG"] != null) dgvThongBao.Columns["NOI_DUNG"].HeaderText = "Nội Dung";
+                    if (dgvThongBao.Columns["NGAY_GIO"] != null) dgvThongBao.Columns["NGAY_GIO"].HeaderText = "Thời Gian";
+                }
             }
             catch (Exception ex)
             {

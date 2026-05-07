@@ -11,6 +11,7 @@ namespace ATBM_Hospital_Management.Views.Components
         private TabControl tabControl;
         private TabPage tabServices;
         private TabPage tabAuditLog;
+        private TabPage tabThongBao;
 
         // Services Tab Controls
         private DataGridView dgvServices;
@@ -19,11 +20,16 @@ namespace ATBM_Hospital_Management.Views.Components
         // Audit Log Tab Controls
         private DataGridView dgvAuditLog;
 
+        // ThongBao Tab Controls
+        private DataGridView dgvThongBao;
+        private Button btnRefresh;
+
         public TechnicianView()
         {
             InitializeUI();
             LoadServicesData();
             LoadAuditLogData();
+            LoadThongBao();
         }
 
         private void InitializeUI()
@@ -41,11 +47,14 @@ namespace ATBM_Hospital_Management.Views.Components
 
             tabServices = new TabPage("MY SERVICES");
             tabAuditLog = new TabPage("EDIT HISTORY");
+            tabThongBao = new TabPage("NOTIFICATIONS");
             tabControl.TabPages.Add(tabServices);
             tabControl.TabPages.Add(tabAuditLog);
+            tabControl.TabPages.Add(tabThongBao);
 
             InitializeServicesTab();
             InitializeAuditLogTab();
+            InitializeThongBaoTab();
         }
 
         private void InitializeServicesTab()
@@ -212,6 +221,28 @@ namespace ATBM_Hospital_Management.Views.Components
             tabAuditLog.Controls.Add(dgvAuditLog);
         }
 
+        private void InitializeThongBaoTab()
+        {
+            tabThongBao.Padding = new Padding(15);
+            tabThongBao.BackColor = Color.White;
+            btnRefresh = new Button { Text = "REFRESH", Size = new Size(150, 40), BackColor = Color.SeaGreen, ForeColor = Color.White, FlatStyle = FlatStyle.Flat, Location = new Point(15, 15) };
+            btnRefresh.FlatAppearance.BorderSize = 0;
+            btnRefresh.Click += (s, e) => LoadThongBao();
+            tabThongBao.Controls.Add(btnRefresh);
+            dgvThongBao = new DataGridView
+            {
+                Location = new Point(15, 65),
+                Size = new Size(800, 360),
+                Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right,
+                AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill,
+                BackgroundColor = Color.White,
+                AllowUserToAddRows = false,
+                ReadOnly = true,
+                SelectionMode = DataGridViewSelectionMode.FullRowSelect
+            };
+            tabThongBao.Controls.Add(dgvThongBao);
+        }
+
         private void LoadServicesData()
         {
             try
@@ -236,6 +267,45 @@ namespace ATBM_Hospital_Management.Views.Components
                 dgvAuditLog.DataSource = DbConnection.Instance.ExecuteQuery("BEGIN sp_KTV_Select_AuditLog(:p_cursor); END;", new[] { pOut }, CommandType.Text);
             }
             catch (Exception ex) { MessageBox.Show("Error loading audit log: " + ex.Message); }
+        }
+
+        private void LoadThongBao()
+        {
+            try
+            {
+                var pOut = new Oracle.ManagedDataAccess.Client.OracleParameter(
+                    "p_cursor",
+                    Oracle.ManagedDataAccess.Client.OracleDbType.RefCursor)
+                {
+                    Direction = ParameterDirection.Output
+                };
+
+                DataTable dt = DbConnection.Instance.ExecuteQuery(
+                    "BEGIN SP_GET_THONGBAO(:p_cursor); END;",
+                    new[] { pOut },
+                    CommandType.Text
+                );
+
+                if (dt != null)
+                {
+                    dgvThongBao.DataSource = dt;
+
+                    // Kiểm tra nếu cột MA_NV tồn tại thì ẩn nó đi
+                    if (dgvThongBao.Columns["MA_NV"] != null)
+                    {
+                        dgvThongBao.Columns["MA_NV"].Visible = false;
+                    }
+
+                    // Tiện tay chỉnh lại Header cho đẹp luôn bạn nhé
+                    if (dgvThongBao.Columns["MA_TB"] != null) dgvThongBao.Columns["MA_TB"].HeaderText = "Mã TB";
+                    if (dgvThongBao.Columns["NOI_DUNG"] != null) dgvThongBao.Columns["NOI_DUNG"].HeaderText = "Nội Dung";
+                    if (dgvThongBao.Columns["NGAY_GIO"] != null) dgvThongBao.Columns["NGAY_GIO"].HeaderText = "Thời Gian";
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error loading notifications: " + ex.Message);
+            }
         }
 
         private void BtnUpdateResult_Click(object sender, EventArgs e)
