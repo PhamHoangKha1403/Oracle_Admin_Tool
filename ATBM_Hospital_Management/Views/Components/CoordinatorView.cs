@@ -41,7 +41,7 @@ namespace ATBM_Hospital_Management.Views.Components
         private Label lblNgaySinhValue;
         private Label lblQueQuanValue;
         private Label lblSDTValue;
-        private Label lblChuyenKhoaValue;
+        private Label lblTenKhoaValue;
 
         public CoordinatorView()
         {
@@ -155,7 +155,7 @@ namespace ATBM_Hospital_Management.Views.Components
                 if (dgvPatient.Columns.Contains("TIEN_SU_BENH")) dgvPatient.Columns["TIEN_SU_BENH"].HeaderText = "Tiền sử bệnh";
                 if (dgvPatient.Columns.Contains("TIEN_SU_BENH_GD")) dgvPatient.Columns["TIEN_SU_BENH_GD"].HeaderText = "Tiền sử gia đình";
                 if (dgvPatient.Columns.Contains("DI_UNG_THUOC")) dgvPatient.Columns["DI_UNG_THUOC"].HeaderText = "Dị ứng thuốc";
-                if (dgvPatient.Columns.Contains("CHUYEN_KHOA")) dgvPatient.Columns["CHUYEN_KHOA"].HeaderText = "Chuyên khoa";
+                if (dgvPatient.Columns.Contains("TEN_KHOA")) dgvPatient.Columns["TEN_KHOA"].HeaderText = "Tên khoa";
             };
             tabPatient.Controls.Add(dgvPatient);
         }
@@ -355,7 +355,7 @@ namespace ATBM_Hospital_Management.Views.Components
             lblNgaySinhValue = AddProfileRow("Ngày sinh:", ref y);
             lblQueQuanValue = AddProfileRow("Quê quán:", ref y);
             lblSDTValue = AddProfileRow("SĐT:", ref y);
-            lblChuyenKhoaValue = AddProfileRow("Chuyên khoa:", ref y);
+            lblTenKhoaValue = AddProfileRow("Tên khoa:", ref y);
 
             tabProfile.Controls.Add(profilePanel);
         }
@@ -420,7 +420,7 @@ namespace ATBM_Hospital_Management.Views.Components
 
                     lblQueQuanValue.Text = row["QUE_QUAN"]?.ToString();
                     lblSDTValue.Text = row["SDT"]?.ToString();
-                    lblChuyenKhoaValue.Text = row["CHUYEN_KHOA"]?.ToString();
+                    lblTenKhoaValue.Text = row["TEN_KHOA"]?.ToString();
                 }
             }
             catch (Exception ex)

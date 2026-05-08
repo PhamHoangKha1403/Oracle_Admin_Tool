@@ -83,7 +83,7 @@ namespace ATBM_Hospital_Management.Views.Components
                     new OracleParameter("p_MAKHOA", cmbKhoaKham.SelectedValue?.ToString() ?? (object)DBNull.Value)
                 };
 
-                DbConnection.Instance.ExecuteNonQuery("BEGIN sp_DPV_Update_HSBA(:p_MAHSBA, :p_MABS, :p_MAKHOA); END;", parameters, CommandType.Text);
+                DbConnection.Instance.ExecuteNonQuery("BEGIN sp_DPV_Update_HSBA(:p_MAHSBA, :p_MAKHOA,:p_MABS); END;", parameters, CommandType.Text);
                 MessageBox.Show("Cập nhật hồ sơ bệnh án thành công!");
                 this.DialogResult = DialogResult.OK;
                 this.Close();
