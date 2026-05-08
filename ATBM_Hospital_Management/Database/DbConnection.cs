@@ -237,5 +237,20 @@ namespace ATBM_Hospital_Management.Database
                 _currentUser = null;
             }
         }
+
+        /// <summary>
+        /// Lấy schema sở hữu bảng NHAN_VIEN một cách tự động.
+        /// </summary>
+        public string GetTableOwner()
+        {
+            try
+            {
+                object result = ExecuteScalar("SELECT OWNER FROM ALL_TABLES WHERE TABLE_NAME = 'NHAN_VIEN' AND ROWNUM = 1");
+                if (result != null && result != DBNull.Value)
+                    return result.ToString().ToUpper();
+            }
+            catch { }
+            return "ADMIN_PH2"; // Fallback mặc định
+        }
     }
 }

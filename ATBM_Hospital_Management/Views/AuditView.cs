@@ -140,9 +140,11 @@ namespace ATBM_Hospital_Management.Views
             txtAuditSearch.ForeColor = Color.FromArgb(120, 120, 120);
 
             colAuditUser.HeaderText = "NGƯỜI DÙNG";
+            colAuditObjectName.HeaderText = "TÊN BẢNG";
             colAuditColumn.HeaderText = "TÊN CHÍNH SÁCH";
             colAuditAction.HeaderText = "HÀNH ĐỘNG";
             colAuditTime.HeaderText = "THỜI GIAN";
+            colReturnCode.HeaderText = "CÂU LỆNH SQL";
 
             cbAuditTable.Items.Clear();
             cbAuditTable.Items.Add("Tất cả bảng");
@@ -255,12 +257,18 @@ namespace ATBM_Hospital_Management.Views
                 return "EMPTY";
 
             DataRow r = dt.Rows[0];
+            string dbUser = (dt.Columns.Contains("DB_USER") ? r["DB_USER"] : r["USERNAME"])?.ToString() ?? string.Empty;
+            string objectName = r["OBJECT_NAME"]?.ToString() ?? string.Empty;
+            string policyName = r["POLICY_NAME"]?.ToString() ?? string.Empty;
+            string actionType = (dt.Columns.Contains("STATEMENT_TYPE") ? r["STATEMENT_TYPE"] : r["ACTION_TYPE"])?.ToString() ?? string.Empty;
+            string tsText = r["TIME_FULL"]?.ToString() ?? string.Empty;
+
             return string.Join("|",
-                r["USERNAME"]?.ToString() ?? string.Empty,
-                r["OBJECT_NAME"]?.ToString() ?? string.Empty,
-                r["POLICY_NAME"]?.ToString() ?? string.Empty,
-                r["ACTION_TYPE"]?.ToString() ?? string.Empty,
-                r["TIME_FULL"]?.ToString() ?? string.Empty,
+                dbUser,
+                objectName,
+                policyName,
+                actionType,
+                tsText,
                 dt.Rows.Count.ToString());
         }
 
@@ -299,11 +307,11 @@ namespace ATBM_Hospital_Management.Views
 
             foreach (DataRow row in _allAudit.Rows)
             {
-                string dbUser = row["USERNAME"]?.ToString() ?? string.Empty;
+                string dbUser = (row.Table.Columns.Contains("DB_USER") ? row["DB_USER"] : row["USERNAME"])?.ToString() ?? string.Empty;
                 string objectName = row["OBJECT_NAME"]?.ToString() ?? string.Empty;
                 string policyName = row["POLICY_NAME"]?.ToString() ?? string.Empty;
-                string actionType = row["ACTION_TYPE"]?.ToString() ?? string.Empty;
-                string returnCode = row["RETURN_CODE"]?.ToString() ?? string.Empty;
+                string actionType = (row.Table.Columns.Contains("STATEMENT_TYPE") ? row["STATEMENT_TYPE"] : row["ACTION_TYPE"])?.ToString() ?? string.Empty;
+                string sqlText = (row.Table.Columns.Contains("SQL_TEXT") ? row["SQL_TEXT"] : row["RETURN_CODE"])?.ToString() ?? string.Empty;
 
                 if (!"Tất cả bảng".Equals(selectedObject, StringComparison.OrdinalIgnoreCase)
                     && !objectName.Equals(selectedObject, StringComparison.OrdinalIgnoreCase))
@@ -319,7 +327,7 @@ namespace ATBM_Hospital_Management.Views
                                    || objectName.ToLowerInvariant().Contains(queryLower)
                                    || policyName.ToLowerInvariant().Contains(queryLower)
                                    || actionType.ToLowerInvariant().Contains(queryLower)
-                                   || returnCode.ToLowerInvariant().Contains(queryLower);
+                                   || sqlText.ToLowerInvariant().Contains(queryLower);
                     if (!matched)
                     {
                         continue;
@@ -328,7 +336,7 @@ namespace ATBM_Hospital_Management.Views
 
                 string tsText = row["TIME_FULL"]?.ToString() ?? string.Empty;
 
-                dgvAudit.Rows.Add(dbUser, objectName, policyName, actionType, tsText, returnCode);
+                dgvAudit.Rows.Add(dbUser, objectName, policyName, actionType, tsText, sqlText);
             }
         }
 

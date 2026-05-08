@@ -15,13 +15,15 @@ namespace ATBM_Hospital_Management.Database
         // --- Enable/Disable all audit policies ---
         public void EnableAllAudit()
         {
-            string spName = "SP_ENABLE_ALL_AUDIT";
+            string owner = _db.GetTableOwner();
+            string spName = $"{owner}.SP_ENABLE_ALL_AUDIT";
             _db.ExecuteNonQuery(spName, null, CommandType.StoredProcedure);
         }
 
         public void DisableAllAudit()
         {
-            string spName = "SP_DISABLE_ALL_AUDIT";
+            string owner = _db.GetTableOwner();
+            string spName = $"{owner}.SP_DISABLE_ALL_AUDIT";
             _db.ExecuteNonQuery(spName, null, CommandType.StoredProcedure);
         }
 
@@ -327,7 +329,8 @@ namespace ATBM_Hospital_Management.Database
         // --- Lấy bảng Audit ---
         public DataTable GetAudit()
         {
-            string spName = "SP_GET_AUDIT_FGA";
+            string owner = _db.GetTableOwner();
+            string spName = $"{owner}.SP_GET_AUDIT_FGA";
             OracleParameter[] p = {
                 new OracleParameter("p_cursor", OracleDbType.RefCursor, ParameterDirection.Output)
             };

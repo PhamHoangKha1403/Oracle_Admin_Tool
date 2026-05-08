@@ -126,8 +126,9 @@ namespace ATBM_Hospital_Management.Views.Components
                     Direction = ParameterDirection.Output
                 };
 
+                string owner = DbConnection.Instance.GetTableOwner();
                 DataTable dt = DbConnection.Instance.ExecuteQuery(
-                    "BEGIN sp_BN_Select_BENHNHAN(:p_cursor); END;",
+                    $"BEGIN {owner}.sp_BN_Select_BENHNHAN(:p_cursor); END;",
                     new[] { pOut },
                     CommandType.Text);
 
@@ -213,8 +214,9 @@ namespace ATBM_Hospital_Management.Views.Components
                             new Oracle.ManagedDataAccess.Client.OracleParameter("p_DIUNGTHUOC", editDiUng.Text)
                         };
 
+                        string owner = DbConnection.Instance.GetTableOwner();
                         DbConnection.Instance.ExecuteNonQuery(
-                            "BEGIN sp_BN_Update_BENHNHAN(:p_SONHA, :p_TENDUONG, :p_QUANHUYEN, :p_TINHTP, :p_TIENSUBENH, :p_TIENSUBENHGD, :p_DIUNGTHUOC); END;",
+                            $"BEGIN {owner}.sp_BN_Update_BENHNHAN(:p_SONHA, :p_TENDUONG, :p_QUANHUYEN, :p_TINHTP, :p_TIENSUBENH, :p_TIENSUBENHGD, :p_DIUNGTHUOC); END;",
                             parameters,
                             CommandType.Text);
 
