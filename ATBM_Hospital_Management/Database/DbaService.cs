@@ -391,6 +391,142 @@ namespace ATBM_Hospital_Management.Database
     };
             return _db.ExecuteQuery(sql, p);
         }
+
+        // --- Notification Management with OLS ---
+
+        public DataTable GetAllNotifications()
+        {
+            string sql = @"
+                SELECT MA_TB, NOI_DUNG, TO_CHAR(NGAY_GIO, 'DD/MM/YYYY HH24:MI:SS') AS NGAY_GIO, DIA_DIEM, NVL(SECURITY_LABEL, 'NV') AS SECURITY_LABEL
+                FROM THONG_BAO
+                ORDER BY NGAY_GIO DESC";
+
+            return _db.ExecuteQuery(sql);
+        }
+
+        public DataTable GetOLSLabels()
+        {
+            string sql = @"
+                SELECT LBACSYS.LABEL_TO_CHAR('OLS_THONGBAO', LABEL_TAG) AS LABEL_NAME
+                FROM LBACSYS.OLS$LABELS
+                WHERE POLICY_ID = (SELECT POLICY_ID FROM LBACSYS.OLS$POLICIES WHERE POLICY_NAME = 'OLS_THONGBAO')
+                ORDER BY LABEL_TAG";
+
+            try
+            {
+                return _db.ExecuteQuery(sql);
+            }
+            catch
+            {
+                // If OLS not available, return predefined labels
+                DataTable dt = new DataTable();
+                dt.Columns.Add("LABEL_NAME");
+                dt.Rows.Add("NV");
+                dt.Rows.Add("LD");
+                dt.Rows.Add("GD");
+                dt.Rows.Add("LD:TIEUHOA");
+                dt.Rows.Add("NV:TIEUHOA:HCM");
+                dt.Rows.Add("NV:TIEUHOA:HN");
+                dt.Rows.Add("LD:TIEUHOA,THANKINH:HP");
+                return dt;
+            }
+        }
+
+        public void AddNotification(string notificationId, string content, string location, string securityLabel = "NV")
+        {
+            string sql = @"
+                INSERT INTO THONG_BAO (MA_TB, NOI_DUNG, NGAY_GIO, DIA_DIEM, SECURITY_LABEL)
+                VALUES (:matb, :noidung, SYSTIMESTAMP, :diadiem, CHAR_TO_LABEL('OLS_THONGBAO', :slabel))";
+
+            OracleParameter[] p = {
+                new OracleParameter("matb", notificationId),
+                new OracleParameter("noidung", content),
+                new OracleParameter("diadiem", location ?? ""),
+                new OracleParameter("slabel", securityLabel ?? "NV")
+            };
+
+            try
+            {
+                _db.ExecuteNonQuery(sql, p);
+            }
+            catch
+            {
+                // Fallback if CHAR_TO_LABEL fails (OLS not enabled)
+                string sqlFallback = @"
+                    INSERT INTO THONG_BAO (MA_TB, NOI_DUNG, NGAY_GIO, DIA_DIEM, SECURITY_LABEL_CHUOI)
+                    VALUES (:matb, :noidung, SYSTIMESTAMP, :diadiem, :slabel)";
+                
+                OracleParameter[] pFallback = {
+                    new OracleParameter("matb", notificationId),
+                    new OracleParameter("noidung", content),
+                    new OracleParameter("diadiem", location ?? ""),
+                    new OracleParameter("slabel", securityLabel ?? "NV")
+                };
+                _db.ExecuteNonQuery(sqlFallback, pFallback);
+            }
+        }
+
+        public void DeleteNotification(string notificationId)
+        {
+            string sql = "DELETE FROM THONG_BAO WHERE MA_TB = :matb";
+            OracleParameter[] p = {
+                new OracleParameter("matb", notificationId)
+            };
+
+            _db.ExecuteNonQuery(sql, p);
+        }
+
+        public void UpdateNotification(string notificationId, string content, string location, string securityLabel = "NV")
+        {
+            string sql = @"
+                UPDATE THONG_BAO 
+                SET NOI_DUNG = :noidung, DIA_DIEM = :diadiem, NGAY_GIO = SYSTIMESTAMP, 
+                    SECURITY_LABEL = CHAR_TO_LABEL('OLS_THONGBAO', :slabel)
+                WHERE MA_TB = :matb";
+
+            OracleParameter[] p = {
+                new OracleParameter("matb", notificationId),
+                new OracleParameter("noidung", content),
+                new OracleParameter("diadiem", location ?? ""),
+                new OracleParameter("slabel", securityLabel ?? "NV")
+            };
+
+            try
+            {
+                _db.ExecuteNonQuery(sql, p);
+            }
+            catch
+            {
+                // Fallback if CHAR_TO_LABEL fails (OLS not enabled)
+                string sqlFallback = @"
+                    UPDATE THONG_BAO 
+                    SET NOI_DUNG = :noidung, DIA_DIEM = :diadiem, NGAY_GIO = SYSTIMESTAMP, 
+                        SECURITY_LABEL_CHUOI = :slabel
+                    WHERE MA_TB = :matb";
+                
+                OracleParameter[] pFallback = {
+                    new OracleParameter("matb", notificationId),
+                    new OracleParameter("noidung", content),
+                    new OracleParameter("diadiem", location ?? ""),
+                    new OracleParameter("slabel", securityLabel ?? "NV")
+                };
+                _db.ExecuteNonQuery(sqlFallback, pFallback);
+            }
+        }
+
+        public DataTable GetNotificationById(string notificationId)
+        {
+            string sql = @"
+                SELECT MA_TB, NOI_DUNG, TO_CHAR(NGAY_GIO, 'DD/MM/YYYY HH24:MI:SS') AS NGAY_GIO, DIA_DIEM, NVL(SECURITY_LABEL, 'NV') AS SECURITY_LABEL
+                FROM THONG_BAO
+                WHERE MA_TB = :matb";
+
+            OracleParameter[] p = {
+                new OracleParameter("matb", notificationId)
+            };
+
+            return _db.ExecuteQuery(sql, p);
+        }
     }
 }
         

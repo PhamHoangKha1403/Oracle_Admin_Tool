@@ -23,6 +23,7 @@ namespace ATBM_Hospital_Management.Views
             this.tpPrivQuery = new System.Windows.Forms.TabPage();
             this.tpRegister = new System.Windows.Forms.TabPage();
             this.tpAudit = new System.Windows.Forms.TabPage();
+            this.tpNotifications = new System.Windows.Forms.TabPage();
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
             this.toolStripStatusLabel1 = new System.Windows.Forms.ToolStripStatusLabel();
             this.btnStatusLogout = new System.Windows.Forms.ToolStripStatusLabel();
@@ -40,12 +41,20 @@ namespace ATBM_Hospital_Management.Views
             this.tabControl1.Controls.Add(this.tpPrivQuery);
             this.tabControl1.Controls.Add(this.tpRegister);
             this.tabControl1.Controls.Add(this.tpAudit);
+            this.tabControl1.Controls.Add(this.tpNotifications);
             // tpAudit
             this.tpAudit.Name = "tpAudit";
             this.tpAudit.Padding = new System.Windows.Forms.Padding(3);
             this.tpAudit.TabIndex = 8;
             this.tpAudit.Text = "Audit";
             this.tpAudit.UseVisualStyleBackColor = true;
+
+            // tpNotifications
+            this.tpNotifications.Name = "tpNotifications";
+            this.tpNotifications.Padding = new System.Windows.Forms.Padding(3);
+            this.tpNotifications.TabIndex = 9;
+            this.tpNotifications.Text = "Notifications";
+            this.tpNotifications.UseVisualStyleBackColor = true;
             
             this.tabControl1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tabControl1.Font = new System.Drawing.Font("Segoe UI", 9.5F);
@@ -172,5 +181,6 @@ namespace ATBM_Hospital_Management.Views
         private System.Windows.Forms.ToolStripStatusLabel toolStripStatusLabel1;
         private System.Windows.Forms.ToolStripStatusLabel btnStatusLogout;
         private System.Windows.Forms.TabPage tpAudit;
+        private System.Windows.Forms.TabPage tpNotifications;
     }
 }

@@ -420,7 +420,7 @@ namespace ATBM_Hospital_Management.Views.Components
 
                     lblQueQuanValue.Text = row["QUE_QUAN"]?.ToString();
                     lblSDTValue.Text = row["SDT"]?.ToString();
-                    lblChuyenKhoaValue.Text = row["TEN_KHOA"]?.ToString();
+                    lblChuyenKhoaValue.Text = row["CHUYEN_KHOA"]?.ToString();
                 }
             }
             catch (Exception ex)

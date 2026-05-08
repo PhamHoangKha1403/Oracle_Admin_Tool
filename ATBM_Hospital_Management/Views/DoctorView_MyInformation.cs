@@ -51,7 +51,7 @@ namespace ATBM_Hospital_Management.Views
                     textBox5.Text = row["CCCD"].ToString();
                     textBox6.Text = row["QUE_QUAN"].ToString();
                     textBox7.Text = row["SDT"].ToString();
-                    textBox8.Text = row["TEN_KHOA"].ToString();
+                    textBox8.Text = row["CHUYEN_KHOA"].ToString();
                 }
             }
             catch (Exception ex)

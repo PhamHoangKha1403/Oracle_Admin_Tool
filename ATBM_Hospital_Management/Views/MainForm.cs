@@ -30,6 +30,7 @@ namespace ATBM_Hospital_Management.Views
             else if (tab == tpRevoke)     view = new RevokeView();
             else if (tab == tpPrivQuery)  view = new PrivilegeQueryView();
             else if (tab == tpRegister)   view = new RegisterView();
+            else if (tab == tpNotifications) view = new SendNotificationView();
             else if (tab == tpAudit)
             {
                 // create AuditView with strict docking/location/margins so it fills the tab exactly
