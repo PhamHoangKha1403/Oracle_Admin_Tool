@@ -13,67 +13,25 @@ namespace ATBM_Hospital_Management.Views.Components
         private readonly DbConnection _db;
         private DoctorView_PatientList _parentView;
         private DataTable _currentRecords;
-        private TextBox txtSearch;
-        private Button btnSearch;
-        private Panel pnlSearch;
 
         public DoctorView_HealthRecordList(DoctorView_PatientList parent)
         {
             InitializeComponent();
             _db = DbConnection.Instance;
             _parentView = parent;
+
             SetupDataGrid();
+
+            btnSearch.Click += btnSearch_Click;
+
             this.Load += async (s, e) =>
             {
                 await Task.Delay(50); // nhường UI thread
-                SetupSearchBar();
                 await LoadHSBA();
             };
         }
 
-        private void SetupSearchBar()
-        {
-            pnlSearch = new Panel { Dock = DockStyle.Top, Height = 50 };
-            pnlSearch.Padding = new Padding(0, 0, 0, 10);
-            
-            txtSearch = new TextBox 
-            { 
-                Location = new Point(0, 10), 
-                Width = 300, 
-                Font = new Font("Segoe UI", 12f),
-                ForeColor = Color.Gray,
-                Text = "Nhập mã HSBA hoặc mã BN..."
-            };
-            txtSearch.Enter += (s, e) => { if (txtSearch.Text == "Nhập mã HSBA hoặc mã BN...") { txtSearch.Text = ""; txtSearch.ForeColor = Color.Black; } };
-            txtSearch.Leave += (s, e) => { if (string.IsNullOrWhiteSpace(txtSearch.Text)) { txtSearch.Text = "Nhập mã HSBA hoặc mã BN..."; txtSearch.ForeColor = Color.Gray; } };
-            txtSearch.KeyDown += (s, e) => { if (e.KeyCode == Keys.Enter) { e.SuppressKeyPress = true; btnSearch.PerformClick(); } };
-
-            btnSearch = new Button
-            {
-                Location = new Point(310, 8),
-                Size = new Size(100, 32),
-                Text = "Tìm kiếm",
-                BackColor = Color.FromArgb(47, 121, 138),
-                ForeColor = Color.White,
-                FlatStyle = FlatStyle.Flat,
-                Font = new Font("Segoe UI", 10f, FontStyle.Bold)
-            };
-            btnSearch.FlatAppearance.BorderSize = 0;
-            btnSearch.Click += btnSearch_Click;
-
-            pnlSearch.Controls.Add(txtSearch);
-            pnlSearch.Controls.Add(btnSearch);
-
-            // Thêm vào panel chính
-            pnlMainList.Controls.Add(pnlSearch);
-            pnlSearch.SendToBack(); // Đưa thanh search lên dưới lblTitle nếu lblTitle cũng trong pnlMainList, nhưng lblTitle không nằm trong pnlMainList
-            
-            // Layout lại pnlMainList:
-            // Theo code Designer, pnlMainList chứa dataGridView1 (Dock=Fill)
-            // Ta đưa pnlSearch vào pnlMainList (Dock=Top), lúc này nó có thể che mất Top của dataGridView1
-            pnlSearch.BringToFront(); // Để không bị DataGridView đè
-        }
-
+        
         private void btnSearch_Click(object sender, EventArgs e)
         {
             if (_currentRecords == null) return;
@@ -92,44 +50,49 @@ namespace ATBM_Hospital_Management.Views.Components
         {
             dataGridView1.Columns.Clear();
             dataGridView1.AutoGenerateColumns = false;
-            dataGridView1.Dock = DockStyle.Fill;
-            dataGridView1.EnableHeadersVisualStyles = false;
+            dataGridView1.Dock = DockStyle.Fill; // Luôn để Fill
+
+            // Cấu hình để hiện Header
+            dataGridView1.ColumnHeadersVisible = true;
+            dataGridView1.EnableHeadersVisualStyles = false; // Để tự định nghĩa màu
+            dataGridView1.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.DisableResizing;
+            dataGridView1.ColumnHeadersHeight = 50;
+
+            // Style cho Header
+            dataGridView1.ColumnHeadersDefaultCellStyle.BackColor = Color.FromArgb(47, 121, 138);
+            dataGridView1.ColumnHeadersDefaultCellStyle.ForeColor = Color.White;
+            dataGridView1.ColumnHeadersDefaultCellStyle.Font = new Font("Segoe UI", 10, FontStyle.Bold);
+            dataGridView1.ColumnHeadersDefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
+
+            // Cấu hình chung
             dataGridView1.AllowUserToAddRows = false;
             dataGridView1.ReadOnly = true;
             dataGridView1.RowHeadersVisible = false;
             dataGridView1.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
             dataGridView1.BackgroundColor = Color.White;
-
-            dataGridView1.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.DisableResizing;
-            dataGridView1.ColumnHeadersHeight = 50;
-            dataGridView1.ColumnHeadersDefaultCellStyle.BackColor = Color.FromArgb(0, 151, 167);
-            dataGridView1.ColumnHeadersDefaultCellStyle.ForeColor = Color.White;
-            dataGridView1.ColumnHeadersDefaultCellStyle.Font = new Font("Segoe UI", 10, FontStyle.Bold);
-            dataGridView1.ColumnHeadersDefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
             dataGridView1.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
+            dataGridView1.BorderStyle = BorderStyle.None;
 
+            // Thêm các cột
             AddColumn("MA_HSBA", "Mã HSBA", "MA_HSBA", 100);
             AddColumn("MA_BN", "Mã BN", "MA_BN", 100);
-            AddColumn("NGAY", "Ngày", "NGAY", 120);
-            AddColumn("CHAN_DOAN", "Chẩn đoán", "CHAN_DOAN", 250);
-            AddColumn("DIEU_TRI", "Điều trị", "DIEU_TRI", 250);
-            AddColumn("KET_LUAN", "Kết luận", "KET_LUAN", 250);
+            AddColumn("NGAY", "Ngày lập", "NGAY", 120);
+            AddColumn("CHAN_DOAN", "Chẩn đoán", "CHAN_DOAN", 200);
+            AddColumn("DIEU_TRI", "Điều trị", "DIEU_TRI", 200);
+            AddColumn("KET_LUAN", "Kết luận", "KET_LUAN", 200);
 
+            // Cột nút bấm
             var btnCol = new DataGridViewButtonColumn
             {
                 Name = "btnXemThem",
-                HeaderText = "",
+                HeaderText = "Thao tác",
                 Text = "Xem thêm",
                 UseColumnTextForButtonValue = true,
                 FillWeight = 80,
                 FlatStyle = FlatStyle.Flat
             };
-            Color teal = Color.FromArgb(47, 121, 138);
-            btnCol.DefaultCellStyle.BackColor = teal;
+            btnCol.DefaultCellStyle.BackColor = Color.FromArgb(47, 121, 138);
             btnCol.DefaultCellStyle.ForeColor = Color.White;
-            btnCol.DefaultCellStyle.SelectionBackColor = teal;
-            btnCol.DefaultCellStyle.SelectionForeColor = Color.White;
-            btnCol.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
             dataGridView1.Columns.Add(btnCol);
 
             dataGridView1.DefaultCellStyle.WrapMode = DataGridViewTriState.True;
@@ -205,6 +168,11 @@ namespace ATBM_Hospital_Management.Views.Components
                 healthRecordPage.SetBreadcrumb("DANH SÁCH HỒ SƠ BỆNH ÁN / CHI TIẾT HỒ SƠ BỆNH ÁN");
                 _parentView.ShowPage(healthRecordPage);
             }
+        }
+
+        private void pnlSearch_Paint(object sender, PaintEventArgs e)
+        {
+
         }
     }
 }
